@@ -7,11 +7,19 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="shared.css">
-
+<style>
+/* Inline critical pkg styles to ensure they load */
+.pkg-tabs{display:flex;gap:0;border-radius:5px;overflow:hidden;border:1.5px solid var(--mist);width:fit-content;margin-bottom:28px;}
+.ptab{padding:10px 22px;font-size:.82rem;font-weight:600;cursor:pointer;border:none;font-family:'Inter',sans-serif;transition:background .15s,color .15s;display:flex;align-items:center;gap:7px;}
+.ptab.on{background:var(--teal);color:#fff;}
+.ptab:not(.on){background:var(--white);color:var(--mid);border-left:1.5px solid var(--mist);}
+.ptab:not(.on):hover{background:var(--sand);color:var(--teal);}
+.ppanel{display:none;}
+.ppanel.on{display:block;}
+.pkg-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(218px,1fr));gap:16px;}
+</style>
 </head>
 <body>
-  <div class="tb-right"><a href="register.html">Register</a><a href="portal.html">Client Portal</a><a href="#">Help</a></div>
-</div>
 
 <nav>
   <div class="nav-inner">
@@ -50,30 +58,33 @@
     </div>
   </div>
 </nav>
+
 <div style="background:var(--teal-dk);padding:36px 32px 32px;">
   <div style="max-width:1200px;margin:0 auto;">
-    <p style="font-size:.67rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.45);font-weight:600;margin-bottom:8px;">Pricing</p>
+    <p style="font-size:.67rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.45);font-weight:600;margin-bottom:8px;">Pricing &amp; Packages</p>
     <h1 style="font-family:Cairo,sans-serif;font-size:2rem;font-weight:700;color:#fff;margin-bottom:8px;">Choose your plan</h1>
-    <p style="color:rgba(255,255,255,.6);font-size:.92rem;max-width:540px;line-height:1.7;">Free to join. Upgrade for more visibility, leads, and Gulf market access. Cancel anytime.</p>
+    <p style="color:rgba(255,255,255,.6);font-size:.92rem;line-height:1.7;">Free to join. Upgrade for more visibility, leads, and Gulf market access. Cancel anytime.</p>
   </div>
 </div>
+
 <section class="sec" style="background:var(--white);">
-  <div class="sec-inner">
-    <div class="sec-hd"><p class="ey">Pricing &amp; packages</p><h2 class="sech">Choose your plan</h2><p class="secsub">Free to join. Upgrade for more visibility, leads, and Gulf market access.</p></div>
-    <div class="pkg-tabs">
-      <button class="ptab on" onclick="setPT('buyer',this)">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;vertical-align:-2px;"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+  <div class="sec-inner" style="max-width:1200px;margin:0 auto;">
+
+    <div class="pkg-tabs" id="pkgTabs">
+      <button class="ptab on" id="tab-buyer" onclick="setPT('buyer',this)">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
         GCC Buyers
       </button>
-      <button class="ptab" onclick="setPT('seller',this)">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;vertical-align:-2px;"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+      <button class="ptab" id="tab-seller" onclick="setPT('seller',this)">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
         EU / US / Asia Sellers
       </button>
-      <button class="ptab" onclick="setPT('ads',this)">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;vertical-align:-2px;"><path d="M22 2L11 13"/><path d="M22 2L15 22 11 13 2 9l20-7z"/></svg>
+      <button class="ptab" id="tab-ads" onclick="setPT('ads',this)">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2L15 22 11 13 2 9l20-7z"/></svg>
         Ads &amp; Sponsorship
       </button>
     </div>
+
     <div class="ppanel on" id="pp-buyer">
       <div class="pkg-grid">
         <div class="pkg-card"><div class="pkg-tier">Starter</div><div class="pkg-name">Free</div><div class="pkg-price">€0<sub>/mo</sub></div><div class="pkg-line">Get discovered by EU &amp; US suppliers at no cost.</div><div class="pkg-div"></div><ul class="pkg-feats"><li><span class="fi-y">✓</span>Company profile in directory</li><li><span class="fi-y">✓</span>2 trade requests per month</li><li><span class="fi-y">✓</span>WhatsApp &amp; email contact</li><li><span class="fi-y">✓</span>Browse supplier directory</li><li class="dim"><span class="fi-n">–</span>Featured search placement</li><li class="dim"><span class="fi-n">–</span>Email alerts to suppliers</li><li class="dim"><span class="fi-n">–</span>Unlimited requests</li></ul><button class="pkg-btn pb-o" onclick="stripeCheckout('gcc-free')">Get Started</button></div>
@@ -100,7 +111,10 @@
       </div>
     </div>
   </div>
+
+  </div>
 </section>
+
 <section class="cta-band">
   <p class="ey">No platform fees. No commission.</p>
   <h2>Gulf trade, simplified.</h2>
@@ -141,7 +155,9 @@
       </a>
     </div>
   </div>
-</footer><div class="mo" id="mo-auth">
+</footer>
+
+<div class="mo" id="mo-auth">
   <div class="mo-box" style="max-width:420px;">
     <button class="mo-x" onclick="closeMo('mo-auth')">×</button>
     <div style="display:flex;gap:0;margin-bottom:20px;border-radius:4px;overflow:hidden;border:1.5px solid var(--mist);">
@@ -248,7 +264,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 });
-</script><script>
+</script>
+
+<script>
 function tog(id,btn){
   const p=document.getElementById(id),isOpen=p&&p.classList.contains('open');
   document.querySelectorAll('.nav-drop').forEach(x=>x.classList.remove('open'));
@@ -265,36 +283,83 @@ function openMo(id){const el=document.getElementById(id);if(el)el.classList.add(
 function closeMo(id){const el=document.getElementById(id);if(el)el.classList.remove('open');}
 document.addEventListener('click',e=>{if(e.target.classList.contains('mo'))e.target.classList.remove('open');});
 </script>
+
 <script>
-function setPT(id,btn){
-  document.querySelectorAll('.ptab').forEach(b=>b.classList.remove('on'));
-  document.querySelectorAll('.ppanel').forEach(p=>p.classList.remove('on'));
-  btn.classList.add('on');document.getElementById('pp-'+id).classList.add('on');
+function setPT(id, btn) {
+  // Remove active from all tabs
+  document.querySelectorAll('.ptab').forEach(b => b.classList.remove('on'));
+  // Hide all panels
+  document.querySelectorAll('.ppanel').forEach(p => p.classList.remove('on'));
+  // Activate clicked tab
+  btn.classList.add('on');
+  // Show selected panel
+  const panel = document.getElementById('pp-' + id);
+  if(panel) panel.classList.add('on');
 }
-const STRIPE_LINKS={
-  'gcc-free':null,'gcc-pro':'https://buy.stripe.com/YOUR_GCC_PRO','gcc-premium':'https://buy.stripe.com/YOUR_GCC_PREMIUM','gcc-corp':null,
-  'eu-free':null,'eu-pro':'https://buy.stripe.com/YOUR_EU_PRO','eu-premium':'https://buy.stripe.com/YOUR_EU_MARKET','eu-corp':null,
+
+const STRIPE_LINKS = {
+  'gcc-free': null,
+  'gcc-pro': 'https://buy.stripe.com/YOUR_GCC_PRO',
+  'gcc-premium': 'https://buy.stripe.com/YOUR_GCC_PREMIUM',
+  'gcc-corp': null,
+  'eu-free': null,
+  'eu-pro': 'https://buy.stripe.com/YOUR_EU_PRO',
+  'eu-market': 'https://buy.stripe.com/YOUR_EU_MARKET',
+  'eu-corp': null,
 };
-function stripeCheckout(id){
-  const l=STRIPE_LINKS[id];
-  if(l&&!l.includes('YOUR_'))window.open(l,'_blank');
-  else if(!l)window.location.href='register.html';
-  else alert('Stripe Payment Link not yet configured. Add your link to STRIPE_LINKS.');
+
+function stripeCheckout(id) {
+  const l = STRIPE_LINKS[id];
+  if(l && !l.includes('YOUR_')) window.open(l, '_blank');
+  else if(!l) window.location.href = 'register.html';
+  else alert('Stripe link not yet configured. Add your Stripe Payment Link to STRIPE_LINKS in packages.html.');
 }
-// Jump to ads section if #ads in URL
-if(window.location.hash==='#ads'){
-  document.querySelector('[onclick*="ads"]')?.click();
+
+function switchAuth(tab) {
+  document.getElementById('auth-login').style.display = tab === 'login' ? 'block' : 'none';
+  document.getElementById('auth-register').style.display = tab === 'reg' ? 'block' : 'none';
+  ['login','reg'].forEach(t => {
+    document.getElementById('auth-tab-'+t).style.background = tab===t ? 'var(--teal)' : 'var(--white)';
+    document.getElementById('auth-tab-'+t).style.color = tab===t ? '#fff' : 'var(--mid)';
+  });
 }
+function authLogin() {
+  const s = document.getElementById('auth-succ');
+  s.style.display = 'block';
+  s.textContent = 'Signing you in... Redirecting to your dashboard.';
+  setTimeout(() => window.location.href = 'portal.html', 1800);
+}
+
+// Jump to ads tab if URL has #ads
+if(window.location.hash === '#ads') {
+  setPT('ads', document.getElementById('tab-ads'));
+}
+
+// Contact modal
+function openMo(id) { const el = document.getElementById(id); if(el) el.classList.add('open'); }
+function closeMo(id) { const el = document.getElementById(id); if(el) el.classList.remove('open'); }
 </script>
+
 <div class="mo" id="mo-contact"><div class="mo-box">
-  <button class="mo-x" onclick="closeMo('mo-contact')">×</button>
+  <button class="mo-x" onclick="closeMo('mo-contact')">&#215;</button>
   <h3 class="mo-h">Get in Touch</h3>
   <p class="mo-sub">For enterprise packages, ad bookings, and custom arrangements.</p>
   <div class="fg"><label>Name &amp; Company</label><input type="text" placeholder="Your name + company"></div>
-  <div class="fg"><label>Email</label><input type="email" placeholder="info@gulftradeportal.com"></div>
-  <div class="fg"><label>Interested in</label><select><option>Enterprise Buyer Package</option><option>Enterprise Seller Package</option><option>Trade Board Ad</option><option>Category Sponsorship</option><option>Homepage Banner</option><option>Annual Package</option><option>Other</option></select></div>
-  <div class="fg"><label>Message</label><textarea style="font-family:Inter,sans-serif;font-size:.85rem;border:1.5px solid var(--mist);border-radius:4px;padding:9px;width:100%;outline:none;resize:vertical;min-height:72px;" placeholder="Tell us what you need…"></textarea></div>
-  <button class="btn-next" style="width:100%;" onclick="document.getElementById('ct-succ').style.display='block';setTimeout(()=>closeMo('mo-contact'),2500)">Send Enquiry →</button>
-  <div id="ct-succ" class="succ">✓ Thanks! We will reply within 1 business day.</div>
+  <div class="fg"><label>Email</label><input type="email" placeholder="email@company.com"></div>
+  <div class="fg"><label>Interested in</label>
+    <select>
+      <option>Enterprise Buyer Package</option>
+      <option>Enterprise Seller Package</option>
+      <option>Trade Board Ad — &euro;99/mo</option>
+      <option>Category Sponsorship — &euro;249/mo</option>
+      <option>Homepage Banner — &euro;499/mo</option>
+      <option>Annual Package — &euro;3,999/yr</option>
+    </select>
+  </div>
+  <div class="fg"><label>Message</label><textarea style="font-family:Inter,sans-serif;font-size:.85rem;border:1.5px solid var(--mist);border-radius:4px;padding:9px;width:100%;outline:none;resize:vertical;min-height:72px;" placeholder="Tell us what you need..."></textarea></div>
+  <button class="btn-next" style="width:100%;" onclick="document.getElementById('ct-succ').style.display='block';setTimeout(()=>closeMo('mo-contact'),2500)">Send Enquiry &rarr;</button>
+  <div id="ct-succ" class="succ">&#10003; Thanks! We will reply within 1 business day.</div>
 </div></div>
-</body></html>
+
+</body>
+</html>
