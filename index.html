@@ -145,16 +145,9 @@
   }
 
   // Check if user visited before — skip intro after first time
-  const SKIP_KEY = 'gtp_intro_seen';
-  const seen = sessionStorage.getItem(SKIP_KEY);
-
-  if(seen) {
-    // Returning visit this session — skip straight to site
-    document.getElementById('gtp-intro').style.display = 'none';
-  } else {
-    sessionStorage.setItem(SKIP_KEY, '1');
-    setTimeout(()=>runStep(0), 1950);
-  }
+  // Clear any old session flags and always play intro
+  sessionStorage.removeItem('gtp_intro_seen');
+  setTimeout(()=>runStep(0), 1950);
 
   window.giLaunch = function(){
     const intro=document.getElementById('gtp-intro');
