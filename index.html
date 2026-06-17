@@ -9,6 +9,25 @@
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="shared.css">
 <style>
+.gate-overlay-home{
+  position:absolute;inset:0;
+  background:linear-gradient(to bottom, transparent 30%, rgba(253,252,250,0.97) 70%);
+  z-index:10;display:flex;flex-direction:column;
+  align-items:center;justify-content:flex-end;
+  padding-bottom:20px;text-align:center;
+}
+.bc-body{position:relative;}
+.bc.blurred .bc-title{filter:blur(5px);user-select:none;}
+.bc.blurred .bc-co strong{filter:blur(4px);user-select:none;}
+.bc.blurred .bc-desc{filter:blur(3px);user-select:none;}
+.gate-home-cta{
+  background:var(--gold);color:var(--ink);
+  font-family:Inter,sans-serif;font-size:.77rem;font-weight:700;
+  padding:9px 20px;border-radius:4px;text-decoration:none;
+  box-shadow:0 4px 16px rgba(200,146,42,.3);
+}
+</style>
+<style>
 #gtp-intro{position:fixed;inset:0;z-index:9999;background:#0C0B09;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;}
 #gtp-intro::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 50%,rgba(10,115,105,.09) 0%,transparent 70%),radial-gradient(ellipse 40% 40% at 20% 80%,rgba(200,146,42,.04) 0%,transparent 60%);pointer-events:none;}
 .gi-inner{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;text-align:center;}
@@ -445,11 +464,7 @@
 })();
 </script>
 
-<div class="topbar">
-  <div class="tb-left">
-    <span>🌍 UAE · KSA · Kuwait · Qatar · Oman · Bahrain ↔ EU · USA · Asia</span>
-    <span><span class="live-dot"></span>128 active trade requests</span>
-  </div>
+
   <div class="tb-right"><a href="register.html">Register</a><a href="portal.html">Client Portal</a><a href="#">Help</a></div>
 </div>
 
@@ -526,11 +541,89 @@
         </div>
       </div>
     </div>
-    <div class="hfeed">
-      <div class="fhd"><span class="fhd-t">Live Trade Activity</span><span class="fhd-live"><span class="live-dot"></span>Live</span></div>
-      <div id="liveFeed"></div>
-      <div class="ffoot"><a href="trade-board.html">View all 128 active requests →</a></div>
+    <div style="position:relative;border-radius:10px;overflow:hidden;background:linear-gradient(140deg,#0A0A0A 0%,#111 50%,#0A0A0A 100%);border:1px solid rgba(200,146,42,0.25);box-shadow:0 8px 40px rgba(0,0,0,0.4);">
+
+  <!-- LASER SCAN LINE ANIMATION -->
+  <style>
+  @keyframes laserScan{0%{top:-2px;opacity:0;}10%{opacity:1;}90%{opacity:1;}100%{top:100%;opacity:0;}}
+  @keyframes pulseGold{0%,100%{box-shadow:0 0 10px rgba(200,146,42,.3);}50%{box-shadow:0 0 28px rgba(200,146,42,.7),0 0 50px rgba(200,146,42,.2);}}
+  @keyframes floatCap{0%,100%{transform:translateY(0) rotate(-4deg);}50%{transform:translateY(-8px) rotate(-4deg);}}
+  @keyframes shimmer{0%{background-position:-200% 0;}100%{background-position:200% 0;}}
+  @keyframes fadeInAd{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+  .ad-laser{position:absolute;left:0;right:0;height:1.5px;background:linear-gradient(90deg,transparent,rgba(200,146,42,.8),rgba(232,184,75,1),rgba(200,146,42,.8),transparent);animation:laserScan 3.5s ease-in-out infinite;z-index:5;pointer-events:none;}
+  .ad-cap-float{animation:floatCap 3s ease-in-out infinite;}
+  .ad-shimmer{background:linear-gradient(90deg,transparent 25%,rgba(255,255,255,.06) 50%,transparent 75%);background-size:200% 100%;animation:shimmer 2.5s infinite;}
+  .ad-badge-pulse{animation:pulseGold 2s ease-in-out infinite;}
+  </style>
+
+  <!-- Laser scan line -->
+  <div class="ad-laser"></div>
+
+  <!-- Corner accent lines -->
+  <div style="position:absolute;top:0;left:0;width:28px;height:28px;border-top:2px solid var(--gold);border-left:2px solid var(--gold);border-radius:2px 0 0 0;z-index:4;"></div>
+  <div style="position:absolute;top:0;right:0;width:28px;height:28px;border-top:2px solid var(--gold);border-right:2px solid var(--gold);border-radius:0 2px 0 0;z-index:4;"></div>
+  <div style="position:absolute;bottom:0;left:0;width:28px;height:28px;border-bottom:2px solid var(--gold);border-left:2px solid var(--gold);border-radius:0 0 0 2px;z-index:4;"></div>
+  <div style="position:absolute;bottom:0;right:0;width:28px;height:28px;border-bottom:2px solid var(--gold);border-right:2px solid var(--gold);border-radius:0 0 2px 0;z-index:4;"></div>
+
+  <!-- Sponsored badge -->
+  <div style="position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:6;">
+    <span class="ad-badge-pulse" style="background:rgba(200,146,42,.15);border:1px solid rgba(200,146,42,.4);color:var(--gold-lt);font-family:Inter,sans-serif;font-size:.58rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:3px 10px;border-radius:20px;display:block;white-space:nowrap;">&#11088; Featured Partner</span>
+  </div>
+
+  <!-- Background glow -->
+  <div style="position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 50% 40%,rgba(200,146,42,.06) 0%,transparent 70%);pointer-events:none;z-index:1;"></div>
+
+  <!-- Content -->
+  <div style="position:relative;z-index:3;padding:32px 22px 22px;animation:fadeInAd .8s ease forwards .4s;opacity:0;">
+
+    <!-- Logo & brand -->
+    <div style="text-align:center;margin-bottom:18px;">
+      <div style="font-family:Cairo,sans-serif;font-size:.72rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:6px;">Official Wholesale Distributor</div>
+      <div style="font-family:Cairo,sans-serif;font-size:1.3rem;font-weight:900;color:#fff;letter-spacing:.02em;line-height:1.1;">B&amp;F Global<br><span style="color:var(--gold);">Solutions</span> B.V.</div>
+      <div style="font-size:.67rem;color:rgba(255,255,255,.3);letter-spacing:.1em;text-transform:uppercase;margin-top:4px;">Dordrecht, Netherlands · EU</div>
     </div>
+
+    <!-- Product visual -->
+    
+
+    <!-- Product name -->
+    <div style="text-align:center;margin-bottom:14px;">
+      <div style="font-family:Cairo,sans-serif;font-size:1.05rem;font-weight:700;color:#fff;margin-bottom:4px;">Nespresso Original Line</div>
+      <div style="font-size:.72rem;color:rgba(255,255,255,.45);letter-spacing:.06em;">ALL VARIETIES · EU ORIGIN · HALAL</div>
+    </div>
+
+    <!-- Shimmer divider -->
+    <div class="ad-shimmer" style="height:1px;margin:0 -22px 14px;"></div>
+
+    <!-- Key selling points -->
+    <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:16px;">
+      <div style="display:flex;align-items:center;gap:8px;font-size:.74rem;color:rgba(255,255,255,.7);">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        Genuine Nespresso OL capsules — full range
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;font-size:.74rem;color:rgba(255,255,255,.7);">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        B2B wholesale from Netherlands · Min. 1,000 sleeves
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;font-size:.74rem;color:rgba(255,255,255,.7);">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        EU origin docs · CIF Dubai · GCC experience
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;font-size:.74rem;color:rgba(255,255,255,.7);">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        UAE · KSA · Kuwait · Qatar supply chain ready
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <a href="mailto:trade@gulftradeportal.com?subject=Nespresso OL Capsules Enquiry — B%26F Global" style="display:block;text-align:center;background:linear-gradient(135deg,var(--gold),var(--gold-lt));color:var(--ink);font-family:Inter,sans-serif;font-size:.8rem;font-weight:700;padding:11px 16px;border-radius:5px;text-decoration:none;letter-spacing:.02em;transition:opacity .2s;" onmouseover="this.style.opacity='.88'" onmouseout="this.style.opacity='1'">
+      Request Wholesale Quote &rarr;
+    </a>
+
+    <!-- Footer note -->
+    <div style="text-align:center;margin-top:10px;font-size:.62rem;color:rgba(255,255,255,.18);letter-spacing:.06em;text-transform:uppercase;">Verified Partner · KVK 96822945</div>
+  </div>
+</div></div>
   </div>
   <div class="stats-strip">
     <div class="stats-inner">
@@ -674,9 +767,18 @@
       </div>
       <div class="foot-col"><h4>For Buyers</h4><a href="#">Post Import Request</a><a href="trade-board.html">Browse Export Offers</a><a href="directory.html">Supplier Directory</a><a href="packages.html">Buyer Packages</a><a href="portal.html">Client Portal</a></div>
       <div class="foot-col"><h4>For Sellers</h4><a href="trade-board.html">Browse Buy Requests</a><a href="#">Post Export Offer</a><a href="register.html">Register as Supplier</a><a href="packages.html">Seller Packages</a><a href="packages.html">Advertise</a></div>
-      <div class="foot-col"><h4>GCC Markets</h4><a href="#">UAE</a><a href="#">Saudi Arabia</a><a href="#" style="color:#2A2A2A;">Kuwait (soon)</a><a href="#" style="color:#2A2A2A;">Qatar (soon)</a><a href="#" style="color:#2A2A2A;">Oman (soon)</a><a href="#" style="color:#2A2A2A;">Bahrain (soon)</a></div>
-      <div class="foot-col"><h4>Supplier Regions</h4><a href="#">🇪🇺 Europe</a><a href="#">🇺🇸 United States</a><a href="#">🌏 Asia</a><a href="#">🇨🇳 China</a><a href="#">🇮🇳 India</a><a href="#">🇲🇾 Malaysia</a><a href="#" style="color:#2A2A2A;">🇸🇬 Singapore (soon)</a></div>
-      <div class="foot-col"><h4>Company</h4><a href="#">About Us</a><a href="#">How It Works</a><a href="packages.html">Pricing</a><a href="#">Contact</a><a href="#">Privacy Policy</a></div>
+      <div class="foot-col"><h4>GCC Markets</h4><a href="#">UAE</a><a href="#">Saudi Arabia</a><a href="#" >Kuwait</a><a href="#" >Qatar</a><a href="#" >Oman</a><a href="#" >Bahrain</a></div>
+      <div class="foot-col"><h4>Supplier Regions</h4><a href="#">🇪🇺 Europe</a><a href="#">🇺🇸 United States</a><a href="#">🌏 Asia</a><a href="#">🇨🇳 China</a><a href="#">🇮🇳 India</a><a href="#">🇲🇾 Malaysia</a><a href="#" >🇸🇬 Singapore</a></div>
+      <div class="foot-col" style="grid-column:1/-1;">
+  <h4>Company</h4>
+  <div style="display:flex;flex-wrap:wrap;gap:6px 24px;">
+    <a href="#">About Us</a>
+    <a href="#">How It Works</a>
+    <a href="packages.html">Pricing</a>
+    <a href="mailto:info@gulftradeportal.com">Contact</a>
+    <a href="#">Privacy Policy</a>
+  </div>
+</div>
     </div>
     <div class="foot-bot">
       <p>© 2025 Gulf Trade Portal. All rights reserved. Registered in the Netherlands.</p>
@@ -844,28 +946,47 @@ const BOARD_HOME=[
 (function(){
   const g=document.getElementById('homeBoard');
   if(!g)return;
-  g.innerHTML=BOARD_HOME.map(c=>`
-    <div class="bc ${c.t==='ad'?'ad':''}" style="cursor:pointer;" onclick="window.location.href='trade-board.html'">
+  // Free users: cards 0,1 visible; card 1 (ad/sponsored) company blurred; cards 2+ blurred
+  g.innerHTML=BOARD_HOME.map((item,idx)=>{
+    const isAd      = item.t==='ad';
+    const isUrgent  = item.urg;
+    const blurAll   = idx > 1 && !isAd;   // full blur on cards 3+
+    const blurCo    = isAd || isUrgent;    // only company blurred on sponsored/urgent
+
+    return `
+    <div class="bc ${isAd?'ad':''}" style="cursor:pointer;position:relative;overflow:hidden;" onclick="window.location.href='trade-board.html'">
       <div class="bc-hd">
         <div class="bc-badges">
-          ${c.t==='ad'?'<span class="bdg b-a">&#11088; Sponsored</span>':''}
-          ${c.t==='import'?'<span class="bdg b-i">Import Wanted</span>':''}
-          ${c.t==='export'?'<span class="bdg b-e">Export Available</span>':''}
-          ${c.urg?'<span class="bdg b-u">Urgent</span>':''}
+          ${isAd?'<span class="bdg b-a">&#11088; Sponsored</span>':''}
+          ${item.t==='import'?'<span class="bdg b-i">Import Wanted</span>':''}
+          ${item.t==='export'?'<span class="bdg b-e">Export Available</span>':''}
+          ${isUrgent?'<span class="bdg b-u">Urgent</span>':''}
         </div>
-        <span class="bc-time">${c.posted}</span>
+        <span class="bc-time">${item.posted}</span>
       </div>
-      <div class="bc-body">
-        <div class="bc-title">${c.title}</div>
-        <div class="bc-meta"><span>&#128205; ${c.c}</span><span>&#128230; ${c.qty}</span></div>
-        <div class="bc-seek"><strong>Seeking</strong>${c.seek}</div>
-        <div class="bc-desc">${c.desc}</div>
+      <div class="bc-body" style="position:relative;">
+        <div class="bc-title" style="${blurAll?'filter:blur(5px);user-select:none;':''}">${blurAll?'&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;':item.title}</div>
+        <div class="bc-meta"><span>&#128205; ${item.c}</span><span>&#128230; ${item.qty}</span></div>
+        <div class="bc-seek" style="${blurAll?'filter:blur(4px);user-select:none;':''}"><strong>Seeking</strong>${blurAll?'&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;':item.seek}</div>
+        <div class="bc-desc" style="${blurAll?'filter:blur(3px);user-select:none;':''}">${blurAll?'&#9608;&#9608;&#9608;&#9608; &#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608; &#9608;&#9608;&#9608;&#9608;&#9608; &#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;.':item.desc}</div>
+        ${blurAll ? `
+        <div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(253,252,250,0) 0%,rgba(253,252,250,0.97) 55%);display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding-bottom:14px;gap:6px;">
+          <div style="display:flex;align-items:center;gap:5px;font-size:.77rem;font-weight:600;color:var(--ink);">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            Members only
+          </div>
+          <div style="display:flex;gap:7px;">
+            <a href="register.html" onclick="event.stopPropagation()" style="background:var(--teal);color:#fff;font-family:Inter,sans-serif;font-size:.72rem;font-weight:700;padding:6px 13px;border-radius:4px;text-decoration:none;">Register Free</a>
+            <a href="packages.html" onclick="event.stopPropagation()" style="background:var(--gold);color:var(--ink);font-family:Inter,sans-serif;font-size:.72rem;font-weight:700;padding:6px 13px;border-radius:4px;text-decoration:none;">Upgrade</a>
+          </div>
+        </div>` : ''}
       </div>
       <div class="bc-ft">
-        <span class="bc-co"><strong>${c.co}</strong></span>
+        <span class="bc-co"><strong style="${blurCo||blurAll?'filter:blur(5px);user-select:none;':''}">${blurCo||blurAll?'&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608; &#9608;&#9608;&#9608;&#9608;':item.co}</strong></span>
         <a href="trade-board.html" class="bx bx-t" onclick="event.stopPropagation()">View &rarr;</a>
       </div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 })();
 </script>
 

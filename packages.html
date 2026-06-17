@@ -9,11 +9,7 @@
 <link rel="stylesheet" href="shared.css">
 
 </head>
-<body><div class="topbar">
-  <div class="tb-left">
-    <span>🌍 UAE · KSA · Kuwait · Qatar · Oman · Bahrain ↔ EU · USA · Asia</span>
-    <span><span class="live-dot"></span>128 active trade requests</span>
-  </div>
+<body>
   <div class="tb-right"><a href="register.html">Register</a><a href="portal.html">Client Portal</a><a href="#">Help</a></div>
 </div>
 
@@ -65,9 +61,18 @@
   <div class="sec-inner">
     <div class="sec-hd"><p class="ey">Pricing &amp; packages</p><h2 class="sech">Choose your plan</h2><p class="secsub">Free to join. Upgrade for more visibility, leads, and Gulf market access.</p></div>
     <div class="pkg-tabs">
-      <button class="ptab on" onclick="setPT('buyer',this)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg> GCC Buyers</button>
-      <button class="ptab" onclick="setPT('seller',this)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg> EU/US Sellers</button>
-      <button class="ptab" onclick="setPT('ads',this)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2L15 22 11 13 2 9l20-7z"/></svg> Ads &amp; Sponsorship</button>
+      <button class="ptab on" onclick="setPT('buyer',this)">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;vertical-align:-2px;"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+        GCC Buyers
+      </button>
+      <button class="ptab" onclick="setPT('seller',this)">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;vertical-align:-2px;"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+        EU / US / Asia Sellers
+      </button>
+      <button class="ptab" onclick="setPT('ads',this)">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;vertical-align:-2px;"><path d="M22 2L11 13"/><path d="M22 2L15 22 11 13 2 9l20-7z"/></svg>
+        Ads &amp; Sponsorship
+      </button>
     </div>
     <div class="ppanel on" id="pp-buyer">
       <div class="pkg-grid">
@@ -115,9 +120,18 @@
       </div>
       <div class="foot-col"><h4>For Buyers</h4><a href="#">Post Import Request</a><a href="trade-board.html">Browse Export Offers</a><a href="directory.html">Supplier Directory</a><a href="packages.html">Buyer Packages</a><a href="portal.html">Client Portal</a></div>
       <div class="foot-col"><h4>For Sellers</h4><a href="trade-board.html">Browse Buy Requests</a><a href="#">Post Export Offer</a><a href="register.html">Register as Supplier</a><a href="packages.html">Seller Packages</a><a href="packages.html">Advertise</a></div>
-      <div class="foot-col"><h4>GCC Markets</h4><a href="#">UAE</a><a href="#">Saudi Arabia</a><a href="#" style="color:#2A2A2A;">Kuwait (soon)</a><a href="#" style="color:#2A2A2A;">Qatar (soon)</a><a href="#" style="color:#2A2A2A;">Oman (soon)</a><a href="#" style="color:#2A2A2A;">Bahrain (soon)</a></div>
-      <div class="foot-col"><h4>Supplier Regions</h4><a href="#">🇪🇺 Europe</a><a href="#">🇺🇸 United States</a><a href="#">🌏 Asia</a><a href="#">🇨🇳 China</a><a href="#">🇮🇳 India</a><a href="#">🇲🇾 Malaysia</a><a href="#" style="color:#2A2A2A;">🇸🇬 Singapore (soon)</a></div>
-      <div class="foot-col"><h4>Company</h4><a href="#">About Us</a><a href="#">How It Works</a><a href="packages.html">Pricing</a><a href="#">Contact</a><a href="#">Privacy Policy</a></div>
+      <div class="foot-col"><h4>GCC Markets</h4><a href="#">UAE</a><a href="#">Saudi Arabia</a><a href="#" >Kuwait</a><a href="#" >Qatar</a><a href="#" >Oman</a><a href="#" >Bahrain</a></div>
+      <div class="foot-col"><h4>Supplier Regions</h4><a href="#">🇪🇺 Europe</a><a href="#">🇺🇸 United States</a><a href="#">🌏 Asia</a><a href="#">🇨🇳 China</a><a href="#">🇮🇳 India</a><a href="#">🇲🇾 Malaysia</a><a href="#" >🇸🇬 Singapore</a></div>
+      <div class="foot-col" style="grid-column:1/-1;">
+  <h4>Company</h4>
+  <div style="display:flex;flex-wrap:wrap;gap:6px 24px;">
+    <a href="#">About Us</a>
+    <a href="#">How It Works</a>
+    <a href="packages.html">Pricing</a>
+    <a href="mailto:info@gulftradeportal.com">Contact</a>
+    <a href="#">Privacy Policy</a>
+  </div>
+</div>
     </div>
     <div class="foot-bot">
       <p>© 2025 Gulf Trade Portal. All rights reserved. Registered in the Netherlands.</p>

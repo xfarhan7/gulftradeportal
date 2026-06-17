@@ -7,13 +7,72 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="shared.css">
+<style>
+/* ── MEMBERSHIP GATING ──────────────────── */
+.gated{position:relative;overflow:hidden;}
+.gated.blurred .bc-title,.gated.blurred .bc-co,.gated.blurred .bc-seek{
+  filter:blur(5px);user-select:none;pointer-events:none;
+}
+.gated.blurred .bc-desc{filter:blur(3px);user-select:none;}
+.gate-overlay{
+  display:none;position:absolute;inset:0;
+  background:rgba(253,252,250,0.82);
+  backdrop-filter:blur(1px);
+  z-index:10;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  gap:8px;padding:16px;text-align:center;
+}
+.gated.blurred .gate-overlay{display:flex;}
+.gate-lock{
+  width:36px;height:36px;background:var(--teal);
+  border-radius:50%;display:flex;align-items:center;
+  justify-content:center;margin-bottom:4px;
+}
+.gate-msg{font-size:.78rem;font-weight:600;color:var(--ink);line-height:1.4;}
+.gate-sub{font-size:.71rem;color:var(--mid);}
+.gate-cta{
+  background:var(--gold);color:var(--ink);
+  font-family:Inter,sans-serif;font-size:.75rem;font-weight:700;
+  padding:7px 16px;border-radius:4px;text-decoration:none;
+  margin-top:4px;display:inline-block;
+}
+
+/* ── PHOTO UPLOAD ON LEAD FORM ──────────── */
+.photo-upload-row{
+  display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;
+}
+.photo-thumb{
+  width:64px;height:64px;border-radius:5px;
+  border:1.5px solid var(--mist);
+  object-fit:cover;display:flex;align-items:center;
+  justify-content:center;background:var(--sand);
+  font-size:.6rem;color:var(--mid);text-align:center;
+  cursor:pointer;overflow:hidden;position:relative;
+}
+.photo-thumb img{width:100%;height:100%;object-fit:cover;}
+.photo-add{
+  width:64px;height:64px;border-radius:5px;
+  border:1.5px dashed var(--mist);
+  display:flex;flex-direction:column;align-items:center;
+  justify-content:center;cursor:pointer;
+  transition:border-color .2s,background .2s;
+  background:var(--white);gap:4px;
+}
+.photo-add:hover{border-color:var(--teal);background:var(--teal-pale);}
+.photo-add svg{opacity:.4;}
+.photo-add span{font-size:.6rem;color:var(--mid);}
+.lead-photo-preview{
+  display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;
+}
+.lead-photo-img{
+  width:52px;height:52px;border-radius:4px;
+  object-fit:cover;border:1px solid var(--mist);
+}
+</style>
 
 </head>
-<body><div class="topbar">
-  <div class="tb-left">
-    <span>🌍 UAE · KSA · Kuwait · Qatar · Oman · Bahrain ↔ EU · USA · Asia</span>
-    <span><span class="live-dot"></span>128 active trade requests</span>
-  </div>
+<body>
   <div class="tb-right"><a href="register.html">Register</a><a href="portal.html">Client Portal</a><a href="#">Help</a></div>
 </div>
 
@@ -96,9 +155,18 @@
       </div>
       <div class="foot-col"><h4>For Buyers</h4><a href="#">Post Import Request</a><a href="trade-board.html">Browse Export Offers</a><a href="directory.html">Supplier Directory</a><a href="packages.html">Buyer Packages</a><a href="portal.html">Client Portal</a></div>
       <div class="foot-col"><h4>For Sellers</h4><a href="trade-board.html">Browse Buy Requests</a><a href="#">Post Export Offer</a><a href="register.html">Register as Supplier</a><a href="packages.html">Seller Packages</a><a href="packages.html">Advertise</a></div>
-      <div class="foot-col"><h4>GCC Markets</h4><a href="#">UAE</a><a href="#">Saudi Arabia</a><a href="#" style="color:#2A2A2A;">Kuwait (soon)</a><a href="#" style="color:#2A2A2A;">Qatar (soon)</a><a href="#" style="color:#2A2A2A;">Oman (soon)</a><a href="#" style="color:#2A2A2A;">Bahrain (soon)</a></div>
-      <div class="foot-col"><h4>Supplier Regions</h4><a href="#">🇪🇺 Europe</a><a href="#">🇺🇸 United States</a><a href="#">🌏 Asia</a><a href="#">🇨🇳 China</a><a href="#">🇮🇳 India</a><a href="#">🇲🇾 Malaysia</a><a href="#" style="color:#2A2A2A;">🇸🇬 Singapore (soon)</a></div>
-      <div class="foot-col"><h4>Company</h4><a href="#">About Us</a><a href="#">How It Works</a><a href="packages.html">Pricing</a><a href="#">Contact</a><a href="#">Privacy Policy</a></div>
+      <div class="foot-col"><h4>GCC Markets</h4><a href="#">UAE</a><a href="#">Saudi Arabia</a><a href="#" >Kuwait</a><a href="#" >Qatar</a><a href="#" >Oman</a><a href="#" >Bahrain</a></div>
+      <div class="foot-col"><h4>Supplier Regions</h4><a href="#">🇪🇺 Europe</a><a href="#">🇺🇸 United States</a><a href="#">🌏 Asia</a><a href="#">🇨🇳 China</a><a href="#">🇮🇳 India</a><a href="#">🇲🇾 Malaysia</a><a href="#" >🇸🇬 Singapore</a></div>
+      <div class="foot-col" style="grid-column:1/-1;">
+  <h4>Company</h4>
+  <div style="display:flex;flex-wrap:wrap;gap:6px 24px;">
+    <a href="#">About Us</a>
+    <a href="#">How It Works</a>
+    <a href="packages.html">Pricing</a>
+    <a href="mailto:info@gulftradeportal.com">Contact</a>
+    <a href="#">Privacy Policy</a>
+  </div>
+</div>
     </div>
     <div class="foot-bot">
       <p>© 2025 Gulf Trade Portal. All rights reserved. Registered in the Netherlands.</p>
@@ -340,30 +408,79 @@ function init(){
   renderCos(COS);
 }
 function renderBoard(filter){
-  const data=filter==='all'?BOARD:filter==='urgent'?BOARD.filter(c=>c.urg):BOARD.filter(c=>c.t===filter||c.t==='ad');
-  document.getElementById('boardGrid').innerHTML=data.map(c=>`
-    <div class="bc ${c.t==='ad'?'ad':''}" onclick="${c.t!=='ad'?"openMo('mo-resp')":''}">
+  const userPlan = localStorage.getItem('gtp_plan') || 'free';
+  const isPro    = ['pro','premium','market_entry'].includes(userPlan);
+
+  const data = filter==='all' ? BOARD :
+    filter==='urgent' ? BOARD.filter(x=>x.urg) :
+    BOARD.filter(x=>x.t===filter||x.t==='ad');
+
+  let regularCount = 0;
+
+  document.getElementById('boardGrid').innerHTML = data.map(x => {
+    // Count non-ad cards to decide blur
+    if(x.t !== 'ad') regularCount++;
+    
+    // Blur rules:
+    // - Ad/sponsored cards: always show card content, but blur company name & contact for free users
+    // - Urgent cards: blur company & contact for free users  
+    // - Regular cards 1-2: always fully visible
+    // - Regular cards 3+: blur everything for free users
+    const isAd      = x.t === 'ad';
+    const isUrgent  = x.urg;
+    const isEarly   = !isAd && regularCount <= 2;
+
+    // What gets blurred
+    const blurAll     = !isPro && !isAd && !isEarly;  // blur whole card
+    const blurContact = !isPro && (isAd || isUrgent);  // blur only company+contact
+
+    return `
+    <div class="bc ${isAd?'ad':''}" style="cursor:pointer;position:relative;" 
+         onclick="${!blurAll && x.t!=='ad' ? "openMo('mo-resp')" : ''}">
       <div class="bc-hd">
         <div class="bc-badges">
-          ${c.t==='ad'?'<span class="bdg b-a">⭐ Sponsored</span>':''}
-          ${c.t==='import'?'<span class="bdg b-i">Import Wanted</span>':''}
-          ${c.t==='export'?'<span class="bdg b-e">Export Available</span>':''}
-          ${c.urg?'<span class="bdg b-u">Urgent</span>':''}
+          ${isAd?'<span class="bdg b-a">&#11088; Sponsored</span>':''}
+          ${x.t==='import'?'<span class="bdg b-i">Import Wanted</span>':''}
+          ${x.t==='export'?'<span class="bdg b-e">Export Available</span>':''}
+          ${isUrgent?'<span class="bdg b-u">Urgent</span>':''}
         </div>
-        <span class="bc-time">${c.posted}</span>
+        <span class="bc-time">${x.posted}</span>
       </div>
-      <div class="bc-body">
-        <div class="bc-title">${c.title}</div>
-        <div class="bc-meta"><span>📍 ${c.c}</span><span>📦 ${c.qty}</span><span>🏷 ${c.sec}</span></div>
-        <div class="bc-seek"><strong>Seeking</strong>${c.seek}</div>
-        <div class="bc-desc">${c.desc}</div>
+      <div class="bc-body" style="position:relative;">
+        <div class="bc-title" style="${blurAll?'filter:blur(5px);user-select:none;':''}">${blurAll?'████████████████████':x.title}</div>
+        <div class="bc-meta">
+          <span>&#128205; ${x.c}</span>
+          <span>&#128230; ${x.qty}</span>
+          <span>&#127991; ${x.sec}</span>
+        </div>
+        <div class="bc-seek" style="${blurAll?'filter:blur(3px);user-select:none;':''}">${blurAll?'<strong>Seeking</strong>████████████':('<strong>Seeking</strong>'+x.seek)}</div>
+        <div class="bc-desc" style="${blurAll?'filter:blur(3px);user-select:none;':''}">${blurAll?'████ ████████ ████ ██████ ████ ████████ ████.':x.desc}</div>
+        ${blurAll ? `
+        <div class="gate-overlay">
+          <div class="gate-lock">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          </div>
+          <div class="gate-msg">Members only</div>
+          <div class="gate-sub">Register or upgrade to see full details &amp; respond</div>
+          <div style="display:flex;gap:8px;margin-top:6px;">
+            <a href="register.html" class="gate-cta" style="background:var(--teal);color:#fff;font-family:Inter,sans-serif;font-size:.72rem;font-weight:700;padding:7px 14px;border-radius:4px;text-decoration:none;">Register Free</a>
+            <a href="packages.html" class="gate-cta" style="background:var(--gold);color:var(--ink);font-family:Inter,sans-serif;font-size:.72rem;font-weight:700;padding:7px 14px;border-radius:4px;text-decoration:none;">Upgrade</a>
+          </div>
+        </div>` : ''}
       </div>
       <div class="bc-ft">
-        <span class="bc-co"><strong>${c.co}</strong></span>
-        <button class="bx bx-t" onclick="event.stopPropagation();openMo('mo-resp')">${c.t==='ad'?'Contact →':'Respond'}</button>
+        <span class="bc-co">
+          <strong style="${blurContact||blurAll?'filter:blur(4px);user-select:none;':''}">${blurContact||blurAll?'████████ ████':x.co}</strong>
+        </span>
+        ${!blurAll ? `
+          <button class="bx bx-t" onclick="event.stopPropagation();${blurContact?'openMo(\'mo-register\')':'openMo(\'mo-resp\')'}">${isAd?'Contact &rarr;':'Respond'}</button>
+        ` : ''}
       </div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 }
+
+
 function setBF(f,btn){
   document.querySelectorAll('#bfbar .fbtn').forEach(b=>b.classList.remove('on'));
   btn.classList.add('on');renderBoard(f);
@@ -520,5 +637,51 @@ function setBF(f,btn){
   btn.classList.add('on');renderBoard(f);
 }
 renderBoard('all');
+
+// ── PHOTO UPLOAD ────────────────────────────────────────────
+const uploadedPhotos = [];
+function addPhotos(input) {
+  const files = Array.from(input.files).slice(0, 3 - uploadedPhotos.length);
+  files.forEach(file => {
+    if(uploadedPhotos.length >= 3) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      uploadedPhotos.push(e.target.result);
+      renderPhotoRow();
+    };
+    reader.readAsDataURL(file);
+  });
+  input.value = '';
+}
+function renderPhotoRow() {
+  const row = document.getElementById('photoRow');
+  if(!row) return;
+  row.innerHTML = uploadedPhotos.map((src,i) => `
+    <div class="photo-thumb" style="position:relative;">
+      <img src="${src}" style="width:100%;height:100%;object-fit:cover;border-radius:4px;">
+      <button onclick="removePhoto(${i})" style="position:absolute;top:2px;right:2px;background:rgba(0,0,0,.6);border:none;color:#fff;border-radius:50%;width:16px;height:16px;font-size:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;">&#215;</button>
+    </div>`).join('') +
+  (uploadedPhotos.length < 3 ? `
+    <div class="photo-add" onclick="document.getElementById('photoInput').click()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+      <span>Add photo</span>
+    </div>` : '');
+}
+function removePhoto(idx) {
+  uploadedPhotos.splice(idx, 1);
+  renderPhotoRow();
+}
+
 </script>
+
+<div class="mo" id="mo-register"><div class="mo-box" style="max-width:400px;text-align:center;">
+  <button class="mo-x" onclick="closeMo('mo-register')">&#215;</button>
+  <div style="width:48px;height:48px;background:var(--teal-pale);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+  </div>
+  <h3 class="mo-h">Members Only</h3>
+  <p class="mo-sub">Register for free or upgrade to a paid plan to see full company details and contact verified suppliers and advertisers.</p>
+  <a href="register.html" class="btn-next" style="display:block;width:100%;text-align:center;margin-bottom:8px;text-decoration:none;">Register Free &rarr;</a>
+  <a href="packages.html" style="display:block;font-size:.81rem;color:var(--teal);font-weight:600;text-decoration:none;">View paid plans &rarr;</a>
+</div></div>
 </body></html>
