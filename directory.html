@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Company Directory — Gulf Trade Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
+
+</head>
+<body><div class="topbar">
+  <div class="tb-left">
+    <span>🌍 UAE · KSA · Kuwait · Qatar · Oman · Bahrain ↔ EU · USA · Asia</span>
+    <span><span class="live-dot"></span>128 active trade requests</span>
+  </div>
+  <div class="tb-right"><a href="#register">Register</a><a href="#portal">Client Portal</a><a href="#">Help</a></div>
+</div>
+
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">Gulf <span>Trade</span> Portal</a>
+    <div class="nav-item">
+      <button class="nav-trigger" onclick="tog('db',this)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg> Buyers <svg width="10" height="6" fill="none" viewBox="0 0 10 6"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+      <div class="nav-drop" id="db">
+        <div class="drop-hd">For Buyers — Post what you need, receive supplier responses</div>
+        <a class="drop-link" href="#" onclick="openMo('mo-rfq');return false;"><span class="dl-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></span><span><span class="dl-title">Post Import Request</span><span class="dl-desc">Tell suppliers what you need to buy or import</span></span></a>
+        <a class="drop-link" href="#trade-board"><span class="dl-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span><span><span class="dl-title">Browse Sell Offers</span><span class="dl-desc">See what EU/US exporters have available now</span></span></a>
+        <a class="drop-link" href="#directory"><span class="dl-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></span><span><span class="dl-title">Supplier Directory</span><span class="dl-desc">Browse verified EU & US exporters by sector</span></span></a>
+        <a class="drop-link" href="#packages"><span class="dl-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></span><span><span class="dl-title">Buyer Packages</span><span class="dl-desc">Free to paid — upgrade for more visibility</span></span></a>
+        <a class="drop-link" href="#portal"><span class="dl-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></span><span><span class="dl-title">Client Portal</span><span class="dl-desc">Manage requests and supplier responses</span></span></a>
+        <a class="drop-link" href="#register"><span class="dl-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span><span class="dl-title">Register as Buyer</span><span class="dl-desc">Free GCC company listing</span></span></a>
+      </div>
+    </div>
+    <div class="nav-item">
+      <button class="nav-trigger" onclick="tog('ds',this)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg> Sellers <svg width="10" height="6" fill="none" viewBox="0 0 10 6"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+      <div class="nav-drop" id="ds">
+        <div class="drop-hd">For Sellers & Exporters — Reach verified GCC buyers</div>
+        <a class="drop-link" href="#trade-board"><span class="dl-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span><span><span class="dl-title">Browse Buy Requests</span><span class="dl-desc">Live import demand from UAE, KSA, and GCC</span></span></a>
+        <a class="drop-link" href="#" onclick="openMo('mo-rfq');return false;"><span class="dl-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2L15 22 11 13 2 9l20-7z"/></svg></span><span><span class="dl-title">Post Export Offer</span><span class="dl-desc">Advertise what you have to export to GCC</span></span></a>
+        <a class="drop-link" href="#register"><span class="dl-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span><span class="dl-title">Register as Supplier</span><span class="dl-desc">Get listed in the GCC supplier directory</span></span></a>
+        <a class="drop-link" href="#packages"><span class="dl-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12H3a9 9 0 0 0 9 9v-2a7 7 0 0 1-7-7z"/><path d="M12 3v2a7 7 0 0 1 7 7h2a9 9 0 0 0-9-9z"/><path d="M12 12l-3 7 3-3 3 3-3-7z"/></svg></span><span><span class="dl-title">Seller Packages</span><span class="dl-desc">Respond to requests, get matched, grow exports</span></span></a>
+        <a class="drop-link" href="#packages"><span class="dl-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg></span><span><span class="dl-title">Homepage Ad Slots</span><span class="dl-desc">Put your brand in front of every portal visitor</span></span></a>
+        <a class="drop-link" href="#portal"><span class="dl-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></span><span><span class="dl-title">Client Portal</span><span class="dl-desc">Track leads and manage your listings</span></span></a>
+      </div>
+    </div>
+    <a href="#trade-board" class="nav-trigger"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg> Trade Board</a>
+    <a href="#directory" class="nav-trigger"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Directory</a>
+    <a href="#packages" class="nav-trigger"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> Packages</a>
+    <div class="nav-right">
+      <a href="#" class="btn-nav btn-ghost" onclick="openMo('mo-auth');return false;">Sign In</a>
+      <a href="#register" class="btn-nav btn-teal">Register</a>
+      <a href="#" class="btn-nav btn-gold" onclick="openMo('mo-rfq');return false;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Post Request</a>
+    </div>
+  </div>
+</nav>
+<div style="background:var(--teal-dk);padding:36px 32px 32px;">
+  <div style="max-width:1200px;margin:0 auto;">
+    <p style="font-size:.67rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.45);font-weight:600;margin-bottom:8px;">Verified companies</p>
+    <h1 style="font-family:Cairo,sans-serif;font-size:2rem;font-weight:700;color:#fff;margin-bottom:8px;">Company Directory</h1>
+    <p style="color:rgba(255,255,255,.6);font-size:.92rem;max-width:540px;line-height:1.7;">428 verified importers, exporters, and suppliers across GCC, Europe, USA, and Asia.</p>
+  </div>
+</div>
+<section class="sec" style="background:var(--white);">
+  <div class="sec-inner" style="max-width:1200px;margin:0 auto;">
+    <div class="srow">
+      <input type="text" id="dsearch" placeholder="Search name, product, keyword…" oninput="filterDir()">
+      <select id="dreg" onchange="filterDir()"><option value="">All Regions</option><option value="GCC">GCC</option><option value="EU">Europe</option><option value="US">USA</option><option value="ASIA">Asia</option></select>
+      <select id="dsec" onchange="filterDir()"><option value="">All Sectors</option><option>FMCG</option><option>Food &amp; Beverages</option><option>Construction</option><option>Electronics</option><option>Chemicals</option><option>Textiles</option><option>Machinery</option><option>Healthcare</option></select>
+      <button onclick="filterDir()">Search</button>
+    </div>
+    <div class="fbar" id="dfbar">
+      <button class="fbtn on" onclick="setDR('all',this)">All</button>
+      <button class="fbtn" onclick="setDR('GCC',this)">🌍 GCC</button>
+      <button class="fbtn" onclick="setDR('EU',this)">🇪🇺 Europe</button>
+      <button class="fbtn" onclick="setDR('US',this)">🇺🇸 USA</button>
+      <button class="fbtn" onclick="setDR('ASIA',this)">🌏 Asia</button>
+    </div>
+    <div class="co-grid" id="coGrid"></div>
+    <div id="noRes" style="display:none;text-align:center;padding:44px;color:var(--mid);"><div style="font-size:2rem;margin-bottom:9px;">🔍</div><p>No companies found. <a href="register.html" style="color:var(--teal);">Register yours</a>.</p></div>
+  </div>
+</section>
+<section class="cta-band">
+  <p class="ey">No platform fees. No commission.</p>
+  <h2>Gulf trade, simplified.</h2>
+  <p>Free to join for GCC importers, European exporters, and US suppliers. Connect directly, trade confidently.</p>
+  <div class="cta-btns">
+    <a href="#register" class="btn-hp btn-hp-g">Register Your Company Free</a>
+    <a href="#trade-board" class="btn-hp btn-hp-o">Browse Live Trade Requests</a>
+  </div>
+</section>
+
+<footer>
+  <div class="foot-inner">
+    <div class="foot-top">
+      <div class="foot-brand">
+        <span class="nav-logo">Gulf <span>Trade</span> Portal</span>
+        <p>Cross-border trade matchmaking between the GCC, Europe, and the USA. Connecting importers, exporters, and suppliers since 2025.</p>
+      </div>
+      <div class="foot-col"><h4>For Buyers</h4><a href="#">Post Import Request</a><a href="#trade-board">Browse Export Offers</a><a href="#directory">Supplier Directory</a><a href="#packages">Buyer Packages</a><a href="#portal">Client Portal</a></div>
+      <div class="foot-col"><h4>For Sellers</h4><a href="#trade-board">Browse Buy Requests</a><a href="#">Post Export Offer</a><a href="#register">Register as Supplier</a><a href="#packages">Seller Packages</a><a href="#packages">Advertise</a></div>
+      <div class="foot-col"><h4>GCC Markets</h4><a href="#">UAE</a><a href="#">Saudi Arabia</a><a href="#" style="color:#2A2A2A;">Kuwait (soon)</a><a href="#" style="color:#2A2A2A;">Qatar (soon)</a><a href="#" style="color:#2A2A2A;">Oman (soon)</a><a href="#" style="color:#2A2A2A;">Bahrain (soon)</a></div>
+      <div class="foot-col"><h4>Supplier Regions</h4><a href="#">🇪🇺 Europe</a><a href="#">🇺🇸 United States</a><a href="#">🌏 Asia</a><a href="#">🇨🇳 China</a><a href="#">🇮🇳 India</a><a href="#">🇲🇾 Malaysia</a><a href="#" style="color:#2A2A2A;">🇸🇬 Singapore (soon)</a></div>
+      <div class="foot-col"><h4>Company</h4><a href="#">About Us</a><a href="#">How It Works</a><a href="#packages">Pricing</a><a href="#">Contact</a><a href="#">Privacy Policy</a></div>
+    </div>
+    <div class="foot-bot">
+      <p>© 2025 Gulf Trade Portal. All rights reserved. Registered in the Netherlands.</p>
+      <a class="foot-wa" href="https://wa.me/" target="_blank">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        WhatsApp
+      </a>
+    </div>
+  </div>
+</footer><div class="mo" id="mo-auth">
+  <div class="mo-box" style="max-width:420px;">
+    <button class="mo-x" onclick="closeMo('mo-auth')">×</button>
+    <div style="display:flex;gap:0;margin-bottom:20px;border-radius:4px;overflow:hidden;border:1.5px solid var(--mist);">
+      <button id="auth-tab-login" style="flex:1;padding:9px;font-family:Inter,sans-serif;font-size:.8rem;font-weight:600;border:none;cursor:pointer;background:var(--teal);color:#fff;transition:background .15s;" onclick="switchAuth('login')">Sign In</button>
+      <button id="auth-tab-reg" style="flex:1;padding:9px;font-family:Inter,sans-serif;font-size:.8rem;font-weight:600;border:none;cursor:pointer;background:var(--white);color:var(--mid);transition:background .15s;" onclick="switchAuth('reg')">Create Account</button>
+    </div>
+    <div id="auth-login">
+      <div class="fg"><label>Email Address</label><input type="email" id="auth-email" placeholder="trade@gulftradeportal.com" autocomplete="email"></div>
+      <div class="fg"><label>Password</label><input type="password" id="auth-pass" placeholder="Your password" autocomplete="current-password"></div>
+      <button class="btn-next" style="width:100%;margin-bottom:10px;" onclick="authLogin()">Sign In to Portal →</button>
+      <p style="font-size:.75rem;text-align:center;color:var(--mid);">Forgot your password? <a href="#" style="color:var(--teal);">Reset it</a></p>
+      <div style="margin:16px 0;display:flex;align-items:center;gap:10px;"><div style="flex:1;height:1px;background:var(--mist);"></div><span style="font-size:.72rem;color:var(--mid);">or continue with</span><div style="flex:1;height:1px;background:var(--mist);"></div></div>
+      <button style="width:100%;padding:9px;font-family:Inter,sans-serif;font-size:.8rem;font-weight:500;border:1.5px solid var(--mist);border-radius:4px;background:var(--white);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;" onclick="alert('Google SSO — connect via Supabase Auth in production.')">
+        <svg width="14" height="14" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        Continue with Google
+      </button>
+    </div>
+    <div id="auth-register" style="display:none;">
+      <div class="fr2" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div class="fg"><label>First Name</label><input type="text" placeholder="Mohammed"></div>
+        <div class="fg"><label>Last Name</label><input type="text" placeholder="Al Rashid"></div>
+      </div>
+      <div class="fg"><label>Email Address</label><input type="email" placeholder="trade@gulftradeportal.com"></div>
+      <div class="fg"><label>Password</label><input type="password" placeholder="Min. 8 characters"></div>
+      <div class="fg"><label>Company Name</label><input type="text" placeholder="Your company"></div>
+      <button class="btn-next" style="width:100%;margin-bottom:10px;" onclick="authReg()">Create Account &amp; Access Portal →</button>
+      <p style="font-size:.73rem;color:var(--mid);text-align:center;line-height:1.5;">By creating an account you agree to our <a href="#" style="color:var(--teal);">Terms of Service</a> and <a href="#" style="color:var(--teal);">Privacy Policy</a>.</p>
+    </div>
+    <div id="auth-succ" class="succ"></div>
+    <div style="margin-top:16px;padding:12px 14px;background:var(--sand);border-radius:4px;font-size:.75rem;color:var(--mid);line-height:1.55;">
+      <strong style="color:var(--ink);display:block;margin-bottom:3px;">🔒 Secure client portal</strong>
+      Your account gives you access to your trade request dashboard, supplier responses, subscription management, and invoices.
+    </div>
+  </div>
+</div>
+
+<script>
+// ── AUTH ───────────────────────────────────────────────────
+function switchAuth(tab) {
+  document.getElementById('auth-login').style.display = tab==='login'?'block':'none';
+  document.getElementById('auth-register').style.display = tab==='reg'?'block':'none';
+  document.getElementById('auth-tab-login').style.background = tab==='login'?'var(--teal)':'var(--white)';
+  document.getElementById('auth-tab-login').style.color = tab==='login'?'#fff':'var(--mid)';
+  document.getElementById('auth-tab-reg').style.background = tab==='reg'?'var(--teal)':'var(--white)';
+  document.getElementById('auth-tab-reg').style.color = tab==='reg'?'#fff':'var(--mid)';
+}
+function authLogin() {
+  const e = document.getElementById('auth-email').value.trim();
+  if (!e) { alert('Please enter your email.'); return; }
+  const s = document.getElementById('auth-succ');
+  s.style.display = 'block';
+  s.textContent = '✓ Signing you in… In production this connects to Supabase Auth. Redirecting to your dashboard.';
+  setTimeout(() => closeMo('mo-auth'), 2800);
+}
+function authReg() {
+  const s = document.getElementById('auth-succ');
+  s.style.display = 'block';
+  s.textContent = '✓ Account created! Check your email to verify, then access your client portal dashboard.';
+  setTimeout(() => closeMo('mo-auth'), 2800);
+}
+
+// ── STRIPE PAYMENT LINKS ───────────────────────────────────
+// Replace these with real Stripe Payment Link URLs from your Stripe Dashboard
+// Create products at: dashboard.stripe.com/products
+const STRIPE_LINKS = {
+  'gcc-free':   null, // free — goes straight to register
+  'gcc-pro':    'https://buy.stripe.com/YOUR_GCC_PRO_LINK',
+  'gcc-premium':'https://buy.stripe.com/YOUR_GCC_PREMIUM_LINK',
+  'gcc-corp':   null, // contact sales
+  'eu-free':    null,
+  'eu-pro':     'https://buy.stripe.com/YOUR_EU_PRO_LINK',
+  'eu-premium': 'https://buy.stripe.com/YOUR_EU_PREMIUM_LINK',
+  'eu-corp':    null,
+  'ads-board':  'https://buy.stripe.com/YOUR_AD_BOARD_LINK',
+  'ads-cat':    'https://buy.stripe.com/YOUR_AD_CAT_LINK',
+  'ads-banner': 'https://buy.stripe.com/YOUR_AD_BANNER_LINK',
+  'ads-annual': 'https://buy.stripe.com/YOUR_AD_ANNUAL_LINK',
+};
+
+function stripeCheckout(planId) {
+  const link = STRIPE_LINKS[planId];
+  if (link && !link.includes('YOUR_')) {
+    window.open(link, '_blank');
+  } else if (!link) {
+    // Free plan — scroll to register
+    document.getElementById('register').scrollIntoView({ behavior: 'smooth' });
+  } else {
+    // Placeholder — show instructions
+    showStripeInfo();
+  }
+}
+
+function showStripeInfo() {
+  const info = document.getElementById('stripe-info');
+  info.style.display = info.style.display === 'none' ? 'block' : 'none';
+}
+
+// Override Sign In nav link to open auth modal
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('a[href="#portal"]').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      openMo('mo-auth');
+    });
+  });
+});
+</script><script>
+function tog(id,btn){
+  const p=document.getElementById(id),isOpen=p&&p.classList.contains('open');
+  document.querySelectorAll('.nav-drop').forEach(x=>x.classList.remove('open'));
+  document.querySelectorAll('.nav-trigger').forEach(x=>x.classList.remove('open'));
+  if(!isOpen&&p){p.classList.add('open');btn.classList.add('open');}
+}
+document.addEventListener('click',e=>{
+  if(!e.target.closest('.nav-item')){
+    document.querySelectorAll('.nav-drop').forEach(x=>x.classList.remove('open'));
+    document.querySelectorAll('.nav-trigger').forEach(x=>x.classList.remove('open'));
+  }
+});
+function openMo(id){const el=document.getElementById(id);if(el)el.classList.add('open');}
+function closeMo(id){const el=document.getElementById(id);if(el)el.classList.remove('open');}
+document.addEventListener('click',e=>{if(e.target.classList.contains('mo'))e.target.classList.remove('open');});
+</script>
+<script>
+
+const GCC=['UAE','Saudi Arabia','Kuwait','Qatar','Oman','Bahrain'];
+const FEED=[
+  {t:'import',title:'Nespresso OL Capsules — 50K sleeves/mo',c:'UAE',time:'2m ago'},
+  {t:'export',title:'Premium Dutch Cheese — 10MT available',c:'Netherlands',time:'8m ago'},
+  {t:'import',title:'Halal Frozen Chicken — 50MT CIF Jeddah',c:'Saudi Arabia',time:'15m ago'},
+  {t:'ad',title:'Dutch Food Export BV — Dairy &amp; FMCG to GCC',c:'Netherlands',time:'Sponsored'},
+  {t:'export',title:'Grade 60 Steel Rebar — 500MT available',c:'Germany',time:'32m ago'},
+  {t:'import',title:'Organic Olive Oil — 20,000L/month',c:'Kuwait',time:'1h ago'},
+  {t:'import',title:'Industrial Control Panels — 200/qtr',c:'UAE',time:'2h ago'},
+  {t:'export',title:'UK Specialty Chemicals — IPA, Acetone',c:'United Kingdom',time:'3h ago'},
+  {t:'import',title:'Basmati Rice 1121 — 200MT bulk India origin',c:'UAE',time:'4h ago'},
+  {t:'export',title:'JAKIM Halal Coconut Oil — 50MT Malaysia',c:'Malaysia',time:'5h ago'},
+];
+const BOARD=[
+  {t:'import',title:'Nespresso Original Line Capsules — All Varieties',c:'UAE',qty:'50,000 sleeves/month',sec:'FMCG',seek:'EU wholesale distributor with origin documentation',desc:'Seeking verified wholesale supplier. EU origin docs required. CIF Dubai preferred. Ongoing monthly.',posted:'2h ago',urg:true,co:'Al Noor Trading Co.'},
+  {t:'ad',title:'Dutch Food Export B.V. — Premium Dairy &amp; FMCG to GCC',c:'Netherlands',qty:'Min. 1MT per SKU',sec:'Food &amp; Beverages',seek:'UAE, Saudi Arabia, Kuwait distributors',desc:'Established Dutch FMCG exporter. HALAL certified dairy, coffee, packaged goods. 15 years GCC experience. Request our full catalogue.',posted:'Sponsored',urg:false,co:'Dutch Food Export BV'},
+  {t:'import',title:'Halal Frozen Chicken — IQF Whole &amp; Cuts',c:'Saudi Arabia',qty:'50MT first order',sec:'Food &amp; Beverages',seek:'EU or US SFDA-approved Halal poultry supplier',desc:'SFDA-registered importer. Ongoing monthly requirement. CIF Jeddah or Dammam preferred.',posted:'5h ago',urg:true,co:'Riyadh General Trading'},
+  {t:'export',title:'Grade 60 Steel Rebar — 12mm to 25mm',c:'Germany',qty:'500MT available',sec:'Construction',seek:'UAE or GCC construction importer',desc:'German manufacturer with surplus stock. CE certified. FOB Hamburg or CIF Jebel Ali.',posted:'Yesterday',urg:false,co:'German Metals GmbH'},
+  {t:'import',title:'Organic Extra Virgin Olive Oil — Retail &amp; Bulk',c:'Kuwait',qty:'20,000 litres/month',sec:'Food &amp; Beverages',seek:'Spanish, Italian, or Greek EVOO producer',desc:'Certified organic EVOO for retail repackaging and food service in Kuwait. Private label welcome.',posted:'Yesterday',urg:false,co:'Gulf Premium Foods'},
+  {t:'export',title:'Premium Medjool Dates — Export Grade',c:'Saudi Arabia',qty:'10MT per month',sec:'Food &amp; Beverages',seek:'EU importer or specialty food distributor',desc:'GlobalGAP certified, export packaged. Targeting Netherlands, Germany, UK importers.',posted:'2 days ago',urg:false,co:'Arabian Dates Trading'},
+  {t:'import',title:'Pharmaceutical API — GMP Certified Raw Materials',c:'Saudi Arabia',qty:'Various SKUs',sec:'Healthcare',seek:'EU GMP-certified API manufacturer',desc:'SFDA-registered importer seeking GMP API suppliers. Molecule list on request.',posted:'3 days ago',urg:false,co:'Gulf Pharma Distribution'},
+  {t:'import',title:'Industrial Electrical Control Panels',c:'UAE',qty:'200 units/quarter',sec:'Machinery',seek:'German or EU industrial equipment manufacturer',desc:'CE-certified panels for oil &amp; gas clients. Full specs on request.',posted:'4 days ago',urg:false,co:'Emirates Industrial Supply'},
+  {t:'export',title:'Basmati Rice 1121 Long Grain — Premium Grade',c:'India',qty:'200 MT per shipment',sec:'Food &amp; Beverages',seek:'UAE or KSA bulk food importer / distributor',desc:'Premium 1121 basmati from Punjab. APEDA certified, Halal compliant. FOB Mundra or CIF Jebel Ali. Competitive pricing for full lots.',posted:'4h ago',urg:false,co:'India Spice &amp; Agri Exports'},
+  {t:'export',title:'JAKIM Halal Certified Coconut Oil — RBD &amp; Virgin',c:'Malaysia',qty:'50 MT / month',sec:'Food &amp; Beverages',seek:'GCC food manufacturer or FMCG importer',desc:'JAKIM-certified Halal coconut oil from Sabah. Both RBD and virgin grades. Private label available. CIF UAE or Dammam.',posted:'5h ago',urg:false,co:'Halal Foods Malaysia Sdn Bhd'},
+  {t:'import',title:'Korean Industrial Precision Machinery — CNC Systems',c:'Saudi Arabia',qty:'12 units',sec:'Machinery',seek:'Korean or Japanese precision machinery manufacturer',desc:'Vision 2030 manufacturing plant requires CNC machining systems. Korean or Japanese brands preferred. Financing options welcome.',posted:'6h ago',urg:false,co:'Saudi Industrial Development Co.'},
+];
+const COS=[
+  {n:'Al Noor Trading Co.',r:'GCC',c:'UAE',s:'FMCG',tags:['Importer','Distributor','FMCG'],d:'Wholesale FMCG importer supplying hypermarkets and cooperatives across Dubai and Abu Dhabi.',v:true},
+  {n:'Dutch Food Export BV',r:'EU',c:'Netherlands',s:'Food & Beverages',tags:['Exporter','Dairy','FMCG','Halal'],d:'Dutch FMCG and dairy exporter. 15 years GCC distribution. HALAL certified.',v:true},
+  {n:'Riyadh General Trading',r:'GCC',c:'Saudi Arabia',s:'Food & Beverages',tags:['Importer','Food Distributor'],d:'One of Riyadh largest food importers. Coffee, dairy, frozen goods, packaged consumer products.',v:true},
+  {n:'German Metals GmbH',r:'EU',c:'Germany',s:'Construction',tags:['Manufacturer','Exporter','Steel'],d:'German steel manufacturer exporting structural rebar, coils, and plates to GCC construction sector.',v:true},
+  {n:'B&F Global Solutions BV',r:'EU',c:'Netherlands',s:'FMCG',tags:['Wholesaler','Coffee','FMCG Exporter'],d:'Dutch B2B wholesale distributor of Nespresso Original Line capsules and FMCG products for GCC.',v:true},
+  {n:'Gulf Construction Supply',r:'GCC',c:'UAE',s:'Construction',tags:['Importer','Exporter','Steel'],d:'UAE supplier of structural steel and building materials to contractors across UAE and Oman.',v:true},
+  {n:'UK Chemicals Ltd',r:'EU',c:'United Kingdom',s:'Chemicals',tags:['Manufacturer','Exporter'],d:'UK specialty chemicals manufacturer. Industrial solvents and cleaning chemicals for GCC.',v:true},
+  {n:'Pharma Gulf Distribution',r:'GCC',c:'UAE',s:'Healthcare',tags:['Distributor','Pharma'],d:'Licensed pharmaceutical distributor in Dubai. Hospitals, pharmacies, and clinics across GCC.',v:true},
+  {n:'American Agri Exports',r:'US',c:'United States',s:'Food & Beverages',tags:['Exporter','Agri','Grains'],d:'US agricultural exporter specialising in grains, pulses, and processed food for GCC.',v:false},
+  {n:'Arabian Coffee Traders',r:'GCC',c:'Saudi Arabia',s:'Food & Beverages',tags:['Importer','Coffee','Wholesale'],d:'Official channel for premium coffee brands in KSA. Hotels, cafes, food service distributors.',v:true},
+  {n:'Halal Foods Malaysia Sdn Bhd',r:'ASIA',c:'Malaysia',s:'Food & Beverages',tags:['Exporter','Halal','JAKIM Certified'],d:'JAKIM-certified Halal food manufacturer and exporter. Palm oil derivatives, processed food, halal snacks. Established UAE and KSA distribution.',v:true},
+  {n:'Shanghai General Trading Co.',r:'ASIA',c:'China',s:'Electronics',tags:['Manufacturer','Exporter','Electronics'],d:'Major Chinese electronics and consumer goods manufacturer. CE certified products. Established GCC distribution through Jebel Ali FTZ.',v:true},
+  {n:'India Spice & Agri Exports',r:'ASIA',c:'India',s:'Food & Beverages',tags:['Exporter','Agri','Spices','Rice'],d:'Leading Indian exporter of Basmati rice, spices, pulses, and agri products to GCC. UAE-India CEPA certified, Halal compliant.',v:true},
+  {n:'Singapore Trade Hub Pte Ltd',r:'ASIA',c:'Singapore',s:'FMCG',tags:['Trader','Distributor','Multi-category'],d:'Singapore-based multi-category FMCG trader. Regional hub for Southeast Asian goods entering GCC via Jebel Ali. ISO 9001 certified.',v:false},
+  {n:'Korean Industrial Group',r:'ASIA',c:'South Korea',s:'Machinery',tags:['Manufacturer','Exporter','Industrial'],d:'South Korean industrial machinery and equipment manufacturer. CE and KS certified. Active in UAE construction and manufacturing sectors.',v:true},
+  {n:'PT Indo Halal Foods',r:'ASIA',c:'Indonesia',s:'Food & Beverages',tags:['Exporter','Halal','MUI Certified'],d:'Indonesian MUI-certified halal food and palm oil exporter. Coconut products, processed seafood, and packaged foods for GCC retail.',v:true},
+  {n:'Thai Export Alliance Co.',r:'ASIA',c:'Thailand',s:'Food & Beverages',tags:['Exporter','Manufacturer','Canned Foods'],d:'Thai food manufacturer and exporter. Canned seafood, rice, processed foods. Established GCC trade lane through Dubai distributor network.',v:false},
+  {n:'Japan Machinery & Tech KK',r:'ASIA',c:'Japan',s:'Machinery',tags:['Manufacturer','Exporter','Precision Engineering'],d:'Japanese precision machinery and industrial equipment manufacturer. Supplying UAE oil & gas and manufacturing sectors since 2010.',v:true},
+];
+const PKGS={
+  gcc:[
+    {id:'gf',n:'Free',p:'€0',note:'forever',pop:false,feats:['Company profile in directory','2 trade requests/month','WhatsApp & email contact','Browse supplier directory','– Featured search','– Verified badge','– Email alerts to suppliers']},
+    {id:'gp',n:'Pro Importer',p:'€59',note:'/mo',pop:true,feats:['Everything in Free','Unlimited trade requests','Verified badge on profile','Featured in category search','Email blast to matching suppliers','Urgent flag on requests','Client portal access']},
+    {id:'gpr',n:'Premium',p:'€179',note:'/mo',pop:false,feats:['Everything in Pro','Homepage featured slot','Top of search results','Dedicated account manager','WhatsApp broadcast to suppliers','Quarterly trade report','Intro to top 3 suppliers']},
+    {id:'gc',n:'Corporate',p:'Custom',note:'',pop:false,feats:['Multi-user accounts','White-label portal page','Custom sector pages','CRM/ERP integration','SLA-backed support','Arabic interface','Annual Gulf market report']},
+  ],
+  eu:[
+    {id:'ef',n:'Free Supplier',p:'€0',note:'forever',pop:false,feats:['Profile in directory','GCC buyers can contact you','Browse trade board (view only)','– Respond to requests','– Email demand alerts','– Post export offers']},
+    {id:'ep',n:'Pro Exporter',p:'€89',note:'/mo',pop:true,feats:['Everything in Free','Respond to unlimited requests','Post unlimited export offers','Weekly GCC demand digest','Verified EU/US badge','Featured in sector directory','Client portal access']},
+    {id:'epr',n:'Market Entry',p:'€269',note:'/mo',pop:false,feats:['Everything in Pro','Homepage featured slot','Dedicated GCC account manager','Priority buyer matching','Intro to top 3 buyers','Quarterly GCC intelligence','Arabic profile translation']},
+    {id:'ec',n:'Corporate',p:'Custom',note:'',pop:false,feats:['All Market Entry features','Multi-user accounts','Category sponsorship','Trade show support','NDA-protected intros','CRM/ERP data export','Annual Gulf market report']},
+  ]
+};
+let selPkg=null;
+
+function init(){
+  document.getElementById('liveFeed').innerHTML=FEED.map(f=>`
+    <div class="fi">
+      <div class="fi-r1">
+        <span class="fitag ${f.t==='import'?'ft-i':f.t==='export'?'ft-e':'ft-a'}">${f.t==='import'?'Import':f.t==='export'?'Export':'Ad'}</span>
+        <span class="fi-time">${f.time}</span>
+      </div>
+      <div class="fi-title">${f.title}</div>
+      <div class="fi-co">📍 ${f.c}</div>
+    </div>`).join('');
+  renderBoard('all');
+  renderCos(COS);
+}
+function renderBoard(filter){
+  const data=filter==='all'?BOARD:filter==='urgent'?BOARD.filter(c=>c.urg):BOARD.filter(c=>c.t===filter||c.t==='ad');
+  document.getElementById('boardGrid').innerHTML=data.map(c=>`
+    <div class="bc ${c.t==='ad'?'ad':''}" onclick="${c.t!=='ad'?"openMo('mo-resp')":''}">
+      <div class="bc-hd">
+        <div class="bc-badges">
+          ${c.t==='ad'?'<span class="bdg b-a">⭐ Sponsored</span>':''}
+          ${c.t==='import'?'<span class="bdg b-i">Import Wanted</span>':''}
+          ${c.t==='export'?'<span class="bdg b-e">Export Available</span>':''}
+          ${c.urg?'<span class="bdg b-u">Urgent</span>':''}
+        </div>
+        <span class="bc-time">${c.posted}</span>
+      </div>
+      <div class="bc-body">
+        <div class="bc-title">${c.title}</div>
+        <div class="bc-meta"><span>📍 ${c.c}</span><span>📦 ${c.qty}</span><span>🏷 ${c.sec}</span></div>
+        <div class="bc-seek"><strong>Seeking</strong>${c.seek}</div>
+        <div class="bc-desc">${c.desc}</div>
+      </div>
+      <div class="bc-ft">
+        <span class="bc-co"><strong>${c.co}</strong></span>
+        <button class="bx bx-t" onclick="event.stopPropagation();openMo('mo-resp')">${c.t==='ad'?'Contact →':'Respond'}</button>
+      </div>
+    </div>`).join('');
+}
+function setBF(f,btn){
+  document.querySelectorAll('#bfbar .fbtn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');renderBoard(f);
+}
+function setReg(r,el){
+  document.querySelectorAll('.rflag').forEach(e=>e.classList.remove('on'));
+  el.classList.add('on');
+  const data=r==='all'?BOARD:BOARD.filter(c=>c.c===r||c.t==='ad');
+  document.getElementById('boardGrid').innerHTML=data.map(c=>`
+    <div class="bc ${c.t==='ad'?'ad':''}">
+      <div class="bc-hd"><div class="bc-badges">${c.t==='ad'?'<span class="bdg b-a">⭐ Sponsored</span>':''}${c.t==='import'?'<span class="bdg b-i">Import Wanted</span>':''}${c.t==='export'?'<span class="bdg b-e">Export Available</span>':''}${c.urg?'<span class="bdg b-u">Urgent</span>':''}</div><span class="bc-time">${c.posted}</span></div>
+      <div class="bc-body"><div class="bc-title">${c.title}</div><div class="bc-meta"><span>📍 ${c.c}</span><span>📦 ${c.qty}</span></div><div class="bc-seek"><strong>Seeking</strong>${c.seek}</div><div class="bc-desc">${c.desc}</div></div>
+      <div class="bc-ft"><span class="bc-co"><strong>${c.co}</strong></span><button class="bx bx-t" onclick="openMo('mo-resp')">Respond</button></div>
+    </div>`).join('');
+}
+function renderCos(data){
+  const g=document.getElementById('coGrid'),nr=document.getElementById('noRes');
+  if(!data.length){g.innerHTML='';nr.style.display='block';return;}
+  nr.style.display='none';
+  const rb={GCC:'rt-g',EU:'rt-e',US:'rt-u',ASIA:'rt-as'};
+  const rl={GCC:'🌍 GCC',EU:'🇪🇺 Europe',US:'🇺🇸 USA',ASIA:'🌏 Asia'};
+  g.innerHTML=data.map(c=>`
+    <div class="co-card">
+      <div class="co-hd"><div class="co-av">${c.n[0]}</div><span class="rtag ${rb[c.r]||'rt-g'}">${rl[c.r]||c.r}</span></div>
+      <div class="co-name">${c.n}</div>
+      <div class="co-sub">${c.s} · ${c.c}</div>
+      ${c.v?'<div class="co-ver">Verified listing</div>':''}
+      <p class="co-desc">${c.d}</p>
+      <div class="co-tags">${c.tags.map(t=>`<span class="co-tag">${t}</span>`).join('')}</div>
+      <div class="co-ft"><button class="bx bx-t">WhatsApp</button><button class="bx bx-o">Email</button></div>
+    </div>`).join('');
+}
+function filterDir(){
+  const q=document.getElementById('dsearch').value.toLowerCase();
+  const r=document.getElementById('dreg').value;
+  const s=document.getElementById('dsec').value;
+  renderCos(COS.filter(c=>{
+    const mq=!q||c.n.toLowerCase().includes(q)||c.d.toLowerCase().includes(q)||c.tags.some(t=>t.toLowerCase().includes(q));
+    const mr=!r||(r==='GCC'&&c.r==='GCC')||(r==='EU'&&c.r==='EU')||(r==='US'&&c.r==='US')||(r==='ASIA'&&c.r==='ASIA');
+    const ms=!s||c.s===s||c.s.includes(s);
+    return mq&&mr&&ms;
+  }));
+}
+function setDR(r,btn){
+  document.querySelectorAll('#dfbar .fbtn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById('dreg').value=r==='all'?'':(r==='ASIA'?'ASIA':r);
+  filterDir();
+}
+function heroTab(t){
+  document.getElementById('htb-b').className='htab htab-b'+(t==='b'?'':' off');
+  document.getElementById('htb-s').className='htab htab-s'+(t==='s'?' on':'');
+  document.getElementById('htc-b').className='htc'+(t==='b'?' on':'');
+  document.getElementById('htc-s').className='htc'+(t==='s'?' on':'');
+}
+function tog(id,btn){
+  const p=document.getElementById(id),isOpen=p.classList.contains('open');
+  document.querySelectorAll('.nav-drop').forEach(x=>x.classList.remove('open'));
+  document.querySelectorAll('.nav-trigger').forEach(x=>x.classList.remove('open'));
+  if(!isOpen){p.classList.add('open');btn.classList.add('open');}
+}
+document.addEventListener('click',e=>{
+  if(!e.target.closest('.nav-item')){
+    document.querySelectorAll('.nav-drop').forEach(x=>x.classList.remove('open'));
+    document.querySelectorAll('.nav-trigger').forEach(x=>x.classList.remove('open'));
+  }
+});
+function setPT(id,btn){
+  document.querySelectorAll('.ptab').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('.ppanel').forEach(p=>p.classList.remove('on'));
+  btn.classList.add('on');document.getElementById('pp-'+id).classList.add('on');
+}
+function onCP(){
+  const c=document.getElementById('r-country').value;
+  const ctx=document.getElementById('r-ctx');
+  const btn=document.getElementById('r-btn1');
+  if(!c){ctx.style.display='none';btn.disabled=true;return;}
+  const isG=GCC.includes(c);
+  ctx.style.display='flex';
+  ctx.className='ctx-b '+(isG?'ctx-gcc':'ctx-eu');
+  ctx.innerHTML=isG
+    ?'<span style="font-size:1.1rem">🌍</span><div><strong>GCC Company</strong>You will be registered as a GCC importer/exporter. Post trade requests visible to all EU & US suppliers. Choose your package next.</div>'
+    :'<span style="font-size:1.1rem">🌏</span><div><strong>International Supplier — EU, USA or Asia</strong>You will be listed as a verified supplier to GCC buyers. Browse live import requests and respond directly. Choose your access level next.</div>';
+  btn.disabled=false;
+}
+function regStep2(){
+  const name=document.getElementById('r-name').value.trim();
+  const country=document.getElementById('r-country').value;
+  const email=document.getElementById('r-email').value.trim();
+  if(!name||!country||!email){alert('Please fill in company name, country, and email.');return;}
+  const isG=GCC.includes(country);
+  const isAsia=['China','India','Malaysia','Singapore','Indonesia','Thailand','South Korea','Japan','Pakistan','Bangladesh','Vietnam','Philippines','Sri Lanka','Australia','New Zealand'].includes(country); const pkgs=PKGS[isG?'gcc':'eu'];
+  document.getElementById('r-pkg-ctx').innerHTML='<strong>'+name+'</strong> · '+country+(isAsia?' <span style="background:rgba(230,100,0,.1);color:#E65100;font-size:.7rem;font-weight:700;padding:2px 7px;border-radius:10px;">🌏 Asia Supplier</span>':'')+' — choose the plan that fits your trade activity. Upgrade anytime.';
+  document.getElementById('r-pkg-grid').innerHTML=pkgs.map(p=>`
+    <div class="psel ${p.pop?'pop-sel':''}" id="psel-${p.id}" onclick="pickPkg('${p.id}','${isG?'gcc':'eu'}')">
+      ${p.pop?'<div class="psel-pop">Popular</div>':''}
+      <div class="psel-name">${p.n}</div>
+      <div class="psel-price">${p.p}</div>
+      <div class="psel-note">${p.note}</div>
+      <div class="psel-feats">${p.feats.slice(0,4).map(f=>'<div style="font-size:.71rem;padding:2px 0;'+(f.startsWith('–')?'color:#AAA':'')+'">✓ '+f.replace('– ','')+'</div>').join('')}${p.feats.length>4?'<div style="font-size:.69rem;color:var(--teal);margin-top:3px;">+' +(p.feats.length-4)+' more</div>':''}</div>
+    </div>`).join('');
+  goRS(2);
+}
+function pickPkg(id,region){
+  document.querySelectorAll('.psel').forEach(e=>e.classList.remove('sel'));
+  document.getElementById('psel-'+id).classList.add('sel');
+  selPkg=PKGS[region].find(p=>p.id===id);
+  const name=document.getElementById('r-name').value.trim();
+  const country=document.getElementById('r-country').value;
+  const type=document.getElementById('r-type').value||'—';
+  const sector=document.getElementById('r-sector').value||'—';
+  const products=document.getElementById('r-products').value.trim()||'—';
+  const email=document.getElementById('r-email').value.trim();
+  document.getElementById('r-conf').innerHTML=`<h4>Registration Summary</h4>
+    <div class="cr"><span class="cr-l">Company</span><span class="cr-v">${name}</span></div>
+    <div class="cr"><span class="cr-l">Country</span><span class="cr-v">${country}</span></div>
+    <div class="cr"><span class="cr-l">Type</span><span class="cr-v">${type}</span></div>
+    <div class="cr"><span class="cr-l">Sector</span><span class="cr-v">${sector}</span></div>
+    <div class="cr"><span class="cr-l">Products</span><span class="cr-v">${products}</span></div>
+    <div class="cr"><span class="cr-l">Email</span><span class="cr-v">${email}</span></div>
+    <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--mist);">
+      <div class="cr-l" style="margin-bottom:3px;">Package</div>
+      <div style="font-weight:700;font-size:.93rem;color:var(--teal);">${selPkg.n} — ${selPkg.p}${selPkg.note?' '+selPkg.note:''}</div>
+    </div>`;
+  goRS(3);
+}
+function goRS(n){
+  ['rs1','rs2','rs3'].forEach((id,i)=>document.getElementById(id).style.display=i+1===n?'block':'none');
+  ['rd1','rd2','rd3'].forEach((id,i)=>{
+    const d=document.getElementById(id);
+    d.className='rp-dot '+(i+1<n?'done':i+1===n?'cur':'pend');
+  });
+}
+function submitReg(){
+  const s=document.getElementById('r-succ');
+  const email=document.getElementById('r-email').value.trim();
+  const isPaid=selPkg&&selPkg.p!=='€0';
+  s.style.display='block';
+  s.textContent=isPaid
+    ?'✓ Registration received! Payment instructions will be sent to '+email+' within the hour. Your listing goes live after confirmation.'
+    :'✓ Registered! Your free listing will be live within 24 hours. We will email you at '+email+' when it is published.';
+  document.querySelector('.btn-sub').disabled=true;
+}
+function openMo(id){document.getElementById(id).classList.add('open');}
+function closeMo(id){document.getElementById(id).classList.remove('open');}
+document.addEventListener('click',e=>{if(e.target.classList.contains('mo'))e.target.classList.remove('open');});
+function subRfq(){if(!document.getElementById('rfq-prod').value.trim()){alert('Enter a product name.');return;}document.getElementById('rfq-succ').style.display='block';setTimeout(()=>closeMo('mo-rfq'),2600);}
+function subResp(){if(!document.getElementById('resp-co').value.trim()){alert('Enter your company name.');return;}document.getElementById('resp-succ').style.display='block';setTimeout(()=>closeMo('mo-resp'),2600);}
+function subContact(){if(!document.getElementById('ct-email').value.trim()){alert('Please enter your email.');return;}document.getElementById('ct-succ').style.display='block';setTimeout(()=>closeMo('mo-contact'),2600);}
+init();
+
+function setDR(r,btn){
+  document.querySelectorAll('#dfbar .fbtn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById('dreg').value=r==='all'?'':r;
+  filterDir();
+}
+renderCos(COS);
+// Pre-filter from URL param
+const urlReg=new URLSearchParams(window.location.search).get('region');
+if(urlReg){document.getElementById('dreg').value=urlReg;filterDir();}
+</script>
+</body></html>

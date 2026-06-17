@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gulf Trade Portal — Client Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --teal:#0A7369;--teal-dk:#065550;--teal-lt:#0E9B8F;--teal-pale:#E6F5F3;
+  --gold:#C8922A;--gold-lt:#E8B84B;--gold-pale:#FFF8E6;
+  --sand:#F7F3EC;--sand-dk:#EDE7DA;
+  --ink:#141210;--ink2:#2C2825;--mid:#6B6460;--mist:#DDD8D0;--white:#FDFCFA;
+  --eu:#1A4FB5;--red:#C0392B;--grn:#22A05A;--grn-pale:#E8F5E9;
+  --sidebar:240px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Inter',sans-serif;background:#F0EDE8;color:var(--ink);font-size:14px;line-height:1.6;display:flex;min-height:100vh;}
+
+/* ── SIDEBAR ─────────────────────────── */
+.sidebar{width:var(--sidebar);background:var(--ink2);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100;transition:transform .25s;}
+.sb-logo{padding:22px 20px 16px;border-bottom:1px solid rgba(255,255,255,.07);}
+.sb-logo-text{font-family:'Cairo',sans-serif;font-size:1.05rem;font-weight:700;color:#fff;}
+.sb-logo-text span{color:var(--gold);}
+.sb-logo-sub{font-size:.67rem;color:rgba(255,255,255,.35);margin-top:2px;letter-spacing:.06em;text-transform:uppercase;}
+.sb-user{padding:14px 16px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:center;gap:10px;}
+.sb-avatar{width:34px;height:34px;border-radius:50%;background:var(--teal);display:flex;align-items:center;justify-content:center;font-family:'Cairo',sans-serif;font-weight:700;font-size:.85rem;color:#fff;flex-shrink:0;}
+.sb-user-info{}
+.sb-user-name{font-size:.82rem;font-weight:600;color:#fff;line-height:1.2;}
+.sb-user-co{font-size:.7rem;color:rgba(255,255,255,.4);}
+.sb-status{display:inline-flex;align-items:center;gap:4px;font-size:.62rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border-radius:10px;margin-top:3px;}
+.status-verified{background:rgba(34,160,90,.2);color:#5DCFA0;}
+.status-pending{background:rgba(200,146,42,.2);color:var(--gold-lt);}
+.status-review{background:rgba(26,79,181,.2);color:#8BBEFF;}
+.sb-nav{flex:1;overflow-y:auto;padding:12px 0;}
+.sb-section{padding:10px 16px 4px;font-size:.6rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.22);}
+.sb-link{display:flex;align-items:center;gap:10px;padding:8px 16px;font-size:.8rem;color:rgba(255,255,255,.6);text-decoration:none;transition:background .15s,color .15s;cursor:pointer;border:none;background:none;width:100%;font-family:'Inter',sans-serif;}
+.sb-link:hover{background:rgba(255,255,255,.05);color:#fff;}
+.sb-link.active{background:rgba(10,115,105,.25);color:var(--teal-lt);}
+.sb-link svg{flex-shrink:0;opacity:.7;}
+.sb-link.active svg{opacity:1;}
+.sb-link .sb-badge{margin-left:auto;background:var(--red);color:#fff;font-size:.6rem;font-weight:700;padding:1px 6px;border-radius:10px;}
+.sb-link .sb-badge-g{margin-left:auto;background:var(--teal);color:#fff;font-size:.6rem;font-weight:700;padding:1px 6px;border-radius:10px;}
+.sb-bottom{padding:12px 16px;border-top:1px solid rgba(255,255,255,.06);}
+.sb-bottom a{display:flex;align-items:center;gap:8px;font-size:.77rem;color:rgba(255,255,255,.4);text-decoration:none;transition:color .15s;}
+.sb-bottom a:hover{color:#fff;}
+
+/* ── MAIN ────────────────────────────── */
+.main{margin-left:var(--sidebar);flex:1;display:flex;flex-direction:column;min-height:100vh;}
+.topbar{background:var(--white);border-bottom:1px solid var(--mist);padding:0 28px;height:52px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+.tb-left{display:flex;align-items:center;gap:14px;}
+.tb-page-title{font-family:'Cairo',sans-serif;font-size:1.05rem;font-weight:700;color:var(--ink);}
+.tb-right{display:flex;align-items:center;gap:10px;}
+.tb-back{display:flex;align-items:center;gap:6px;font-size:.77rem;color:var(--mid);text-decoration:none;transition:color .15s;}
+.tb-back:hover{color:var(--teal);}
+.tb-btn{font-size:.77rem;font-weight:600;padding:7px 14px;border-radius:4px;border:none;cursor:pointer;font-family:'Inter',sans-serif;transition:background .15s;}
+.tb-btn-teal{background:var(--teal);color:#fff;}.tb-btn-teal:hover{background:var(--teal-lt);}
+.tb-btn-gold{background:var(--gold);color:var(--ink);}.tb-btn-gold:hover{background:var(--gold-lt);}
+.tb-btn-out{background:none;border:1.5px solid var(--mist);color:var(--mid);}.tb-btn-out:hover{border-color:var(--teal);color:var(--teal);}
+.content{padding:28px;flex:1;}
+
+/* ── PANELS ──────────────────────────── */
+.panel{display:none;animation:fadein .2s ease;}
+.panel.active{display:block;}
+@keyframes fadein{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+
+/* ── STAT CARDS ──────────────────────── */
+.stats-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;margin-bottom:24px;}
+.stat-card{background:var(--white);border:1.5px solid var(--mist);border-radius:8px;padding:18px 16px;}
+.sc-label{font-size:.67rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--mid);margin-bottom:6px;}
+.sc-val{font-family:'Cairo',sans-serif;font-size:1.85rem;font-weight:700;color:var(--ink);line-height:1;}
+.sc-sub{font-size:.71rem;color:var(--mid);margin-top:3px;}
+.sc-up{color:var(--grn);font-weight:600;}
+.sc-down{color:var(--red);font-weight:600;}
+
+/* ── CARDS ───────────────────────────── */
+.card{background:var(--white);border:1.5px solid var(--mist);border-radius:8px;margin-bottom:16px;}
+.card-head{padding:14px 18px;border-bottom:1px solid var(--mist);display:flex;justify-content:space-between;align-items:center;}
+.card-title{font-family:'Cairo',sans-serif;font-size:.95rem;font-weight:700;color:var(--ink);}
+.card-body{padding:18px;}
+.card-body-0{padding:0;}
+
+/* ── TABLE ───────────────────────────── */
+.tbl{width:100%;border-collapse:collapse;}
+.tbl th{font-size:.67rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--mid);padding:10px 16px;text-align:left;border-bottom:1.5px solid var(--mist);background:var(--sand);white-space:nowrap;}
+.tbl td{padding:11px 16px;border-bottom:1px solid var(--mist);font-size:.81rem;color:var(--ink);vertical-align:middle;}
+.tbl tr:last-child td{border-bottom:none;}
+.tbl tr:hover td{background:#FAFAF8;}
+.tbl-wrap{overflow-x:auto;}
+
+/* ── BADGES ──────────────────────────── */
+.bdg{display:inline-flex;align-items:center;gap:4px;font-size:.62rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:3px 9px;border-radius:10px;white-space:nowrap;}
+.bdg-grn{background:var(--grn-pale);color:#1B6E3A;}
+.bdg-gold{background:var(--gold-pale);color:var(--ad,#A67C00);}
+.bdg-blue{background:#EEF3FC;color:var(--eu);}
+.bdg-red{background:#FEE9E7;color:var(--red);}
+.bdg-mid{background:var(--sand);color:var(--mid);}
+.bdg-teal{background:var(--teal-pale);color:var(--teal-dk);}
+
+/* ── INLINE BUTTONS ──────────────────── */
+.ibtn{font-size:.72rem;font-weight:600;padding:4px 10px;border-radius:3px;cursor:pointer;border:none;font-family:'Inter',sans-serif;transition:background .15s,color .15s;text-decoration:none;display:inline-block;}
+.ibtn-t{background:var(--teal);color:#fff;}.ibtn-t:hover{background:var(--teal-lt);}
+.ibtn-o{background:none;border:1.5px solid var(--mist);color:var(--mid);}.ibtn-o:hover{border-color:var(--teal);color:var(--teal);}
+.ibtn-r{background:#FEE9E7;color:var(--red);border:none;}.ibtn-r:hover{background:#FDDBD9;}
+
+/* ── GRID ────────────────────────────── */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;}
+
+/* ── FORM ELEMENTS ───────────────────── */
+.fg{display:flex;flex-direction:column;gap:4px;margin-bottom:12px;}
+.fg label{font-size:.69rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--mid);}
+.fg input,.fg select,.fg textarea{font-family:'Inter',sans-serif;font-size:.86rem;border:1.5px solid var(--mist);border-radius:4px;padding:9px 11px;background:var(--white);color:var(--ink);outline:none;transition:border-color .2s;}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--teal);}
+.fg textarea{resize:vertical;min-height:80px;}
+.fr2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.form-section{margin-bottom:22px;padding-bottom:22px;border-bottom:1px solid var(--mist);}
+.form-section:last-child{border-bottom:none;}
+.form-section-title{font-family:'Cairo',sans-serif;font-size:.9rem;font-weight:700;color:var(--ink);margin-bottom:14px;}
+
+/* ── KYB VERIFICATION FLOW ───────────── */
+.kyb-steps{display:flex;gap:0;margin-bottom:28px;}
+.kyb-step{display:flex;align-items:center;gap:0;flex:1;}
+.kyb-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;flex-shrink:0;transition:background .3s;border:2px solid;}
+.kyb-dot.done{background:var(--teal);color:#fff;border-color:var(--teal);}
+.kyb-dot.cur{background:#fff;color:var(--teal);border-color:var(--teal);}
+.kyb-dot.pend{background:#fff;color:var(--mid);border-color:var(--mist);}
+.kyb-lbl{font-size:.69rem;font-weight:600;margin-left:7px;color:var(--mid);white-space:nowrap;}
+.kyb-dot.cur + .kyb-lbl{color:var(--teal);}
+.kyb-dot.done + .kyb-lbl{color:var(--ink);}
+.kyb-line{flex:1;height:2px;background:var(--mist);margin:0 8px;}
+.kyb-line.done{background:var(--teal);}
+
+.kyb-panel{display:none;animation:fadein .2s ease;}
+.kyb-panel.active{display:block;}
+.kyb-alert{border-radius:6px;padding:14px 16px;margin-bottom:18px;display:flex;gap:12px;align-items:flex-start;}
+.kyb-info{background:var(--teal-pale);border-left:3px solid var(--teal);}
+.kyb-warn{background:var(--gold-pale);border-left:3px solid var(--gold);}
+.kyb-error{background:#FEE9E7;border-left:3px solid var(--red);}
+.kyb-alert-text{font-size:.82rem;line-height:1.55;}
+.kyb-alert-text strong{font-size:.76rem;font-weight:700;display:block;margin-bottom:2px;}
+.upload-box{border:2px dashed var(--mist);border-radius:6px;padding:24px;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;}
+.upload-box:hover{border-color:var(--teal);background:var(--teal-pale);}
+.upload-box svg{margin:0 auto 8px;display:block;opacity:.4;}
+.upload-box p{font-size:.81rem;color:var(--mid);line-height:1.5;}
+.upload-box strong{color:var(--teal);font-size:.79rem;}
+.auto-check{background:var(--sand);border:1.5px solid var(--mist);border-radius:6px;padding:14px 16px;display:flex;align-items:center;gap:12px;margin-bottom:14px;}
+.ac-icon{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.ac-checking{background:rgba(26,79,181,.1);animation:spin 1s linear infinite;}
+@keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+.ac-ok{background:var(--grn-pale);}
+.ac-fail{background:#FEE9E7;}
+.ac-text strong{font-size:.79rem;display:block;color:var(--ink);}
+.ac-text span{font-size:.73rem;color:var(--mid);}
+
+/* ── NOTIFICATION ITEMS ──────────────── */
+.notif-list{display:flex;flex-direction:column;gap:0;}
+.notif-item{display:flex;gap:12px;align-items:flex-start;padding:13px 18px;border-bottom:1px solid var(--mist);transition:background .15s;cursor:pointer;}
+.notif-item:hover{background:var(--sand);}
+.notif-item:last-child{border-bottom:none;}
+.notif-item.unread{background:#F5FAFA;}
+.notif-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px;}
+.nd-teal{background:var(--teal);}
+.nd-gold{background:var(--gold);}
+.nd-grn{background:var(--grn);}
+.nd-red{background:var(--red);}
+.notif-body{flex:1;}
+.notif-title{font-size:.81rem;font-weight:600;color:var(--ink);margin-bottom:2px;}
+.notif-sub{font-size:.75rem;color:var(--mid);line-height:1.4;}
+.notif-time{font-size:.68rem;color:#AAA;white-space:nowrap;margin-top:2px;}
+
+/* ── RESPONSE THREAD ─────────────────── */
+.thread{display:flex;flex-direction:column;gap:12px;}
+.thread-msg{border-radius:6px;padding:13px 15px;}
+.tm-buyer{background:var(--sand);border:1px solid var(--mist);}
+.tm-supplier{background:var(--teal-pale);border:1px solid rgba(10,115,105,.15);}
+.tm-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:5px;}
+.tm-sender{font-size:.75rem;font-weight:700;color:var(--ink);}
+.tm-time{font-size:.68rem;color:#AAA;}
+.tm-body{font-size:.8rem;color:var(--ink2);line-height:1.55;}
+
+/* ── INVOICE STYLE ───────────────────── */
+.inv-header{background:var(--teal-dk);padding:28px 32px;border-radius:6px 6px 0 0;display:flex;justify-content:space-between;align-items:flex-start;}
+.inv-logo{font-family:'Cairo',sans-serif;font-size:1.1rem;font-weight:700;color:#fff;}
+.inv-logo span{color:var(--gold-lt);}
+.inv-logo sub{font-size:.65rem;color:rgba(255,255,255,.4);display:block;font-family:'Inter',sans-serif;font-weight:400;margin-top:3px;letter-spacing:.04em;}
+.inv-num{text-align:right;}
+.inv-num .inv-label{font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.45);}
+.inv-num .inv-val{font-family:'Cairo',sans-serif;font-size:1.2rem;font-weight:700;color:#fff;}
+.inv-num .inv-date{font-size:.72rem;color:rgba(255,255,255,.55);margin-top:2px;}
+.inv-body{background:#fff;padding:28px 32px;border:1px solid var(--mist);border-top:none;}
+.inv-parties{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid var(--mist);}
+.inv-party-label{font-size:.64rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--mid);margin-bottom:6px;}
+.inv-party-name{font-weight:700;font-size:.88rem;color:var(--ink);margin-bottom:3px;}
+.inv-party-detail{font-size:.77rem;color:var(--mid);line-height:1.6;}
+.inv-tbl{width:100%;border-collapse:collapse;margin-bottom:20px;}
+.inv-tbl th{font-size:.64rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--mid);padding:8px 0;border-bottom:1.5px solid var(--mist);text-align:left;}
+.inv-tbl th:last-child,.inv-tbl td:last-child{text-align:right;}
+.inv-tbl td{padding:10px 0;font-size:.81rem;color:var(--ink);border-bottom:1px solid var(--mist);}
+.inv-tbl tr:last-child td{border-bottom:none;}
+.inv-totals{display:flex;justify-content:flex-end;}
+.inv-totals-box{min-width:220px;}
+.inv-total-row{display:flex;justify-content:space-between;font-size:.8rem;padding:4px 0;color:var(--mid);}
+.inv-total-row.total{font-weight:700;font-size:.9rem;color:var(--ink);border-top:1.5px solid var(--mist);margin-top:4px;padding-top:8px;}
+.inv-footer{background:var(--sand);padding:14px 32px;border:1px solid var(--mist);border-top:none;border-radius:0 0 6px 6px;font-size:.74rem;color:var(--mid);display:flex;justify-content:space-between;align-items:center;}
+
+/* ── EMPTY STATE ─────────────────────── */
+.empty{text-align:center;padding:48px 20px;color:var(--mid);}
+.empty svg{margin:0 auto 12px;display:block;opacity:.25;}
+.empty p{font-size:.87rem;line-height:1.6;}
+.empty a{color:var(--teal);font-weight:600;text-decoration:none;}
+
+/* ── VERIFICATION BANNER ─────────────── */
+.verif-banner{background:linear-gradient(135deg,var(--gold-pale),#FFF5D6);border:1.5px solid rgba(200,146,42,.3);border-radius:8px;padding:16px 20px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;}
+.vb-left{display:flex;gap:12px;align-items:center;}
+.vb-icon{width:36px;height:36px;background:rgba(200,146,42,.15);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.vb-text strong{font-size:.85rem;font-weight:700;color:var(--ink);display:block;margin-bottom:2px;}
+.vb-text p{font-size:.77rem;color:var(--mid);line-height:1.5;}
+
+/* ── MODAL ───────────────────────────── */
+.mo{display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.5);backdrop-filter:blur(3px);align-items:center;justify-content:center;}
+.mo.open{display:flex;}
+.mo-box{background:var(--white);border-radius:8px;padding:28px;max-width:520px;width:94%;position:relative;max-height:88vh;overflow-y:auto;}
+.mo-x{position:absolute;top:10px;right:12px;background:none;border:none;font-size:1.2rem;cursor:pointer;color:var(--mid);width:24px;height:24px;display:flex;align-items:center;justify-content:center;border-radius:3px;}
+.mo-x:hover{background:var(--sand);}
+.mo-h{font-family:'Cairo',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:4px;}
+.mo-sub{font-size:.79rem;color:var(--mid);margin-bottom:18px;line-height:1.5;}
+.succ{display:none;background:var(--grn-pale);border:1.5px solid rgba(34,160,90,.25);border-radius:4px;padding:11px 14px;color:#1B6E3A;font-size:.83rem;font-weight:500;margin-top:12px;}
+
+/* ── MOBILE ──────────────────────────── */
+.mob-menu-btn{display:none;background:none;border:none;cursor:pointer;padding:6px;}
+@media(max-width:768px){
+  body{display:block;}
+  .sidebar{transform:translateX(-100%);}
+  .sidebar.open{transform:translateX(0);}
+  .main{margin-left:0;}
+  .mob-menu-btn{display:flex;}
+  .content{padding:16px;}
+  .two-col,.three-col{grid-template-columns:1fr;}
+  .fr2{grid-template-columns:1fr;}
+  .stats-row{grid-template-columns:1fr 1fr;}
+  .inv-parties{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="sb-logo">
+    <div class="sb-logo-text">Gulf <span>Trade</span> Portal</div>
+    <div class="sb-logo-sub">Client Portal</div>
+  </div>
+  <div class="sb-user">
+    <div class="sb-avatar">FA</div>
+    <div class="sb-user-info">
+      <div class="sb-user-name">Farhan A.</div>
+      <div class="sb-user-co">Excorp Distribution B.V.</div>
+      <span class="sb-status status-verified">
+        <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+        Verified
+      </span>
+    </div>
+  </div>
+  <nav class="sb-nav">
+    <div class="sb-section">Overview</div>
+    <button class="sb-link active" onclick="showPanel('dashboard',this)">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      Dashboard
+    </button>
+    <div class="sb-section">Trade Activity</div>
+    <button class="sb-link" onclick="showPanel('requests',this)">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      My Trade Requests
+      <span class="sb-badge">4</span>
+    </button>
+    <button class="sb-link" onclick="showPanel('responses',this)">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      Supplier Responses
+      <span class="sb-badge">6</span>
+    </button>
+    <button class="sb-link" onclick="showPanel('directory',this)">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      Browse Suppliers
+    </button>
+    <div class="sb-section">Company</div>
+    <button class="sb-link" onclick="showPanel('kyb',this)">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      Verification (KYB)
+      <span class="sb-badge-g">Done</span>
+    </button>
+    <button class="sb-link" onclick="showPanel('profile',this)">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+      Company Profile
+    </button>
+    <div class="sb-section">Billing</div>
+    <button class="sb-link" onclick="showPanel('subscription',this)">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      Subscription
+    </button>
+    <button class="sb-link" onclick="showPanel('invoices',this)">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+      Invoices
+    </button>
+    <div class="sb-section">Account</div>
+    <button class="sb-link" onclick="showPanel('notifications',this)">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      Notifications
+      <span class="sb-badge">3</span>
+    </button>
+    <button class="sb-link" onclick="showPanel('settings',this)">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      Settings
+    </button>
+  </nav>
+  <div class="sb-bottom">
+    <a href="index.html">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      Back to Portal
+    </a>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+  <header class="topbar">
+    <div class="tb-left">
+      <button class="mob-menu-btn" onclick="document.getElementById('sidebar').classList.toggle('open')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--ink)" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <span class="tb-page-title" id="page-title">Dashboard</span>
+    </div>
+    <div class="tb-right">
+      <a href="index.html" class="tb-back">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+        Main Portal
+      </a>
+      <button class="tb-btn tb-btn-gold" onclick="openMo('mo-post')">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="margin-right:4px;vertical-align:-1px;"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Post Request
+      </button>
+    </div>
+  </header>
+
+  <div class="content">
+
+    <!-- ═══ DASHBOARD ═══ -->
+    <div class="panel active" id="panel-dashboard">
+      <div class="verif-banner">
+        <div class="vb-left">
+          <div class="vb-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+          </div>
+          <div class="vb-text">
+            <strong>Company Verified — Excorp Distribution B.V.</strong>
+            <p>KVK 12345678 · BTW NL123456789B01 · Verified 14 Jun 2025 · Pro Importer plan · EU + USA + Asia suppliers</p>
+          </div>
+        </div>
+        <button class="tb-btn tb-btn-teal" onclick="showPanel('kyb',document.querySelector('[onclick*=kyb]'))">View Verification</button>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="sc-label">Active Requests</div>
+          <div class="sc-val">4</div>
+          <div class="sc-sub"><span class="sc-up">+2</span> this month</div>
+        </div>
+        <div class="stat-card">
+          <div class="sc-label">Supplier Responses</div>
+          <div class="sc-val">11</div>
+          <div class="sc-sub"><span class="sc-up">6 new</span> unread</div>
+        </div>
+        <div class="stat-card">
+          <div class="sc-label">Profile Views</div>
+          <div class="sc-val">284</div>
+          <div class="sc-sub"><span class="sc-up">↑ 34%</span> vs last month</div>
+        </div>
+        <div class="stat-card">
+          <div class="sc-label">Matched Suppliers</div>
+          <div class="sc-val">8</div>
+          <div class="sc-sub">Via email alerts</div>
+        </div>
+        <div class="stat-card">
+          <div class="sc-label">Next Invoice</div>
+          <div class="sc-val" style="font-size:1.3rem;">€59</div>
+          <div class="sc-sub">Due 1 Jul 2025</div>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="card">
+          <div class="card-head">
+            <span class="card-title">Recent Trade Requests</span>
+            <button class="ibtn ibtn-o" onclick="showPanel('requests',document.querySelectorAll('.sb-link')[1])">View all</button>
+          </div>
+          <div class="card-body-0">
+            <table class="tbl">
+              <thead><tr><th>Product</th><th>Status</th><th>Responses</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Nespresso OL Capsules</strong><div style="font-size:.71rem;color:var(--mid);">50,000 sleeves/mo · UAE</div></td><td><span class="bdg bdg-grn">Live</span></td><td><span style="color:var(--teal);font-weight:700;">4</span></td></tr>
+                <tr><td><strong>Halal Frozen Chicken</strong><div style="font-size:.71rem;color:var(--mid);">50MT · Saudi Arabia</div></td><td><span class="bdg bdg-grn">Live</span></td><td><span style="color:var(--teal);font-weight:700;">2</span></td></tr>
+                <tr><td><strong>Steel Rebar Grade 60</strong><div style="font-size:.71rem;color:var(--mid);">500MT/mo · UAE</div></td><td><span class="bdg bdg-gold">Pending</span></td><td><span style="color:var(--mid);">0</span></td></tr>
+                <tr><td><strong>Organic Olive Oil</strong><div style="font-size:.71rem;color:var(--mid);">20,000L/mo · Kuwait</div></td><td><span class="bdg bdg-grn">Live</span></td><td><span style="color:var(--teal);font-weight:700;">5</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <span class="card-title">Latest Supplier Responses</span>
+            <button class="ibtn ibtn-o" onclick="showPanel('responses',document.querySelectorAll('.sb-link')[2])">View all</button>
+          </div>
+          <div class="notif-list">
+            <div class="notif-item unread" onclick="showPanel('responses',document.querySelectorAll('.sb-link')[2])">
+              <div class="notif-dot nd-teal"></div>
+              <div class="notif-body">
+                <div class="notif-title">Dutch Food Export BV responded</div>
+                <div class="notif-sub">Re: Nespresso OL Capsules — "We can supply 60,000+ sleeves/month, all varieties, EU origin. CIF Dubai available."</div>
+              </div>
+              <div class="notif-time">2h ago</div>
+            </div>
+            <div class="notif-item unread" onclick="showPanel('responses',document.querySelectorAll('.sb-link')[2])">
+              <div class="notif-dot nd-teal"></div>
+              <div class="notif-body">
+                <div class="notif-title">Iberia Food Group responded</div>
+                <div class="notif-sub">Re: Organic Olive Oil — "Certified organic EVOO, PDO Spain origin. Private label available. Send specs."</div>
+              </div>
+              <div class="notif-time">5h ago</div>
+            </div>
+            <div class="notif-item" onclick="showPanel('responses',document.querySelectorAll('.sb-link')[2])">
+              <div class="notif-dot nd-gold"></div>
+              <div class="notif-body">
+                <div class="notif-title">Halal Poultry EU responded</div>
+                <div class="notif-sub">Re: Halal Frozen Chicken — "SFDA registered, Brazil Halal, CIF Jeddah. MOQ 20MT. Quote attached."</div>
+              </div>
+              <div class="notif-time">Yesterday</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ TRADE REQUESTS ═══ -->
+    <div class="panel" id="panel-requests">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:10px;">
+        <div>
+          <div style="font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--teal);font-weight:700;margin-bottom:4px;">Your trade activity</div>
+          <h2 style="font-family:Cairo,sans-serif;font-size:1.25rem;font-weight:700;">My Trade Requests</h2>
+        </div>
+        <button class="tb-btn tb-btn-gold" onclick="openMo('mo-post')">+ Post New Request</button>
+      </div>
+      <div class="card card-body-0">
+        <div class="tbl-wrap">
+          <table class="tbl">
+            <thead>
+              <tr>
+                <th>Product / Request</th>
+                <th>Country</th>
+                <th>Qty</th>
+                <th>Status</th>
+                <th>Responses</th>
+                <th>Posted</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Nespresso Original Line Capsules</strong><div style="font-size:.71rem;color:var(--mid);">All varieties · FMCG · EU origin required</div></td>
+                <td>UAE</td><td>50,000/mo</td>
+                <td><span class="bdg bdg-grn">Live</span></td>
+                <td><a href="#" style="color:var(--teal);font-weight:700;" onclick="showPanel('responses',document.querySelectorAll('.sb-link')[2])">4 responses</a></td>
+                <td style="color:var(--mid);">2 Jun</td>
+                <td><button class="ibtn ibtn-o" style="margin-right:4px;">Edit</button><button class="ibtn ibtn-r">Close</button></td>
+              </tr>
+              <tr>
+                <td><strong>Halal Frozen Chicken IQF</strong><div style="font-size:.71rem;color:var(--mid);">Whole &amp; cuts · Food &amp; Bev · SFDA approved</div></td>
+                <td>Saudi Arabia</td><td>50MT</td>
+                <td><span class="bdg bdg-grn">Live</span></td>
+                <td><a href="#" style="color:var(--teal);font-weight:700;" onclick="showPanel('responses',document.querySelectorAll('.sb-link')[2])">2 responses</a></td>
+                <td style="color:var(--mid);">5 Jun</td>
+                <td><button class="ibtn ibtn-o" style="margin-right:4px;">Edit</button><button class="ibtn ibtn-r">Close</button></td>
+              </tr>
+              <tr>
+                <td><strong>Steel Rebar Grade 60 — 12–25mm</strong><div style="font-size:.71rem;color:var(--mid);">Construction · ESMA cert required</div></td>
+                <td>UAE</td><td>500MT/mo</td>
+                <td><span class="bdg bdg-gold">Under review</span></td>
+                <td><span style="color:var(--mid);">—</span></td>
+                <td style="color:var(--mid);">10 Jun</td>
+                <td><button class="ibtn ibtn-o" style="margin-right:4px;">Edit</button><button class="ibtn ibtn-r">Delete</button></td>
+              </tr>
+              <tr>
+                <td><strong>Organic Extra Virgin Olive Oil</strong><div style="font-size:.71rem;color:var(--mid);">Retail &amp; bulk · Private label OK</div></td>
+                <td>Kuwait</td><td>20,000L/mo</td>
+                <td><span class="bdg bdg-grn">Live</span></td>
+                <td><a href="#" style="color:var(--teal);font-weight:700;" onclick="showPanel('responses',document.querySelectorAll('.sb-link')[2])">5 responses</a></td>
+                <td style="color:var(--mid);">12 Jun</td>
+                <td><button class="ibtn ibtn-o" style="margin-right:4px;">Edit</button><button class="ibtn ibtn-r">Close</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ RESPONSES ═══ -->
+    <div class="panel" id="panel-responses">
+      <div style="margin-bottom:18px;">
+        <div style="font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--teal);font-weight:700;margin-bottom:4px;">Inbound</div>
+        <h2 style="font-family:Cairo,sans-serif;font-size:1.25rem;font-weight:700;">Supplier Responses</h2>
+      </div>
+      <div class="card" style="margin-bottom:16px;">
+        <div class="card-head">
+          <div>
+            <div class="card-title">Dutch Food Export BV · Netherlands</div>
+            <div style="font-size:.72rem;color:var(--mid);margin-top:2px;">Re: Nespresso Original Line Capsules · <span class="bdg bdg-teal" style="font-size:.6rem;">Verified EU Supplier</span></div>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <span style="font-size:.7rem;color:#AAA;">2h ago</span>
+            <button class="ibtn ibtn-t">Reply via WhatsApp</button>
+            <button class="ibtn ibtn-o">Send Email</button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="thread">
+            <div class="thread-msg tm-buyer">
+              <div class="tm-head"><span class="tm-sender">You — Excorp Distribution B.V.</span><span class="tm-time">2 Jun 2025</span></div>
+              <div class="tm-body">Seeking wholesale supplier of Nespresso Original Line capsules, all varieties, minimum 50,000 sleeves per month. EU origin documentation required. CIF Dubai preferred. Please provide pricing and lead times.</div>
+            </div>
+            <div class="thread-msg tm-supplier">
+              <div class="tm-head"><span class="tm-sender">Dutch Food Export BV · Netherlands</span><span class="tm-time">Today, 09:42</span></div>
+              <div class="tm-body">Hello, we can supply all Nespresso OL varieties at 60,000+ sleeves/month from our Netherlands warehouse. We hold valid EU origin documents and can arrange CIF Dubai on 14-day lead time. Our MOQ is 10,000 sleeves per variety. Please share your full SKU list and we can provide a formal quote within 24 hours. WhatsApp: +31 6 XX XXX XXX</div>
+            </div>
+          </div>
+          <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap;">
+            <button class="tb-btn tb-btn-teal" onclick="openMo('mo-reply')">Reply to Supplier</button>
+            <button class="ibtn ibtn-o">Mark as Interested</button>
+            <button class="ibtn ibtn-r">Archive</button>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <div class="card-title">Iberia Food Group · Spain</div>
+            <div style="font-size:.72rem;color:var(--mid);margin-top:2px;">Re: Organic Olive Oil · <span class="bdg bdg-mid" style="font-size:.6rem;">Pending Verification</span></div>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <span style="font-size:.7rem;color:#AAA;">5h ago</span>
+            <button class="ibtn ibtn-t">Reply via WhatsApp</button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="thread">
+            <div class="thread-msg tm-supplier">
+              <div class="tm-head"><span class="tm-sender">Iberia Food Group · Spain</span><span class="tm-time">Today, 07:15</span></div>
+              <div class="tm-body">We produce certified organic EVOO from Andalusia, PDO Spain origin. Private label capability for minimum 5,000L. We can supply 25,000L/month initially scaling to 50,000L. HALAL certified. Please send us your packaging specs and target retail price.</div>
+            </div>
+          </div>
+          <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap;">
+            <button class="tb-btn tb-btn-teal" onclick="openMo('mo-reply')">Reply to Supplier</button>
+            <button class="ibtn ibtn-o">Mark as Interested</button>
+            <button class="ibtn ibtn-r">Archive</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ KYB VERIFICATION ═══ -->
+    <div class="panel" id="panel-kyb">
+      <div style="margin-bottom:20px;">
+        <div style="font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--teal);font-weight:700;margin-bottom:4px;">Company verification</div>
+        <h2 style="font-family:Cairo,sans-serif;font-size:1.25rem;font-weight:700;">KYB — Know Your Business</h2>
+        <p style="font-size:.84rem;color:var(--mid);margin-top:5px;line-height:1.6;">All companies on Gulf Trade Portal are verified before their listing goes live. This keeps the platform trusted by buyers and suppliers on both sides. The process takes 1–2 business days.</p>
+      </div>
+
+      <div class="kyb-steps">
+        <div class="kyb-step"><div class="kyb-dot done">✓</div><span class="kyb-lbl">Company details</span><div class="kyb-line done"></div></div>
+        <div class="kyb-step"><div class="kyb-dot done">✓</div><span class="kyb-lbl">Documents</span><div class="kyb-line done"></div></div>
+        <div class="kyb-step"><div class="kyb-dot done">✓</div><span class="kyb-lbl">Auto-check</span><div class="kyb-line done"></div></div>
+        <div class="kyb-step"><div class="kyb-dot done">✓</div><span class="kyb-lbl">Manual review</span><div class="kyb-line done"></div></div>
+        <div class="kyb-step"><div class="kyb-dot done">✓</div><span class="kyb-lbl">Verified</span></div>
+      </div>
+
+      <div class="kyb-alert kyb-info" style="margin-bottom:20px;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+        <div class="kyb-alert-text"><strong>Verification complete</strong>Excorp Distribution B.V. is a verified company on Gulf Trade Portal. Your listing is live and you can post trade requests.</div>
+      </div>
+
+      <div class="two-col">
+        <div class="card">
+          <div class="card-head"><span class="card-title">Verified Company Details</span></div>
+          <div class="card-body">
+            <div class="fr2" style="margin-bottom:8px;">
+              <div><div style="font-size:.67rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mid);margin-bottom:2px;">Legal Name</div><div style="font-size:.85rem;font-weight:600;">Excorp Distribution B.V.</div></div>
+              <div><div style="font-size:.67rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mid);margin-bottom:2px;">Trading Name</div><div style="font-size:.85rem;font-weight:600;">Gulf Trade Portal</div></div>
+            </div>
+            <div class="fr2" style="margin-bottom:8px;">
+              <div><div style="font-size:.67rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mid);margin-bottom:2px;">KVK Number</div><div style="font-size:.85rem;font-weight:600;">12345678</div></div>
+              <div><div style="font-size:.67rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mid);margin-bottom:2px;">BTW / VAT</div><div style="font-size:.85rem;font-weight:600;">NL123456789B01</div></div>
+            </div>
+            <div class="fr2">
+              <div><div style="font-size:.67rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mid);margin-bottom:2px;">Country</div><div style="font-size:.85rem;font-weight:600;">Netherlands</div></div>
+              <div><div style="font-size:.67rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mid);margin-bottom:2px;">Verified</div><div style="font-size:.85rem;font-weight:600;color:var(--grn);">14 Jun 2025</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><span class="card-title">Verification Checklist</span></div>
+          <div class="card-body" style="display:flex;flex-direction:column;gap:9px;">
+            <div style="display:flex;align-items:center;gap:10px;font-size:.81rem;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--grn)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>KVK extract — active registration confirmed</div>
+            <div style="display:flex;align-items:center;gap:10px;font-size:.81rem;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--grn)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>VAT number validated via EU VIES</div>
+            <div style="display:flex;align-items:center;gap:10px;font-size:.81rem;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--grn)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Director ID verified</div>
+            <div style="display:flex;align-items:center;gap:10px;font-size:.81rem;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--grn)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Business address confirmed</div>
+            <div style="display:flex;align-items:center;gap:10px;font-size:.81rem;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--grn)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Sanctions &amp; PEP screening passed</div>
+            <div style="display:flex;align-items:center;gap:10px;font-size:.81rem;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--grn)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Trade sector confirmed — FMCG / Wholesale</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- NEW COMPANY VERIFICATION FORM (shown for unverified users) -->
+      <div class="card" style="margin-top:4px;">
+        <div class="card-head">
+          <span class="card-title">Verification Form — For New Registrations</span>
+          <span class="bdg bdg-mid">Template</span>
+        </div>
+        <div class="card-body">
+          <p style="font-size:.82rem;color:var(--mid);margin-bottom:20px;line-height:1.6;">New companies complete this form. We run automated checks first, then a quick manual review before your listing goes live. Processing time: 1–2 business days.</p>
+          <div class="form-section">
+            <div class="form-section-title">1. Company Identity</div>
+            <div class="fr2">
+              <div class="fg"><label>Legal Company Name</label><input type="text" placeholder="As registered at your national registry"></div>
+              <div class="fg"><label>Trading / Brand Name (if different)</label><input type="text" placeholder="Gulf Trade Portal, B&amp;F Global, etc."></div>
+            </div>
+            <div class="fr2">
+              <div class="fg"><label>Country of Registration</label>
+                <select>
+                  <option>Netherlands</option><option>UAE</option><option>Saudi Arabia</option><option>Germany</option><option>United Kingdom</option><option>United States</option><option>France</option><option>Belgium</option><option>China</option><option>India</option><option>Malaysia</option><option>Singapore</option><option>Indonesia</option><option>Thailand</option><option>South Korea</option><option>Japan</option><option>Pakistan</option><option>Australia</option><option>Other</option>
+                </select>
+              </div>
+              <div class="fg"><label>Company Type</label>
+                <select>
+                  <option>Private Limited (BV / GmbH / Ltd / LLC)</option><option>Public Limited (NV / AG / PLC)</option><option>Sole Proprietorship</option><option>Partnership</option><option>Other</option>
+                </select>
+              </div>
+            </div>
+            <div class="fr2">
+              <div class="fg"><label>Registration Number <span style="font-weight:400;text-transform:none;letter-spacing:0;color:#AAA;">(KVK / CR / Trade Reg.)</span></label><input type="text" placeholder="e.g. 12345678" id="reg-num"></div>
+              <div class="fg"><label>VAT / Tax Number <span style="font-weight:400;text-transform:none;letter-spacing:0;color:#AAA;">(optional)</span></label><input type="text" placeholder="e.g. NL123456789B01"></div>
+            </div>
+            <div class="fr2">
+              <div class="fg"><label>Year Established</label><input type="text" placeholder="e.g. 2015"></div>
+              <div class="fg"><label>Number of Employees</label>
+                <select><option>1–5</option><option>6–20</option><option>21–50</option><option>51–200</option><option>200+</option></select>
+              </div>
+            </div>
+          </div>
+          <div class="form-section">
+            <div class="form-section-title">2. Trade Details</div>
+            <div class="fr2">
+              <div class="fg"><label>Primary Trade Activity</label>
+                <select><option>Importer</option><option>Exporter</option><option>Both</option><option>Manufacturer</option><option>Wholesaler / Distributor</option><option>Broker / Agent</option></select>
+              </div>
+              <div class="fg"><label>Primary Sector</label>
+                <select><option>FMCG</option><option>Food &amp; Beverages</option><option>Construction</option><option>Electronics</option><option>Chemicals</option><option>Textiles</option><option>Machinery</option><option>Healthcare</option></select>
+              </div>
+            </div>
+            <div class="fg"><label>Main Products / Commodities Traded</label><textarea placeholder="List the main products your company imports or exports e.g. Nespresso capsules, frozen poultry, steel rebar…"></textarea></div>
+            <div class="fr2">
+              <div class="fg"><label>Annual Trade Volume (approx.)</label>
+                <select><option>Under €100K</option><option>€100K – €500K</option><option>€500K – €2M</option><option>€2M – €10M</option><option>€10M+</option></select>
+              </div>
+              <div class="fg"><label>Target GCC Markets</label>
+                <select><option>UAE</option><option>Saudi Arabia</option><option>Kuwait</option><option>Qatar</option><option>Oman</option><option>Bahrain</option><option>All GCC</option></select>
+              </div>
+            </div>
+          </div>
+          <div class="form-section">
+            <div class="form-section-title">3. Director / UBO Details</div>
+            <div class="fr2">
+              <div class="fg"><label>Director Full Name</label><input type="text" placeholder="Legal name as on passport"></div>
+              <div class="fg"><label>Director Nationality</label><input type="text" placeholder="e.g. Dutch, Pakistani, British"></div>
+            </div>
+            <div class="fr2">
+              <div class="fg"><label>Director Date of Birth</label><input type="date"></div>
+              <div class="fg"><label>Director Title / Role</label><input type="text" placeholder="Managing Director, CEO, Owner…"></div>
+            </div>
+            <div class="fg"><label>Are there other beneficial owners with 25%+ stake?</label>
+              <select><option>No — I am the sole UBO</option><option>Yes — I will list them below</option></select>
+            </div>
+          </div>
+          <div class="form-section">
+            <div class="form-section-title">4. Document Upload</div>
+            <div class="kyb-alert kyb-warn" style="margin-bottom:16px;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              <div class="kyb-alert-text"><strong>Documents are verified within 24 hours</strong>Upload clear scans or PDFs. All documents are stored encrypted and used solely for verification. Documents are not shared with other platform users.</div>
+            </div>
+            <div class="fr2">
+              <div>
+                <div style="font-size:.7rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--mid);margin-bottom:6px;">Company Registration Extract <span style="color:var(--red);">*</span></div>
+                <div class="upload-box" onclick="alert('File upload — connect to Supabase Storage in production')">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                  <p>KVK extract, CR, or equivalent<br><strong>Click to upload</strong> or drag &amp; drop<br><span style="font-size:.7rem;">PDF, JPG, PNG · Max 10MB</span></p>
+                </div>
+              </div>
+              <div>
+                <div style="font-size:.7rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--mid);margin-bottom:6px;">Director ID / Passport <span style="color:var(--red);">*</span></div>
+                <div class="upload-box" onclick="alert('File upload — connect to Supabase Storage in production')">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M7 15s.5-2 5-2 5 2 5 2"/><circle cx="12" cy="10" r="2"/></svg>
+                  <p>Passport or national ID<br><strong>Click to upload</strong><br><span style="font-size:.7rem;">PDF, JPG, PNG · Max 10MB</span></p>
+                </div>
+              </div>
+              <div>
+                <div style="font-size:.7rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--mid);margin-bottom:6px;">Proof of Address <span style="color:var(--red);">*</span></div>
+                <div class="upload-box" onclick="alert('File upload — connect to Supabase Storage in production')">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                  <p>Bank statement or utility bill<br><strong>Click to upload</strong><br><span style="font-size:.7rem;">Dated within 3 months</span></p>
+                </div>
+              </div>
+              <div>
+                <div style="font-size:.7rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--mid);margin-bottom:6px;">Trade License / Import Permit <span style="color:var(--mid);">(optional)</span></div>
+                <div class="upload-box" onclick="alert('File upload — connect to Supabase Storage in production')">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                  <p>GCC trade license if applicable<br><strong>Click to upload</strong><br><span style="font-size:.7rem;">Increases verification speed</span></p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="form-section">
+            <div class="form-section-title">5. Automated Registry Check</div>
+            <p style="font-size:.81rem;color:var(--mid);margin-bottom:14px;">Enter your registration number and we instantly check the national registry to confirm your company is active. For Netherlands companies we check KVK. For EU companies we check the EU Business Register. For GCC companies we check the relevant national register.</p>
+            <div style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;">
+              <div class="fg" style="margin-bottom:0;flex:1;min-width:180px;"><label>Registration Number</label><input type="text" id="kyb-reg" placeholder="e.g. 12345678 (KVK) or 1234567 (CR Dubai)"></div>
+              <button class="tb-btn tb-btn-teal" onclick="runAutoCheck()">Run Auto-Check</button>
+            </div>
+            <div id="kyb-check-result" style="margin-top:14px;display:none;">
+              <div class="auto-check" id="kyb-checking">
+                <div class="ac-icon ac-checking"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--eu)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg></div>
+                <div class="ac-text"><strong>Checking registry…</strong><span>Connecting to KVK Handelsregister API</span></div>
+              </div>
+              <div class="auto-check" id="kyb-ok" style="display:none;">
+                <div class="ac-icon ac-ok"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--grn)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+                <div class="ac-text"><strong>Company found — Active registration confirmed</strong><span id="kyb-result-detail">Excorp Distribution B.V. · Registered 2018 · Active · Dordrecht, Netherlands</span></div>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button class="tb-btn tb-btn-gold" onclick="submitKYB()">Submit for Verification →</button>
+            <button class="tb-btn tb-btn-out">Save Draft</button>
+          </div>
+          <div id="kyb-succ" class="succ" style="margin-top:14px;">✓ Submitted. Our team will review your documents within 1–2 business days. You will receive an email when your listing is approved.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ SUBSCRIPTION ═══ -->
+    <div class="panel" id="panel-subscription">
+      <div style="margin-bottom:20px;">
+        <div style="font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--teal);font-weight:700;margin-bottom:4px;">Billing</div>
+        <h2 style="font-family:Cairo,sans-serif;font-size:1.25rem;font-weight:700;">Subscription</h2>
+      </div>
+      <div class="two-col" style="margin-bottom:16px;">
+        <div class="card">
+          <div class="card-head"><span class="card-title">Current Plan</span><span class="bdg bdg-teal">Active</span></div>
+          <div class="card-body">
+            <div style="font-family:Cairo,sans-serif;font-size:1.6rem;font-weight:700;color:var(--teal);margin-bottom:4px;">Pro Importer</div>
+            <div style="font-size:.85rem;color:var(--mid);margin-bottom:16px;">€59 / month · Renews 1 July 2025</div>
+            <div style="display:flex;flex-direction:column;gap:7px;margin-bottom:18px;">
+              <div style="font-size:.8rem;display:flex;gap:8px;align-items:center;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Unlimited trade requests</div>
+              <div style="font-size:.8rem;display:flex;gap:8px;align-items:center;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Verified badge on profile</div>
+              <div style="font-size:.8rem;display:flex;gap:8px;align-items:center;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Featured in category search</div>
+              <div style="font-size:.8rem;display:flex;gap:8px;align-items:center;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Email alerts to matching suppliers</div>
+              <div style="font-size:.8rem;display:flex;gap:8px;align-items:center;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Client portal dashboard</div>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button class="tb-btn tb-btn-out" onclick="alert('Manage billing via Stripe Customer Portal — connect Stripe in production')">Manage Billing</button>
+              <button class="ibtn ibtn-r">Cancel Plan</button>
+            </div>
+          </div>
+        </div>
+        <div class="card" style="border-color:var(--gold);background:var(--gold-pale);">
+          <div class="card-head" style="border-color:rgba(200,146,42,.2);"><span class="card-title">Upgrade to Premium</span><span class="bdg bdg-gold">Recommended</span></div>
+          <div class="card-body">
+            <div style="font-family:Cairo,sans-serif;font-size:1.4rem;font-weight:700;color:var(--ink);margin-bottom:4px;">€179 / month</div>
+            <div style="font-size:.82rem;color:var(--mid);margin-bottom:14px;">Everything in Pro, plus:</div>
+            <div style="display:flex;flex-direction:column;gap:7px;margin-bottom:18px;">
+              <div style="font-size:.8rem;display:flex;gap:8px;align-items:center;color:var(--ink);"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Homepage featured company slot</div>
+              <div style="font-size:.8rem;display:flex;gap:8px;align-items:center;color:var(--ink);"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Dedicated account manager</div>
+              <div style="font-size:.8rem;display:flex;gap:8px;align-items:center;color:var(--ink);"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>WhatsApp broadcast to supplier network</div>
+              <div style="font-size:.8rem;display:flex;gap:8px;align-items:center;color:var(--ink);"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Quarterly GCC trade intelligence report</div>
+            </div>
+            <button class="tb-btn tb-btn-gold" style="width:100%;" onclick="alert('Stripe upgrade flow — connect payment links in production')">Upgrade Now →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ INVOICES ═══ -->
+    <div class="panel" id="panel-invoices">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:10px;">
+        <div>
+          <div style="font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--teal);font-weight:700;margin-bottom:4px;">Billing history</div>
+          <h2 style="font-family:Cairo,sans-serif;font-size:1.25rem;font-weight:700;">Invoices</h2>
+        </div>
+        <button class="tb-btn tb-btn-out" onclick="openMo('mo-inv')">Preview Invoice Template</button>
+      </div>
+      <div class="card card-body-0" style="margin-bottom:20px;">
+        <div class="tbl-wrap">
+          <table class="tbl">
+            <thead><tr><th>Invoice</th><th>Period</th><th>Description</th><th>Amount</th><th>Status</th><th>Action</th></tr></thead>
+            <tbody>
+              <tr><td><strong>INV-2025-003</strong></td><td>Jun 2025</td><td>Pro Importer — Gulf Trade Portal</td><td><strong>€59.00</strong></td><td><span class="bdg bdg-grn">Paid</span></td><td><button class="ibtn ibtn-o" onclick="openMo('mo-inv')">Download PDF</button></td></tr>
+              <tr><td><strong>INV-2025-002</strong></td><td>May 2025</td><td>Pro Importer — Gulf Trade Portal</td><td><strong>€59.00</strong></td><td><span class="bdg bdg-grn">Paid</span></td><td><button class="ibtn ibtn-o" onclick="openMo('mo-inv')">Download PDF</button></td></tr>
+              <tr><td><strong>INV-2025-001</strong></td><td>Apr 2025</td><td>Pro Importer — Gulf Trade Portal</td><td><strong>€59.00</strong></td><td><span class="bdg bdg-grn">Paid</span></td><td><button class="ibtn ibtn-o" onclick="openMo('mo-inv')">Download PDF</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="kyb-alert kyb-info">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <div class="kyb-alert-text"><strong>Invoicing entity</strong>All Gulf Trade Portal subscriptions and ad packages are invoiced by <strong>Excorp Distribution B.V.</strong>, trading as Gulf Trade Portal. KVK 12345678 · BTW NL123456789B01 · Registered in Dordrecht, Netherlands. Invoices are 0% VAT for EU B2B clients with valid VAT numbers (reverse charge). Non-EU clients: no EU VAT applies.</div>
+      </div>
+    </div>
+
+    <!-- ═══ NOTIFICATIONS ═══ -->
+    <div class="panel" id="panel-notifications">
+      <div style="margin-bottom:18px;">
+        <div style="font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--teal);font-weight:700;margin-bottom:4px;">Updates</div>
+        <h2 style="font-family:Cairo,sans-serif;font-size:1.25rem;font-weight:700;">Notifications</h2>
+      </div>
+      <div class="card card-body-0">
+        <div class="notif-list">
+          <div class="notif-item unread"><div class="notif-dot nd-teal"></div><div class="notif-body"><div class="notif-title">Dutch Food Export BV responded to your Nespresso request</div><div class="notif-sub">They can supply 60,000+ sleeves/month with EU origin docs. CIF Dubai available.</div></div><div class="notif-time">2h ago</div></div>
+          <div class="notif-item unread"><div class="notif-dot nd-gold"></div><div class="notif-body"><div class="notif-title">Your trade request "Steel Rebar Grade 60" is under review</div><div class="notif-sub">Our team is verifying your request. Estimated 24h to go live.</div></div><div class="notif-time">6h ago</div></div>
+          <div class="notif-item unread"><div class="notif-dot nd-grn"></div><div class="notif-body"><div class="notif-title">5 new EU suppliers match your Olive Oil request</div><div class="notif-sub">We sent your request to Iberia Food Group, Crete Organics, and 3 more suppliers by email.</div></div><div class="notif-time">Yesterday</div></div>
+          <div class="notif-item"><div class="notif-dot nd-mid" style="background:var(--mid);"></div><div class="notif-body"><div class="notif-title">Invoice INV-2025-003 paid successfully</div><div class="notif-sub">€59.00 charged to Mastercard ending 4242. Pro Importer renewed for June 2025.</div></div><div class="notif-time">1 Jun</div></div>
+          <div class="notif-item"><div class="notif-dot nd-grn"></div><div class="notif-body"><div class="notif-title">Your company verification is complete</div><div class="notif-sub">Excorp Distribution B.V. is now verified. Your listing is live on Gulf Trade Portal.</div></div><div class="notif-time">14 Jun</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ SETTINGS ═══ -->
+    <div class="panel" id="panel-settings">
+      <div style="margin-bottom:20px;">
+        <div style="font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--teal);font-weight:700;margin-bottom:4px;">Account</div>
+        <h2 style="font-family:Cairo,sans-serif;font-size:1.25rem;font-weight:700;">Settings</h2>
+      </div>
+      <div class="two-col">
+        <div>
+          <div class="card" style="margin-bottom:16px;">
+            <div class="card-head"><span class="card-title">Contact Details</span></div>
+            <div class="card-body">
+              <div class="fg"><label>Full Name</label><input type="text" value="Farhan A."></div>
+              <div class="fg"><label>Email Address</label><input type="email" value="farhan@excorpdistribution.nl"></div>
+              <div class="fg"><label>WhatsApp / Phone</label><input type="text" value="+31 6 00 000 000"></div>
+              <div class="fg"><label>Language</label><select><option>English</option><option>Arabic (soon)</option></select></div>
+              <button class="tb-btn tb-btn-teal">Save Changes</button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head"><span class="card-title">Security</span></div>
+            <div class="card-body">
+              <div class="fg"><label>Current Password</label><input type="password" placeholder="••••••••"></div>
+              <div class="fg"><label>New Password</label><input type="password" placeholder="Min. 8 characters"></div>
+              <button class="tb-btn tb-btn-out">Update Password</button>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="card" style="margin-bottom:16px;">
+            <div class="card-head"><span class="card-title">Notification Preferences</span></div>
+            <div class="card-body" style="display:flex;flex-direction:column;gap:13px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;">
+                <div><div style="font-size:.82rem;font-weight:600;">New supplier responses</div><div style="font-size:.73rem;color:var(--mid);">Email when a supplier responds to your request</div></div>
+                <label style="position:relative;display:inline-block;width:36px;height:20px;cursor:pointer;"><input type="checkbox" checked style="opacity:0;width:0;height:0;"><span style="position:absolute;inset:0;background:var(--teal);border-radius:20px;"><span style="position:absolute;height:14px;width:14px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.2s;transform:translateX(16px);"></span></span></label>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;">
+                <div><div style="font-size:.82rem;font-weight:600;">Weekly GCC demand digest</div><div style="font-size:.73rem;color:var(--mid);">Summary of new requests matching your sector</div></div>
+                <label style="position:relative;display:inline-block;width:36px;height:20px;cursor:pointer;"><input type="checkbox" checked style="opacity:0;width:0;height:0;"><span style="position:absolute;inset:0;background:var(--teal);border-radius:20px;"><span style="position:absolute;height:14px;width:14px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.2s;transform:translateX(16px);"></span></span></label>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;">
+                <div><div style="font-size:.82rem;font-weight:600;">Invoice &amp; billing alerts</div><div style="font-size:.73rem;color:var(--mid);">Payment confirmations and upcoming renewals</div></div>
+                <label style="position:relative;display:inline-block;width:36px;height:20px;cursor:pointer;"><input type="checkbox" checked style="opacity:0;width:0;height:0;"><span style="position:absolute;inset:0;background:var(--teal);border-radius:20px;"><span style="position:absolute;height:14px;width:14px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.2s;transform:translateX(16px);"></span></span></label>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;">
+                <div><div style="font-size:.82rem;font-weight:600;">WhatsApp notifications</div><div style="font-size:.73rem;color:var(--mid);">Critical alerts via WhatsApp</div></div>
+                <label style="position:relative;display:inline-block;width:36px;height:20px;cursor:pointer;"><input type="checkbox" style="opacity:0;width:0;height:0;"><span style="position:absolute;inset:0;background:var(--mist);border-radius:20px;"><span style="position:absolute;height:14px;width:14px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.2s;"></span></span></label>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head"><span class="card-title">Danger Zone</span></div>
+            <div class="card-body">
+              <p style="font-size:.81rem;color:var(--mid);margin-bottom:14px;line-height:1.55;">Deleting your account removes all trade requests, responses, and company data permanently.</p>
+              <button class="ibtn ibtn-r" style="padding:8px 16px;">Delete Account</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PLACEHOLDER PANELS -->
+    <div class="panel" id="panel-profile">
+      <div style="margin-bottom:18px;"><div style="font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--teal);font-weight:700;margin-bottom:4px;">Public listing</div><h2 style="font-family:Cairo,sans-serif;font-size:1.25rem;font-weight:700;">Company Profile</h2></div>
+      <div class="card"><div class="card-body">
+        <div class="fr2" style="margin-bottom:12px;">
+          <div class="fg"><label>Company Name</label><input type="text" value="Excorp Distribution B.V."></div>
+          <div class="fg"><label>Trading Name on Portal</label><input type="text" value="Gulf Trade Portal"></div>
+        </div>
+        <div class="fr2" style="margin-bottom:12px;">
+          <div class="fg"><label>Sector</label><select><option selected>FMCG</option><option>Food &amp; Beverages</option></select></div>
+          <div class="fg"><label>Company Type</label><select><option selected>Wholesaler / Distributor</option><option>Importer</option></select></div>
+        </div>
+        <div class="fg"><label>Products / Commodities</label><textarea>Nespresso Original Line capsules, Starbucks by Nespresso, Nespresso machines</textarea></div>
+        <div class="fg"><label>Company Description (shown on listing)</label><textarea>B2B wholesale distributor of genuine Nespresso Original Line capsules, Starbucks by Nespresso, and Nespresso machines. Based in Dordrecht, Netherlands. Supplying verified EU & GCC buyers.</textarea></div>
+        <div class="fg"><label>WhatsApp</label><input type="text" placeholder="+31 6 00 000 000"></div>
+        <div class="fg"><label>Business Email</label><input type="email" placeholder="trade@excorpdistribution.com"></div>
+        <button class="tb-btn tb-btn-teal">Save Profile</button>
+      </div></div>
+    </div>
+
+    <div class="panel" id="panel-directory">
+      <div style="margin-bottom:18px;"><div style="font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--teal);font-weight:700;margin-bottom:4px;">Supplier search</div><h2 style="font-family:Cairo,sans-serif;font-size:1.25rem;font-weight:700;">Browse Verified Suppliers</h2></div>
+      <div class="kyb-alert kyb-info"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><div class="kyb-alert-text"><strong>Full supplier directory available on the main portal</strong>Click "Back to Portal" in the top bar and navigate to the Directory section to browse and filter all verified EU &amp; US suppliers.</div></div>
+    </div>
+
+  </div><!-- end content -->
+</div><!-- end main -->
+
+<!-- POST REQUEST MODAL -->
+<div class="mo" id="mo-post"><div class="mo-box">
+  <button class="mo-x" onclick="closeMo('mo-post')">×</button>
+  <h3 class="mo-h">Post a Trade Request</h3>
+  <p class="mo-sub">Your request goes live on the Trade Board within 24 hours and is emailed to matching EU/US suppliers.</p>
+  <div class="fg"><label>Request Type</label><select><option>Import Request — I need to buy / import</option><option>Export Offer — I have goods to sell</option></select></div>
+  <div class="fg"><label>Product / Commodity</label><input type="text" placeholder="e.g. Nespresso capsules, Steel rebar, Olive oil…"></div>
+  <div class="fr2" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+    <div class="fg"><label>Quantity</label><input type="text" placeholder="e.g. 10,000 units/month"></div>
+    <div class="fg"><label>Destination Country</label><select><option>UAE</option><option>Saudi Arabia</option><option>Kuwait</option><option>Qatar</option><option>Oman</option><option>Bahrain</option></select></div>
+  </div>
+  <div class="fg"><label>Preferred Origin</label><select><option>Europe (EU)</option><option>Netherlands</option><option>Germany</option><option>United States</option><option>Any origin</option></select></div>
+  <div class="fg"><label>Specifications &amp; Requirements</label><textarea placeholder="Product specs, certifications needed, packaging, delivery terms, urgency…" style="font-family:Inter,sans-serif;font-size:.85rem;border:1.5px solid var(--mist);border-radius:4px;padding:9px 11px;width:100%;outline:none;resize:vertical;min-height:80px;"></textarea></div>
+  <button class="tb-btn tb-btn-gold" style="width:100%;" onclick="submitPost()">Submit Request →</button>
+  <div id="post-succ" class="succ">✓ Submitted! Your request will appear on the Trade Board within 24 hours.</div>
+</div></div>
+
+<!-- REPLY MODAL -->
+<div class="mo" id="mo-reply"><div class="mo-box">
+  <button class="mo-x" onclick="closeMo('mo-reply')">×</button>
+  <h3 class="mo-h">Reply to Supplier</h3>
+  <p class="mo-sub">Your reply will be delivered via email. You can also contact them directly via WhatsApp using the number in their message.</p>
+  <div class="fg"><label>Your Message</label><textarea style="font-family:Inter,sans-serif;font-size:.85rem;border:1.5px solid var(--mist);border-radius:4px;padding:9px 11px;width:100%;outline:none;resize:vertical;min-height:120px;" placeholder="Thank you for your response. Please send us a formal quote with…"></textarea></div>
+  <div class="fg"><label>Attach File (optional)</label><input type="file"></div>
+  <button class="tb-btn tb-btn-teal" style="width:100%;" onclick="alert('Message sent — connect to email API in production.')">Send Reply →</button>
+</div></div>
+
+<!-- INVOICE PREVIEW MODAL -->
+<div class="mo" id="mo-inv"><div class="mo-box" style="max-width:640px;padding:0;">
+  <button class="mo-x" style="top:8px;right:12px;background:rgba(255,255,255,.2);color:#fff;" onclick="closeMo('mo-inv')">×</button>
+  <div class="inv-header">
+    <div class="inv-logo">Gulf <span>Trade</span> Portal<sub>A trading name of Excorp Distribution B.V.</sub></div>
+    <div class="inv-num">
+      <div class="inv-label">Invoice</div>
+      <div class="inv-val">INV-2025-003</div>
+      <div class="inv-date">Issued: 1 June 2025 · Due: 1 June 2025</div>
+    </div>
+  </div>
+  <div class="inv-body">
+    <div class="inv-parties">
+      <div>
+        <div class="inv-party-label">From</div>
+        <div class="inv-party-name">Excorp Distribution B.V.</div>
+        <div class="inv-party-detail">
+          Trading as: Gulf Trade Portal<br>
+          KVK: 12345678<br>
+          BTW: NL123456789B01<br>
+          Haringvliet 2, 3311 NR Dordrecht<br>
+          Netherlands<br>
+          invoice@gulftradeportal.com
+        </div>
+      </div>
+      <div>
+        <div class="inv-party-label">Bill To</div>
+        <div class="inv-party-name">Excorp Distribution B.V.</div>
+        <div class="inv-party-detail">
+          KVK: 12345678<br>
+          BTW: NL123456789B01<br>
+          Haringvliet 2, 3311 NR Dordrecht<br>
+          Netherlands
+        </div>
+      </div>
+    </div>
+    <table class="inv-tbl">
+      <thead><tr><th>Description</th><th>Period</th><th>Qty</th><th>Unit Price</th><th>Total</th></tr></thead>
+      <tbody>
+        <tr><td>Gulf Trade Portal — Pro Importer Plan</td><td>Jun 2025</td><td>1</td><td>€59.00</td><td>€59.00</td></tr>
+      </tbody>
+    </table>
+    <div class="inv-totals">
+      <div class="inv-totals-box">
+        <div class="inv-total-row"><span>Subtotal</span><span>€59.00</span></div>
+        <div class="inv-total-row"><span>VAT (0% — B2B reverse charge)</span><span>€0.00</span></div>
+        <div class="inv-total-row total"><span>Total Due</span><span>€59.00</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="inv-footer">
+    <span>Payment via Stripe · Paid by Mastercard ····4242</span>
+    <button class="ibtn ibtn-t" onclick="alert('PDF download — connect to PDF generator in production.')">Download PDF</button>
+  </div>
+</div></div>
+
+<script>
+const PANELS = ['dashboard','requests','responses','kyb','profile','directory','subscription','invoices','notifications','settings'];
+const TITLES = {dashboard:'Dashboard',requests:'My Trade Requests',responses:'Supplier Responses',kyb:'Verification (KYB)',profile:'Company Profile',directory:'Browse Suppliers',subscription:'Subscription',invoices:'Invoices',notifications:'Notifications',settings:'Settings'};
+
+function showPanel(id, btn) {
+  PANELS.forEach(p => {
+    const el = document.getElementById('panel-'+p);
+    if (el) el.classList.toggle('active', p === id);
+  });
+  document.querySelectorAll('.sb-link').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  document.getElementById('page-title').textContent = TITLES[id] || id;
+  window.scrollTo(0, 0);
+}
+
+function openMo(id){document.getElementById(id).classList.add('open');}
+function closeMo(id){document.getElementById(id).classList.remove('open');}
+document.addEventListener('click',e=>{if(e.target.classList.contains('mo'))e.target.classList.remove('open');});
+
+function runAutoCheck(){
+  const reg = document.getElementById('kyb-reg').value.trim();
+  if(!reg){alert('Enter a registration number first.');return;}
+  const res = document.getElementById('kyb-check-result');
+  const chk = document.getElementById('kyb-checking');
+  const ok = document.getElementById('kyb-ok');
+  res.style.display='block';
+  chk.style.display='flex';
+  ok.style.display='none';
+  setTimeout(()=>{
+    chk.style.display='none';
+    ok.style.display='flex';
+    document.getElementById('kyb-result-detail').textContent =
+      reg.length === 8
+        ? 'Company found: Active registration · Netherlands Handelsregister · '+reg
+        : 'Company found: Active registration confirmed · Reg. '+reg;
+  }, 2200);
+}
+
+function submitKYB(){
+  document.getElementById('kyb-succ').style.display='block';
+  document.querySelector('[onclick="submitKYB()"]').disabled=true;
+}
+function submitPost(){
+  document.getElementById('post-succ').style.display='block';
+  setTimeout(()=>closeMo('mo-post'),2600);
+}
+</script>
+</body>
+</html>

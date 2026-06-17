@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gulf Trade Portal — New Features</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --teal:#0A7369;--teal-dk:#065550;--teal-lt:#0E9B8F;--teal-pale:#E6F5F3;
+  --gold:#C8922A;--gold-lt:#E8B84B;--gold-pale:#FFF8E6;
+  --ink:#141210;--ink2:#2C2825;--mid:#6B6460;--mist:#DDD8D0;
+  --white:#FDFCFA;--sand:#F7F3EC;--sand-dk:#EDE7DA;
+  --grn:#22A05A;--grn-pale:#E8F5E9;
+  --red:#C0392B;--red-pale:#FEE9E7;
+  --eu:#1A4FB5;--halal:#1B7A3A;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Inter',sans-serif;background:#F0EDE8;color:var(--ink);font-size:14px;line-height:1.6;}
+
+/* NAV */
+nav{background:var(--ink2);border-bottom:2px solid var(--teal);padding:0 32px;height:52px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.nav-logo{font-family:'Cairo',sans-serif;font-size:1.1rem;font-weight:700;color:#fff;}
+.nav-logo span{color:var(--gold);}
+.nav-tabs{display:flex;gap:0;}
+.ntab{padding:0 18px;height:52px;display:flex;align-items:center;font-size:.78rem;font-weight:500;color:rgba(255,255,255,.6);cursor:pointer;border:none;background:none;font-family:'Inter',sans-serif;transition:color .15s,background .15s;border-bottom:2px solid transparent;margin-bottom:-2px;}
+.ntab:hover{color:#fff;}
+.ntab.on{color:#fff;border-bottom-color:var(--gold);}
+.nav-back{font-size:.76rem;color:rgba(255,255,255,.5);text-decoration:none;display:flex;align-items:center;gap:5px;transition:color .15s;}
+.nav-back:hover{color:#fff;}
+
+/* PANELS */
+.panel{display:none;min-height:calc(100vh - 52px);}
+.panel.on{display:block;}
+
+/* ═══════════════════════════════════════
+   FEATURE 1 — AI SUPPLIER MATCH
+═══════════════════════════════════════ */
+.ai-hero{background:linear-gradient(140deg,var(--teal-dk) 0%,#0A5A54 60%,#063D39 100%);padding:48px 32px 40px;position:relative;overflow:hidden;}
+.ai-hero::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.025'%3E%3Cpath d='M20 20.5V18H0v5h5v5H0v5h20v-2.5h-5V20.5h5zm25 5a5 5 0 0 0-5-5V18H20v5h5v1.5h-5V30h5v5H20v5h25V25z'/%3E%3C/g%3E%3C/svg%3E") repeat;}
+.ai-hero-inner{max-width:1100px;margin:0 auto;position:relative;}
+.ai-eyebrow{font-size:.67rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:10px;font-weight:500;display:flex;align-items:center;gap:8px;}
+.ai-eyebrow::before{content:'';width:20px;height:1px;background:var(--gold);display:inline-block;}
+.ai-hero h1{font-family:'Cairo',sans-serif;font-size:clamp(1.6rem,3vw,2.4rem);color:#fff;font-weight:700;margin-bottom:10px;line-height:1.2;}
+.ai-hero h1 .acc{color:var(--gold-lt);}
+.ai-hero p{color:rgba(255,255,255,.6);font-size:.92rem;max-width:540px;line-height:1.7;margin-bottom:0;}
+
+.ai-main{max-width:1100px;margin:0 auto;padding:32px;}
+.ai-layout{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start;}
+
+/* Input card */
+.ai-input-card{background:var(--white);border:1.5px solid var(--mist);border-radius:10px;overflow:hidden;}
+.aic-head{padding:18px 20px;border-bottom:1px solid var(--mist);background:var(--sand);}
+.aic-head-title{font-family:'Cairo',sans-serif;font-size:.95rem;font-weight:700;color:var(--ink);}
+.aic-head-sub{font-size:.74rem;color:var(--mid);margin-top:2px;}
+.aic-body{padding:20px;}
+.fg{display:flex;flex-direction:column;gap:4px;margin-bottom:12px;}
+.fg label{font-size:.68rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--mid);}
+.fg input,.fg select,.fg textarea{font-family:'Inter',sans-serif;font-size:.86rem;border:1.5px solid var(--mist);border-radius:5px;padding:9px 12px;background:var(--white);color:var(--ink);outline:none;transition:border-color .2s;}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--teal);}
+.fg textarea{resize:vertical;min-height:90px;}
+.fr2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+
+/* Halal toggle inside form */
+.halal-toggle{display:flex;align-items:center;gap:10px;padding:10px 13px;background:rgba(27,122,58,.06);border:1.5px solid rgba(27,122,58,.2);border-radius:5px;margin-bottom:12px;cursor:pointer;}
+.halal-toggle input[type=checkbox]{width:16px;height:16px;accent-color:var(--halal);cursor:pointer;}
+.halal-toggle-label{font-size:.82rem;font-weight:600;color:var(--halal);}
+.halal-toggle-sub{font-size:.71rem;color:var(--mid);}
+
+.btn-ai{width:100%;padding:12px;font-family:'Inter',sans-serif;font-size:.88rem;font-weight:700;background:linear-gradient(135deg,var(--teal),var(--teal-lt));color:#fff;border:none;border-radius:5px;cursor:pointer;transition:opacity .2s;display:flex;align-items:center;justify-content:center;gap:8px;}
+.btn-ai:hover{opacity:.88;}
+.btn-ai:disabled{opacity:.4;cursor:not-allowed;}
+.btn-ai svg{animation:none;}
+.btn-ai.loading svg{animation:spin 1s linear infinite;}
+@keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+
+/* Results */
+.ai-results-card{background:var(--white);border:1.5px solid var(--mist);border-radius:10px;overflow:hidden;}
+.arc-head{padding:16px 20px;border-bottom:1px solid var(--mist);display:flex;justify-content:space-between;align-items:center;}
+.arc-title{font-family:'Cairo',sans-serif;font-size:.95rem;font-weight:700;color:var(--ink);}
+.arc-status{font-size:.71rem;color:var(--mid);}
+
+.ai-empty{padding:48px 20px;text-align:center;color:var(--mid);}
+.ai-empty-icon{width:56px;height:56px;background:var(--sand);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;}
+.ai-empty p{font-size:.84rem;line-height:1.6;}
+
+.ai-thinking{padding:32px 20px;text-align:center;}
+.ai-thinking-dots{display:flex;gap:6px;justify-content:center;margin-bottom:14px;}
+.dot-pulse{width:8px;height:8px;border-radius:50%;background:var(--teal);animation:dotpulse 1.4s ease-in-out infinite;}
+.dot-pulse:nth-child(2){animation-delay:.2s;}
+.dot-pulse:nth-child(3){animation-delay:.4s;}
+@keyframes dotpulse{0%,80%,100%{transform:scale(.6);opacity:.4;}40%{transform:scale(1);opacity:1;}}
+.ai-thinking p{font-size:.82rem;color:var(--mid);}
+
+.match-card{border-bottom:1px solid var(--mist);padding:18px 20px;transition:background .15s;}
+.match-card:hover{background:var(--sand);}
+.match-card:last-child{border-bottom:none;}
+.mc-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;}
+.mc-rank{width:26px;height:26px;border-radius:50%;background:var(--teal);color:#fff;font-size:.72rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.mc-rank.gold{background:var(--gold);color:var(--ink);}
+.mc-name{font-weight:700;font-size:.9rem;color:var(--ink);margin-bottom:2px;}
+.mc-sub{font-size:.73rem;color:var(--mid);}
+.mc-score{text-align:right;}
+.mc-score-val{font-family:'Cairo',sans-serif;font-size:1.2rem;font-weight:700;color:var(--teal);line-height:1;}
+.mc-score-lbl{font-size:.63rem;color:var(--mid);letter-spacing:.04em;}
+.mc-reason{font-size:.8rem;color:var(--ink2);line-height:1.55;margin-bottom:10px;padding:9px 12px;background:var(--teal-pale);border-radius:4px;border-left:3px solid var(--teal);}
+.mc-tags{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px;}
+.mc-tag{font-size:.67rem;background:var(--sand-dk);color:var(--mid);padding:2px 8px;border-radius:2px;}
+.mc-halal-tag{background:rgba(27,122,58,.1);color:var(--halal);font-weight:700;}
+.mc-actions{display:flex;gap:6px;}
+.btn-xs{font-size:.72rem;font-weight:600;padding:5px 11px;border-radius:3px;cursor:pointer;border:none;font-family:'Inter',sans-serif;display:inline-block;text-decoration:none;transition:background .15s,color .15s;}
+.bx-t{background:var(--teal);color:#fff;}.bx-t:hover{background:var(--teal-lt);}
+.bx-o{background:none;border:1.5px solid var(--mist);color:var(--mid);}.bx-o:hover{border-color:var(--teal);color:var(--teal);}
+.bx-g{background:var(--gold);color:var(--ink);}.bx-g:hover{background:var(--gold-lt);}
+
+.ai-disclaimer{max-width:1100px;margin:0 32px 32px;padding:12px 16px;background:var(--sand);border:1px solid var(--mist);border-radius:5px;font-size:.73rem;color:var(--mid);line-height:1.5;}
+
+/* ═══════════════════════════════════════
+   FEATURE 2 — HALAL FILTER
+═══════════════════════════════════════ */
+.halal-hero{background:linear-gradient(135deg,var(--halal) 0%,#145E2C 100%);padding:40px 32px;position:relative;overflow:hidden;}
+.halal-hero::before{content:'☪';position:absolute;right:60px;top:50%;transform:translateY(-50%);font-size:8rem;opacity:.06;line-height:1;}
+.halal-hero-inner{max-width:1100px;margin:0 auto;position:relative;}
+.halal-hero h1{font-family:'Cairo',sans-serif;font-size:clamp(1.5rem,3vw,2.2rem);color:#fff;font-weight:700;margin-bottom:8px;}
+.halal-hero p{color:rgba(255,255,255,.65);font-size:.92rem;max-width:520px;line-height:1.7;}
+
+.halal-main{max-width:1100px;margin:0 auto;padding:28px 32px;}
+.halal-filters{background:var(--white);border:1.5px solid var(--mist);border-radius:8px;padding:18px 20px;margin-bottom:20px;display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;}
+.halal-cert-pills{display:flex;gap:7px;flex-wrap:wrap;}
+.cert-pill{display:flex;align-items:center;gap:6px;padding:7px 13px;border-radius:20px;font-size:.76rem;font-weight:600;cursor:pointer;transition:all .15s;border:1.5px solid;}
+.cert-pill.active-halal{background:rgba(27,122,58,.1);border-color:var(--halal);color:var(--halal);}
+.cert-pill.inactive{background:var(--white);border-color:var(--mist);color:var(--mid);}
+.cert-pill:hover{border-color:var(--halal);color:var(--halal);}
+.cert-dot{width:8px;height:8px;border-radius:50%;}
+.cd-halal{background:var(--halal);}
+.cd-organic{background:#4A90D9;}
+.cd-gdp{background:#8B5CF6;}
+.cd-fssc{background:#E8A030;}
+.cd-kosher{background:#2D3748;}
+
+.halal-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(285px,1fr));gap:14px;}
+.hco-card{background:var(--white);border:1.5px solid var(--mist);border-radius:7px;padding:0;overflow:hidden;transition:border-color .2s,box-shadow .2s;}
+.hco-card:hover{border-color:var(--halal);box-shadow:0 4px 16px rgba(27,122,58,.1);}
+.hco-card.halal-verified{border-color:rgba(27,122,58,.3);}
+.hco-top{padding:14px 15px 10px;border-bottom:1px solid var(--mist);}
+.hco-name-row{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;}
+.hco-name{font-weight:700;font-size:.9rem;color:var(--ink);}
+.hco-country{font-size:.71rem;color:var(--mid);}
+.hco-certs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px;}
+.hco-cert{display:inline-flex;align-items:center;gap:3px;font-size:.61rem;font-weight:700;letter-spacing:.05em;padding:2px 7px;border-radius:10px;}
+.cert-halal{background:rgba(27,122,58,.1);color:var(--halal);}
+.cert-organic{background:#EEF5FD;color:#2B72B8;}
+.cert-gdp{background:#F3F0FF;color:#6D3FD1;}
+.cert-fssc{background:#FEF3E2;color:#B87A10;}
+.cert-verified{background:var(--grn-pale);color:#1B6E3A;}
+.hco-desc{font-size:.78rem;color:#555;line-height:1.5;}
+.hco-bottom{padding:9px 15px;display:flex;justify-content:space-between;align-items:center;}
+.hco-products{font-size:.72rem;color:var(--mid);}
+
+/* Halal badge legend */
+.cert-legend{background:var(--sand);border:1px solid var(--mist);border-radius:6px;padding:14px 16px;margin-bottom:20px;}
+.cert-legend-title{font-size:.67rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--mid);margin-bottom:8px;}
+.cert-items{display:flex;gap:14px;flex-wrap:wrap;}
+.cert-item{display:flex;align-items:center;gap:5px;font-size:.74rem;color:var(--ink2);}
+
+/* ═══════════════════════════════════════
+   FEATURE 3 — MARKET INTELLIGENCE
+═══════════════════════════════════════ */
+.intel-hero{background:var(--ink2);padding:40px 32px;position:relative;overflow:hidden;}
+.intel-hero::after{content:'';position:absolute;right:0;top:0;bottom:0;width:40%;background:linear-gradient(90deg,transparent,rgba(200,146,42,.05));pointer-events:none;}
+.intel-hero-inner{max-width:1100px;margin:0 auto;position:relative;}
+.intel-hero h1{font-family:'Cairo',sans-serif;font-size:clamp(1.5rem,3vw,2.2rem);color:#fff;font-weight:700;margin-bottom:8px;}
+.intel-hero p{color:rgba(255,255,255,.55);font-size:.91rem;max-width:500px;line-height:1.7;}
+.intel-gated{display:inline-flex;align-items:center;gap:6px;font-size:.72rem;font-weight:600;color:var(--gold-lt);margin-top:10px;background:rgba(200,146,42,.12);padding:5px 12px;border-radius:20px;border:1px solid rgba(200,146,42,.25);}
+
+.intel-main{max-width:1100px;margin:0 auto;padding:28px 32px;}
+.intel-tabs{display:flex;gap:0;margin-bottom:22px;border-radius:5px;overflow:hidden;border:1.5px solid var(--mist);width:fit-content;}
+.itab{padding:8px 18px;font-size:.78rem;font-weight:600;cursor:pointer;border:none;font-family:'Inter',sans-serif;transition:background .15s,color .15s;}
+.itab.on{background:var(--ink2);color:#fff;}
+.itab:not(.on){background:var(--white);color:var(--mid);}
+.itab:not(.on):hover{background:var(--sand);}
+.itabpanel{display:none;}.itabpanel.on{display:block;}
+
+.report-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:14px;}
+.report-card{background:var(--white);border:1.5px solid var(--mist);border-radius:8px;overflow:hidden;transition:border-color .2s,box-shadow .2s;}
+.report-card:hover{border-color:var(--gold);box-shadow:0 4px 16px rgba(200,146,42,.1);}
+.rc-cover{height:90px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+.rc-cover-uae{background:linear-gradient(135deg,#009A44,#006B30);}
+.rc-cover-ksa{background:linear-gradient(135deg,#006C35,#004A24);}
+.rc-cover-kwt{background:linear-gradient(135deg,#007A3D,#005429);}
+.rc-cover-gcc{background:linear-gradient(135deg,var(--teal-dk),#033D39);}
+.rc-cover-fmcg{background:linear-gradient(135deg,var(--gold),#A67800);}
+.rc-cover-food{background:linear-gradient(135deg,#C0392B,#8B1A0E);}
+.rc-cover-text{font-family:'Cairo',sans-serif;font-size:1.15rem;font-weight:700;color:#fff;text-align:center;padding:10px;line-height:1.2;}
+.rc-cover-badge{position:absolute;top:8px;right:8px;font-size:.6rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:2px 8px;border-radius:10px;}
+.rc-badge-pro{background:rgba(200,146,42,.9);color:var(--ink);}
+.rc-badge-free{background:rgba(255,255,255,.2);color:#fff;}
+.rc-body{padding:14px 15px;}
+.rc-title{font-weight:700;font-size:.88rem;color:var(--ink);margin-bottom:4px;line-height:1.3;}
+.rc-meta{font-size:.71rem;color:var(--mid);margin-bottom:8px;}
+.rc-highlights{list-style:none;display:flex;flex-direction:column;gap:4px;margin-bottom:12px;}
+.rc-highlights li{font-size:.75rem;color:var(--ink2);display:flex;gap:6px;align-items:flex-start;}
+.rc-highlights li::before{content:'→';color:var(--gold);font-weight:700;flex-shrink:0;}
+.rc-foot{display:flex;justify-content:space-between;align-items:center;padding-top:10px;border-top:1px solid var(--mist);}
+.rc-pages{font-size:.69rem;color:var(--mid);}
+
+/* Teaser preview with blur */
+.intel-preview{background:var(--white);border:1.5px solid var(--mist);border-radius:8px;overflow:hidden;margin-bottom:20px;}
+.ip-head{padding:14px 18px;border-bottom:1px solid var(--mist);display:flex;justify-content:space-between;align-items:center;}
+.ip-title{font-family:'Cairo',sans-serif;font-size:.95rem;font-weight:700;}
+.ip-body{padding:18px;position:relative;}
+.ip-blur-overlay{position:absolute;bottom:0;left:0;right:0;height:60%;background:linear-gradient(transparent,var(--white));display:flex;align-items:flex-end;justify-content:center;padding-bottom:16px;}
+.ip-upgrade{background:var(--gold);color:var(--ink);font-weight:700;font-size:.8rem;padding:10px 22px;border-radius:4px;cursor:pointer;border:none;font-family:'Inter',sans-serif;}
+
+.data-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--mist);font-size:.82rem;}
+.data-row:last-child{border-bottom:none;}
+.data-bar-wrap{flex:1;margin:0 14px;height:5px;background:var(--mist);border-radius:3px;overflow:hidden;}
+.data-bar{height:100%;border-radius:3px;background:var(--teal);}
+.data-val{font-weight:700;font-size:.82rem;min-width:50px;text-align:right;}
+
+/* ═══════════════════════════════════════
+   FEATURE 4 — WHATSAPP BROADCAST
+═══════════════════════════════════════ */
+.wa-hero{background:linear-gradient(140deg,#075E54 0%,#128C7E 60%,#25D366 100%);padding:40px 32px;position:relative;overflow:hidden;}
+.wa-hero::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Ccircle cx='30' cy='30' r='20'/%3E%3C/g%3E%3C/svg%3E") repeat;pointer-events:none;}
+.wa-hero-inner{max-width:1100px;margin:0 auto;position:relative;}
+.wa-hero h1{font-family:'Cairo',sans-serif;font-size:clamp(1.5rem,3vw,2.2rem);color:#fff;font-weight:700;margin-bottom:8px;}
+.wa-hero p{color:rgba(255,255,255,.7);font-size:.92rem;max-width:520px;line-height:1.7;}
+
+.wa-main{max-width:1100px;margin:0 auto;padding:28px 32px;}
+.wa-layout{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:start;}
+
+.wa-composer{background:var(--white);border:1.5px solid var(--mist);border-radius:8px;overflow:hidden;}
+.wac-head{padding:14px 18px;border-bottom:1px solid var(--mist);background:var(--sand);display:flex;justify-content:space-between;align-items:center;}
+.wac-title{font-family:'Cairo',sans-serif;font-size:.9rem;font-weight:700;}
+.wac-body{padding:18px;}
+
+.audience-selector{display:flex;flex-direction:column;gap:7px;margin-bottom:14px;}
+.aud-opt{display:flex;align-items:center;gap:9px;padding:9px 12px;border:1.5px solid var(--mist);border-radius:5px;cursor:pointer;transition:border-color .15s,background .15s;}
+.aud-opt.selected{border-color:#25D366;background:rgba(37,211,102,.05);}
+.aud-opt input[type=radio]{accent-color:#25D366;cursor:pointer;}
+.aud-opt-label{font-size:.82rem;font-weight:600;color:var(--ink);}
+.aud-opt-count{font-size:.72rem;color:var(--mid);}
+
+.wa-template-btns{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;}
+.wa-tmpl{font-size:.71rem;font-weight:500;padding:4px 10px;border-radius:3px;border:1.5px solid var(--mist);background:var(--white);color:var(--mid);cursor:pointer;transition:all .15s;font-family:'Inter',sans-serif;}
+.wa-tmpl:hover,.wa-tmpl.on{border-color:#25D366;color:#075E54;background:rgba(37,211,102,.05);}
+
+.btn-wa{width:100%;padding:12px;font-family:'Inter',sans-serif;font-size:.88rem;font-weight:700;background:linear-gradient(135deg,#25D366,#128C7E);color:#fff;border:none;border-radius:5px;cursor:pointer;transition:opacity .2s;display:flex;align-items:center;justify-content:center;gap:8px;}
+.btn-wa:hover{opacity:.88;}
+
+/* WA Phone preview */
+.wa-phone{background:var(--sand);border:1.5px solid var(--mist);border-radius:8px;padding:0;overflow:hidden;}
+.wap-top{background:#075E54;padding:12px 16px;display:flex;align-items:center;gap:10px;}
+.wap-avatar{width:32px;height:32px;border-radius:50%;background:#25D366;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;color:#fff;flex-shrink:0;}
+.wap-info{flex:1;}
+.wap-name{font-size:.82rem;font-weight:600;color:#fff;}
+.wap-status{font-size:.69rem;color:rgba(255,255,255,.6);}
+.wap-chat{padding:14px;display:flex;flex-direction:column;gap:10px;min-height:320px;background:#ECE5DD url("data:image/svg+xml,%3Csvg width='300' height='300' viewBox='0 0 300 300' xmlns='http://www.w3.org/2000/svg'%3E%3Cg opacity='0.04'%3E%3Ccircle cx='150' cy='150' r='100' fill='none' stroke='%23000' stroke-width='1'/%3E%3C/g%3E%3C/svg%3E");}
+.wap-msg{max-width:85%;align-self:flex-start;}
+.wap-bubble{background:#fff;border-radius:0 8px 8px 8px;padding:10px 12px;font-size:.78rem;line-height:1.55;color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.1);}
+.wap-bubble strong{display:block;margin-bottom:4px;color:#075E54;font-size:.75rem;}
+.wap-bubble .wa-cta{display:inline-block;margin-top:8px;background:#075E54;color:#fff;font-size:.72rem;font-weight:700;padding:6px 12px;border-radius:4px;text-decoration:none;}
+.wap-time{font-size:.63rem;color:#999;margin-top:3px;text-align:right;}
+.wap-date-pill{text-align:center;font-size:.67rem;color:#8696A0;background:rgba(255,255,255,.6);padding:3px 10px;border-radius:10px;margin:4px auto;width:fit-content;}
+
+.wa-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:14px;}
+.wa-stat{background:var(--white);border:1.5px solid var(--mist);border-radius:6px;padding:12px 14px;text-align:center;}
+.ws-val{font-family:'Cairo',sans-serif;font-size:1.35rem;font-weight:700;color:var(--teal);}
+.ws-lbl{font-size:.67rem;color:var(--mid);margin-top:2px;}
+
+.wa-history{background:var(--white);border:1.5px solid var(--mist);border-radius:7px;overflow:hidden;margin-top:18px;}
+.wah-head{padding:12px 16px;border-bottom:1px solid var(--mist);display:flex;justify-content:space-between;align-items:center;}
+.wah-title{font-family:'Cairo',sans-serif;font-size:.88rem;font-weight:700;}
+.wah-item{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border-bottom:1px solid var(--mist);font-size:.79rem;}
+.wah-item:last-child{border-bottom:none;}
+.wah-left{}
+.wah-title2{font-weight:600;color:var(--ink);margin-bottom:2px;}
+.wah-meta{font-size:.71rem;color:var(--mid);}
+.wah-right{text-align:right;}
+.wah-sent{font-weight:700;color:var(--teal);}
+.wah-rate{font-size:.7rem;color:var(--mid);}
+
+/* Toasts */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--teal);color:#fff;font-family:'Inter',sans-serif;font-size:.8rem;font-weight:600;padding:12px 18px;border-radius:6px;z-index:999;box-shadow:0 6px 24px rgba(0,0,0,.2);opacity:0;transform:translateY(10px);transition:opacity .3s,transform .3s;pointer-events:none;}
+.toast.show{opacity:1;transform:translateY(0);}
+.toast.wa{background:#25D366;}
+
+/* Responsive */
+@media(max-width:768px){
+  .ai-layout,.wa-layout,.intel-preview .fr2{grid-template-columns:1fr;}
+  .ai-main,.halal-main,.intel-main,.wa-main{padding:20px 16px;}
+  .ai-hero,.halal-hero,.intel-hero,.wa-hero{padding:32px 16px;}
+  .nav-tabs .ntab{padding:0 10px;font-size:.72rem;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <span class="nav-logo">Gulf <span>Trade</span> Portal</span>
+  <div class="nav-tabs">
+    <button class="ntab on" onclick="showFeature('ai',this)">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:5px;vertical-align:-1px;"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      AI Supplier Match
+    </button>
+    <button class="ntab" onclick="showFeature('halal',this)">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:5px;vertical-align:-1px;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+      Halal Filter
+    </button>
+    <button class="ntab" onclick="showFeature('intel',this)">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:5px;vertical-align:-1px;"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      Market Intelligence
+    </button>
+    <button class="ntab" onclick="showFeature('wa',this)">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="white" style="margin-right:5px;vertical-align:-1px;"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      WhatsApp Broadcast
+    </button>
+  </div>
+  <a href="index.html" class="nav-back">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+    Back to Home
+  </a>
+</nav>
+
+<!-- ═══════════════════════════════════════
+     FEATURE 1 — AI SUPPLIER MATCH
+═══════════════════════════════════════ -->
+<div class="panel on" id="f-ai">
+  <div class="ai-hero">
+    <div class="ai-hero-inner">
+      <p class="ai-eyebrow">Powered by Claude AI</p>
+      <h1>AI <span class="acc">Supplier Match</span></h1>
+      <p>Describe what you need to import and our AI instantly analyses all verified suppliers — from Europe, USA, and Asia — to find the best matches, ranked by relevance, certifications, Halal status, and GCC export experience.</p>
+    </div>
+  </div>
+  <div class="ai-main">
+    <div class="ai-layout">
+      <div class="ai-input-card">
+        <div class="aic-head">
+          <div class="aic-head-title">Describe your import requirement</div>
+          <div class="aic-head-sub">Be as specific as possible for better matches</div>
+        </div>
+        <div class="aic-body">
+          <div class="fg">
+            <label>Product / Commodity</label>
+            <input type="text" id="ai-product" placeholder="e.g. Nespresso Original Line capsules, all varieties">
+          </div>
+          <div class="fr2">
+            <div class="fg">
+              <label>Quantity Needed</label>
+              <input type="text" id="ai-qty" placeholder="e.g. 50,000 sleeves/month">
+            </div>
+            <div class="fg">
+              <label>Destination Country</label>
+              <select id="ai-country">
+                <option value="UAE">UAE</option>
+                <option value="Saudi Arabia">Saudi Arabia</option>
+                <option value="Kuwait">Kuwait</option>
+                <option value="Qatar">Qatar</option>
+                <option value="Oman">Oman</option>
+                <option value="Bahrain">Bahrain</option>
+              </select>
+            </div>
+          </div>
+          <div class="fr2">
+            <div class="fg">
+              <label>Preferred Origin</label>
+              <select id="ai-origin">
+                <option value="Europe (EU)">Europe (EU)</option>
+                <option value="Netherlands">Netherlands</option>
+                <option value="Germany">Germany</option>
+                <option value="United States">United States</option>
+                <option value="China">China</option>
+                <option value="India">India</option>
+                <option value="Malaysia">Malaysia</option>
+                <option value="Singapore">Singapore</option>
+                <option value="South Korea">South Korea</option>
+                <option value="Japan">Japan</option>
+                <option value="Pakistan">Pakistan</option>
+                <option value="Indonesia">Indonesia</option>
+                <option value="Thailand">Thailand</option>
+                <option value="Any origin">Any origin</option>
+              </select>
+            </div>
+            <div class="fg">
+              <label>Sector</label>
+              <select id="ai-sector">
+                <option value="FMCG">FMCG</option>
+                <option value="Food & Beverages">Food & Beverages</option>
+                <option value="Construction">Construction Materials</option>
+                <option value="Electronics">Electronics</option>
+                <option value="Chemicals">Chemicals</option>
+                <option value="Machinery">Machinery</option>
+                <option value="Healthcare">Healthcare</option>
+              </select>
+            </div>
+          </div>
+          <div class="fg">
+            <label>Key Requirements & Certifications</label>
+            <textarea id="ai-reqs" placeholder="e.g. Must have EU origin documentation, HALAL certified, CIF Dubai delivery, minimum 3 years GCC export experience…"></textarea>
+          </div>
+          <label class="halal-toggle" onclick="this.querySelector('input').click()">
+            <input type="checkbox" id="ai-halal" onclick="event.stopPropagation()">
+            <div>
+              <div class="halal-toggle-label">☪ Halal Certified Suppliers Only</div>
+              <div class="halal-toggle-sub">Filter to suppliers with valid Halal certification</div>
+            </div>
+          </label>
+          <button class="btn-ai" id="btn-ai-match" onclick="runAIMatch()">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            Find Best Matching Suppliers
+          </button>
+          <p style="font-size:.7rem;color:var(--mid);text-align:center;margin-top:8px;line-height:1.5;">AI analyses all <strong>428 verified suppliers</strong> across EU, USA &amp; Asia in seconds</p>
+        </div>
+      </div>
+
+      <div class="ai-results-card">
+        <div class="arc-head">
+          <span class="arc-title">Matched Suppliers</span>
+          <span class="arc-status" id="ai-status">Enter requirements to begin</span>
+        </div>
+        <div id="ai-results">
+          <div class="ai-empty">
+            <div class="ai-empty-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--mid)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            </div>
+            <p>Fill in your import requirements on the left and click <strong>Find Best Matching Suppliers</strong>. Claude AI will analyse all verified suppliers and rank them by how well they match your needs.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="ai-disclaimer">
+    <strong>How AI Matching works:</strong> When you submit a request, our AI reads your product, quantity, origin, and certification requirements, then analyses every verified supplier profile on the platform — from Europe, USA, and Asia — including their products, Halal certifications (JAKIM, MUI, EU Halal), export history, and GCC experience. Results are powered by Claude (Anthropic) and generated in real time.
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     FEATURE 2 — HALAL FILTER
+═══════════════════════════════════════ -->
+<div class="panel" id="f-halal">
+  <div class="halal-hero">
+    <div class="halal-hero-inner">
+      <p style="font-size:.67rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:10px;font-weight:500;">☪ GCC Compliance Layer</p>
+      <h1>Halal Certification Filter</h1>
+      <p>Every GCC food and FMCG import must meet Halal standards. Filter our supplier directory by certification type — SFDA, ESMA, MUI, JAKIM, and more — to find compliant suppliers instantly.</p>
+    </div>
+  </div>
+  <div class="halal-main">
+    <div class="cert-legend">
+      <div class="cert-legend-title">Certification Legend</div>
+      <div class="cert-items">
+        <div class="cert-item"><span style="width:8px;height:8px;border-radius:50%;background:var(--halal);display:inline-block;"></span>Halal Certified</div>
+        <div class="cert-item"><span style="width:8px;height:8px;border-radius:50%;background:#4A90D9;display:inline-block;"></span>Organic / BIO</div>
+        <div class="cert-item"><span style="width:8px;height:8px;border-radius:50%;background:#8B5CF6;display:inline-block;"></span>GDP (pharma)</div>
+        <div class="cert-item"><span style="width:8px;height:8px;border-radius:50%;background:#E8A030;display:inline-block;"></span>FSSC 22000</div>
+        <div class="cert-item"><span style="width:8px;height:8px;border-radius:50%;background:#2D3748;display:inline-block;"></span>Kosher</div>
+        <div class="cert-item"><span style="width:8px;height:8px;border-radius:50%;background:var(--grn);display:inline-block;"></span>GTP Verified</div>
+        <div class="cert-item"><span style="width:8px;height:8px;border-radius:50%;background:#00796B;display:inline-block;"></span>JAKIM (Malaysia)</div>
+        <div class="cert-item"><span style="width:8px;height:8px;border-radius:50%;background:#1B5E20;display:inline-block;"></span>MUI (Indonesia)</div>
+      </div>
+    </div>
+
+    <div class="halal-filters">
+      <div>
+        <div style="font-size:.67rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--mid);margin-bottom:7px;">Filter by certification</div>
+        <div class="halal-cert-pills">
+          <div class="cert-pill active-halal" onclick="toggleCert(this,'halal')"><span class="cert-dot cd-halal"></span>Halal Certified</div>
+          <div class="cert-pill inactive" onclick="toggleCert(this,'organic')"><span class="cert-dot cd-organic"></span>Organic / BIO</div>
+          <div class="cert-pill inactive" onclick="toggleCert(this,'fssc')"><span class="cert-dot cd-fssc"></span>FSSC 22000</div>
+          <div class="cert-pill inactive" onclick="toggleCert(this,'gdp')"><span class="cert-dot cd-gdp"></span>GDP Certified</div>
+          <div class="cert-pill inactive" onclick="toggleCert(this,'kosher')"><span class="cert-dot cd-kosher"></span>Kosher</div>
+        </div>
+      </div>
+      <div style="margin-left:auto;">
+        <div style="font-size:.67rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--mid);margin-bottom:7px;">Sector</div>
+        <select id="halal-sector" onchange="renderHalal()" style="font-family:Inter,sans-serif;font-size:.82rem;border:1.5px solid var(--mist);border-radius:4px;padding:7px 11px;outline:none;cursor:pointer;">
+          <option value="">All sectors</option>
+          <option value="food">Food & Beverages</option>
+          <option value="fmcg">FMCG</option>
+          <option value="pharma">Healthcare & Pharma</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="halal-count" style="font-size:.79rem;color:var(--mid);margin-bottom:14px;"></div>
+    <div class="halal-grid" id="halal-grid"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     FEATURE 3 — MARKET INTELLIGENCE
+═══════════════════════════════════════ -->
+<div class="panel" id="f-intel">
+  <div class="intel-hero">
+    <div class="intel-hero-inner">
+      <p style="font-size:.67rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:10px;font-weight:500;">Data & Insights</p>
+      <h1 style="color:#fff;">GCC Market Intelligence</h1>
+      <p>Quarterly reports on what's being imported into each GCC country — by sector, volume, and origin. Know where demand is growing before your competitors do.</p>
+      <div class="intel-gated">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        Pro plan & above — full reports included
+      </div>
+    </div>
+  </div>
+  <div class="intel-main">
+    <div class="intel-tabs">
+      <button class="itab on" onclick="setIT('reports',this)">Reports Library</button>
+      <button class="itab" onclick="setIT('live',this)">Live Data</button>
+      <button class="itab" onclick="setIT('trends',this)">Sector Trends</button>
+    </div>
+
+    <!-- REPORTS -->
+    <div class="itabpanel on" id="it-reports">
+      <div class="report-grid">
+        <div class="report-card">
+          <div class="rc-cover rc-cover-uae">
+            <div class="rc-cover-text">UAE Import<br>Report Q2 2025</div>
+            <span class="rc-cover-badge rc-badge-pro">PRO</span>
+          </div>
+          <div class="rc-body">
+            <div class="rc-title">UAE Food & FMCG Import Landscape Q2 2025</div>
+            <div class="rc-meta">June 2025 · 34 pages · PDF</div>
+            <ul class="rc-highlights">
+              <li>EU food exports to UAE up 18% YoY</li>
+              <li>Coffee & capsule imports grew 24%</li>
+              <li>Top 10 fastest-growing categories</li>
+              <li>Price benchmarks by product group</li>
+            </ul>
+            <div class="rc-foot">
+              <span class="rc-pages">34 pages</span>
+              <button class="btn-xs bx-g" onclick="showUpgrade()">Download PDF</button>
+            </div>
+          </div>
+        </div>
+        <div class="report-card">
+          <div class="rc-cover rc-cover-ksa">
+            <div class="rc-cover-text">Saudi Arabia<br>Trade Report Q2 2025</div>
+            <span class="rc-cover-badge rc-badge-pro">PRO</span>
+          </div>
+          <div class="rc-body">
+            <div class="rc-title">KSA Food Import Demand — Halal & Organic Q2 2025</div>
+            <div class="rc-meta">June 2025 · 28 pages · PDF</div>
+            <ul class="rc-highlights">
+              <li>Halal import growth +31% vs last year</li>
+              <li>EU organic food entering via Jeddah</li>
+              <li>SFDA compliance requirements 2025</li>
+              <li>Key distributor landscape analysis</li>
+            </ul>
+            <div class="rc-foot">
+              <span class="rc-pages">28 pages</span>
+              <button class="btn-xs bx-g" onclick="showUpgrade()">Download PDF</button>
+            </div>
+          </div>
+        </div>
+        <div class="report-card">
+          <div class="rc-cover rc-cover-gcc">
+            <div class="rc-cover-text">GCC Trade<br>Overview H1 2025</div>
+            <span class="rc-cover-badge rc-badge-pro">PRO</span>
+          </div>
+          <div class="rc-body">
+            <div class="rc-title">GCC Cross-Border Trade H1 2025 — EU & US Origins</div>
+            <div class="rc-meta">June 2025 · 52 pages · PDF</div>
+            <ul class="rc-highlights">
+              <li>Full GCC import volume by sector</li>
+              <li>Top EU exporting countries to Gulf</li>
+              <li>Emerging product categories 2025–2026</li>
+              <li>Market entry timing analysis</li>
+            </ul>
+            <div class="rc-foot">
+              <span class="rc-pages">52 pages</span>
+              <button class="btn-xs bx-g" onclick="showUpgrade()">Download PDF</button>
+            </div>
+          </div>
+        </div>
+        <div class="report-card">
+          <div class="rc-cover rc-cover-fmcg">
+            <div class="rc-cover-text">GCC FMCG<br>Deep Dive Q2 2025</div>
+            <span class="rc-cover-badge rc-badge-pro">PRO</span>
+          </div>
+          <div class="rc-body">
+            <div class="rc-title">GCC FMCG Import Deep Dive — Coffee, Dairy & Packaged Food</div>
+            <div class="rc-meta">May 2025 · 41 pages · PDF</div>
+            <ul class="rc-highlights">
+              <li>Coffee capsule market size & growth</li>
+              <li>Dutch & German dairy export analysis</li>
+              <li>Private label opportunity mapping</li>
+              <li>Price positioning by brand tier</li>
+            </ul>
+            <div class="rc-foot">
+              <span class="rc-pages">41 pages</span>
+              <button class="btn-xs bx-g" onclick="showUpgrade()">Download PDF</button>
+            </div>
+          </div>
+        </div>
+        <div class="report-card">
+          <div class="rc-cover rc-cover-kwt">
+            <div class="rc-cover-text">Kuwait &amp; Qatar<br>Import Report Q1 2025</div>
+            <span class="rc-cover-badge rc-badge-free">FREE PREVIEW</span>
+          </div>
+          <div class="rc-body">
+            <div class="rc-title">Kuwait & Qatar Import Sectors — Q1 2025 Snapshot</div>
+            <div class="rc-meta">April 2025 · 12 pages · PDF · Free preview</div>
+            <ul class="rc-highlights">
+              <li>Top 5 import categories for Kuwait</li>
+              <li>Qatar's fastest-growing EU imports</li>
+              <li>Entry requirements overview</li>
+            </ul>
+            <div class="rc-foot">
+              <span class="rc-pages">12 pages</span>
+              <button class="btn-xs bx-t" onclick="alert('Opening free preview PDF…')">Download Free</button>
+            </div>
+          </div>
+        </div>
+        <div class="report-card">
+          <div class="rc-cover rc-cover-food">
+            <div class="rc-cover-text">GCC Food Safety<br>Compliance 2025</div>
+            <span class="rc-cover-badge rc-badge-pro">PRO</span>
+          </div>
+          <div class="rc-body">
+            <div class="rc-title">GCC Food Safety & Regulatory Compliance Guide 2025</div>
+            <div class="rc-meta">March 2025 · 38 pages · PDF</div>
+            <ul class="rc-highlights">
+              <li>SFDA, ESMA, GSO requirements</li>
+              <li>Halal certification by country</li>
+              <li>Labelling rules in Arabic</li>
+              <li>Import permit process per GCC state</li>
+            </ul>
+            <div class="rc-foot">
+              <span class="rc-pages">38 pages</span>
+              <button class="btn-xs bx-g" onclick="showUpgrade()">Download PDF</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LIVE DATA -->
+    <div class="itabpanel" id="it-live">
+      <div class="intel-preview">
+        <div class="ip-head">
+          <span class="ip-title">Top Import Categories — UAE (June 2025)</span>
+          <span style="font-size:.71rem;color:var(--mid);">Updated weekly · Pro plan</span>
+        </div>
+        <div class="ip-body">
+          <div style="padding:0 4px;">
+            <div class="data-row"><span>Coffee & Hot Beverages</span><div class="data-bar-wrap"><div class="data-bar" style="width:88%;background:var(--teal);"></div></div><span class="data-val">€342M</span></div>
+            <div class="data-row"><span>Dairy Products</span><div class="data-bar-wrap"><div class="data-bar" style="width:72%;"></div></div><span class="data-val">€281M</span></div>
+            <div class="data-row"><span>Packaged Foods</span><div class="data-bar-wrap"><div class="data-bar" style="width:65%;background:var(--gold);"></div></div><span class="data-val">€254M</span></div>
+            <div class="data-row"><span>Steel & Construction</span><div class="data-bar-wrap"><div class="data-bar" style="width:58%;"></div></div><span class="data-val">€226M</span></div>
+            <div class="data-row"><span style="filter:blur(4px);">Category 5</span><div class="data-bar-wrap" style="filter:blur(4px);"><div class="data-bar" style="width:51%;"></div></div><span class="data-val" style="filter:blur(4px);">€199M</span></div>
+            <div class="data-row" style="filter:blur(4px);"><span>Category 6</span><div class="data-bar-wrap"><div class="data-bar" style="width:44%;"></div></div><span class="data-val">€172M</span></div>
+            <div class="data-row" style="filter:blur(4px);"><span>Category 7</span><div class="data-bar-wrap"><div class="data-bar" style="width:38%;"></div></div><span class="data-val">€148M</span></div>
+          </div>
+          <div class="ip-blur-overlay">
+            <button class="ip-upgrade" onclick="showUpgrade()">Upgrade to Pro to see full data →</button>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+        <div class="intel-preview">
+          <div class="ip-head"><span class="ip-title">EU Export Growth to KSA</span></div>
+          <div class="ip-body" style="padding:14px 18px;">
+            <div class="data-row"><span>Netherlands</span><div class="data-bar-wrap"><div class="data-bar" style="width:82%;"></div></div><span class="data-val sc-up">+24%</span></div>
+            <div class="data-row"><span>Germany</span><div class="data-bar-wrap"><div class="data-bar" style="width:66%;"></div></div><span class="data-val sc-up">+18%</span></div>
+            <div class="data-row"><span style="filter:blur(4px);">Country 3</span><div class="data-bar-wrap" style="filter:blur(4px);"><div class="data-bar" style="width:54%;"></div></div><span class="data-val" style="filter:blur(4px);">+14%</span></div>
+            <div class="ip-blur-overlay" style="height:40%;"><button class="ip-upgrade" onclick="showUpgrade()" style="font-size:.74rem;padding:7px 14px;">Unlock Full Data</button></div>
+          </div>
+        </div>
+        <div class="intel-preview">
+          <div class="ip-head"><span class="ip-title">Fastest Growing Sectors</span></div>
+          <div class="ip-body" style="padding:14px 18px;">
+            <div class="data-row"><span>Halal Food</span><div class="data-bar-wrap"><div class="data-bar" style="width:90%;background:var(--halal);"></div></div><span class="data-val sc-up">+31%</span></div>
+            <div class="data-row"><span>Organic FMCG</span><div class="data-bar-wrap"><div class="data-bar" style="width:75%;background:#4A90D9;"></div></div><span class="data-val sc-up">+27%</span></div>
+            <div class="data-row"><span style="filter:blur(4px);">Sector 3</span><div class="data-bar-wrap" style="filter:blur(4px);"><div class="data-bar" style="width:60%;"></div></div><span class="data-val" style="filter:blur(4px);">+22%</span></div>
+            <div class="ip-blur-overlay" style="height:40%;"><button class="ip-upgrade" onclick="showUpgrade()" style="font-size:.74rem;padding:7px 14px;">Unlock Full Data</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TRENDS -->
+    <div class="itabpanel" id="it-trends">
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;">
+        <div style="background:var(--white);border:1.5px solid var(--mist);border-radius:8px;padding:20px;">
+          <div style="font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);margin-bottom:10px;">Trending Up</div>
+          <div style="display:flex;flex-direction:column;gap:9px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:.81rem;"><span>☪ Halal Food & Bev</span><span style="color:var(--grn);font-weight:700;">↑ 31%</span></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:.81rem;"><span>🌿 Organic / BIO</span><span style="color:var(--grn);font-weight:700;">↑ 27%</span></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:.81rem;"><span>☕ Coffee & Capsules</span><span style="color:var(--grn);font-weight:700;">↑ 24%</span></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:.81rem;"><span>🥛 Premium Dairy</span><span style="color:var(--grn);font-weight:700;">↑ 19%</span></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:.81rem;"><span>🌴 Asian Halal (JAKIM/MUI)</span><span style="color:var(--grn);font-weight:700;">↑ 38%</span></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:.81rem;"><span>🍚 Basmati Rice (India)</span><span style="color:var(--grn);font-weight:700;">↑ 22%</span></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:.81rem;"><span>💊 Pharma / Healthcare</span><span style="color:var(--grn);font-weight:700;">↑ 17%</span></div>
+          </div>
+        </div>
+        <div style="background:var(--white);border:1.5px solid var(--mist);border-radius:8px;padding:20px;">
+          <div style="font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:10px;">Stable Growth</div>
+          <div style="display:flex;flex-direction:column;gap:9px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:.81rem;"><span>🏗️ Construction Materials</span><span style="color:var(--mid);font-weight:700;">↑ 8%</span></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:.81rem;"><span>⚙️ Industrial Machinery</span><span style="color:var(--mid);font-weight:700;">↑ 7%</span></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:.81rem;"><span>📱 Electronics</span><span style="color:var(--mid);font-weight:700;">↑ 6%</span></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:.81rem;"><span>🧴 Personal Care / Beauty</span><span style="color:var(--mid);font-weight:700;">↑ 12%</span></div>
+          </div>
+        </div>
+        <div style="background:var(--white);border:1.5px solid var(--mist);border-radius:8px;padding:20px;">
+          <div style="font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--red);margin-bottom:10px;">Watch Closely</div>
+          <div style="display:flex;flex-direction:column;gap:9px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:.81rem;"><span>🧵 Textiles</span><span style="color:var(--red);font-weight:700;">↓ 4%</span></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:.81rem;"><span>🚗 Automotive Parts</span><span style="color:var(--red);font-weight:700;">↓ 2%</span></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:.81rem;color:var(--mid);font-style:italic;"><span>Full sector data</span><span>Pro plan →</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     FEATURE 4 — WHATSAPP BROADCAST
+═══════════════════════════════════════ -->
+<div class="panel" id="f-wa">
+  <div class="wa-hero">
+    <div class="wa-hero-inner">
+      <p style="font-size:.67rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:10px;font-weight:500;">Direct supplier outreach</p>
+      <h1>WhatsApp Broadcast</h1>
+      <p>When a new high-value trade request is posted, instantly broadcast it to all matching verified suppliers on the platform. Direct to their WhatsApp — not email, not a feed. WhatsApp.</p>
+    </div>
+  </div>
+  <div class="wa-main">
+    <div class="wa-layout">
+      <div>
+        <div class="wa-composer">
+          <div class="wac-head">
+            <span class="wac-title">Compose Broadcast</span>
+            <span style="font-size:.71rem;color:var(--mid);">Admin only</span>
+          </div>
+          <div class="wac-body">
+            <div style="font-size:.69rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--mid);margin-bottom:8px;">Target Audience</div>
+            <div class="audience-selector">
+              <label class="aud-opt selected" id="aud-all">
+                <input type="radio" name="audience" value="all" checked onclick="selectAud('all')">
+                <div>
+                  <div class="aud-opt-label">All verified suppliers (EU + US)</div>
+                  <div class="aud-opt-count">428 recipients (EU + USA + Asia)</div>
+                </div>
+              </label>
+              <label class="aud-opt" id="aud-food">
+                <input type="radio" name="audience" value="food" onclick="selectAud('food')">
+                <div>
+                  <div class="aud-opt-label">Food & Beverages suppliers only</div>
+                  <div class="aud-opt-count">98 recipients</div>
+                </div>
+              </label>
+              <label class="aud-opt" id="aud-fmcg">
+                <input type="radio" name="audience" value="fmcg" onclick="selectAud('fmcg')">
+                <div>
+                  <div class="aud-opt-label">FMCG suppliers only</div>
+                  <div class="aud-opt-count">84 recipients</div>
+                </div>
+              </label>
+              <label class="aud-opt" id="aud-pro">
+                <input type="radio" name="audience" value="pro" onclick="selectAud('pro')">
+                <div>
+                  <div class="aud-opt-label">Pro & Premium members only</div>
+                  <div class="aud-opt-count">89 recipients</div>
+                </div>
+              </label>
+            </div>
+
+            <div style="font-size:.69rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--mid);margin-bottom:7px;margin-top:4px;">Message Template</div>
+            <div class="wa-template-btns">
+              <button class="wa-tmpl on" onclick="setTemplate('new-request',this)">New Trade Request</button>
+              <button class="wa-tmpl" onclick="setTemplate('urgent',this)">Urgent Requirement</button>
+              <button class="wa-tmpl" onclick="setTemplate('weekly',this)">Weekly Digest</button>
+              <button class="wa-tmpl" onclick="setTemplate('custom',this)">Custom</button>
+            </div>
+
+            <div class="fg">
+              <label>Message</label>
+              <textarea id="wa-message" style="min-height:110px;" oninput="updatePreview()">🌍 *Gulf Trade Portal — New Import Request*
+
+📦 *Nespresso OL Capsules — All Varieties*
+📍 UAE · Qty: 50,000 sleeves/month
+🔵 EU origin documentation required
+☪ Halal certified preferred
+
+This buyer is actively sourcing. Reply to respond directly.
+
+👉 View full request: gulftradeportal.com/request/1247</textarea>
+            </div>
+
+            <button class="btn-wa" onclick="sendBroadcast()">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+              Send WhatsApp Broadcast
+            </button>
+            <p style="font-size:.7rem;color:var(--mid);text-align:center;margin-top:6px;">Requires WhatsApp Business API (Twilio / 360dialog). See setup guide.</p>
+          </div>
+        </div>
+
+        <div class="wa-stats">
+          <div class="wa-stat"><div class="ws-val">342</div><div class="ws-lbl">Total recipients</div></div>
+          <div class="wa-stat"><div class="ws-val">89%</div><div class="ws-lbl">Avg open rate</div></div>
+          <div class="wa-stat"><div class="ws-val">34%</div><div class="ws-lbl">Response rate</div></div>
+        </div>
+
+        <div class="wa-history">
+          <div class="wah-head"><span class="wah-title">Broadcast History</span></div>
+          <div class="wah-item">
+            <div class="wah-left"><div class="wah-title2">Nespresso Capsules Request — UAE</div><div class="wah-meta">FMCG suppliers · 84 sent · 14 Jun 2025</div></div>
+            <div class="wah-right"><div class="wah-sent">74 delivered</div><div class="wah-rate">28 responses</div></div>
+          </div>
+          <div class="wah-item">
+            <div class="wah-left"><div class="wah-title2">Halal Frozen Chicken — KSA</div><div class="wah-meta">Food & Bev suppliers · 98 sent · 12 Jun 2025</div></div>
+            <div class="wah-right"><div class="wah-sent">91 delivered</div><div class="wah-rate">19 responses</div></div>
+          </div>
+          <div class="wah-item">
+            <div class="wah-left"><div class="wah-title2">Weekly Digest — Week 23</div><div class="wah-meta">All Pro members · 89 sent · 9 Jun 2025</div></div>
+            <div class="wah-right"><div class="wah-sent">87 delivered</div><div class="wah-rate">31 click-throughs</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Phone Preview -->
+      <div>
+        <div style="font-size:.69rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--mid);margin-bottom:10px;">Live Preview</div>
+        <div class="wa-phone">
+          <div class="wap-top">
+            <div class="wap-avatar">GTP</div>
+            <div class="wap-info">
+              <div class="wap-name">Gulf Trade Portal</div>
+              <div class="wap-status">Business Account · Verified</div>
+            </div>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+          </div>
+          <div class="wap-chat">
+            <div class="wap-date-pill">Today</div>
+            <div class="wap-msg">
+              <div class="wap-bubble" id="wa-preview-bubble">
+                <strong>Gulf Trade Portal</strong>
+                🌍 <b>Gulf Trade Portal — New Import Request</b><br><br>
+                📦 <b>Nespresso OL Capsules — All Varieties</b><br>
+                📍 UAE · Qty: 50,000 sleeves/month<br>
+                🔵 EU origin documentation required<br>
+                ☪ Halal certified preferred<br><br>
+                This buyer is actively sourcing. Reply to respond directly.<br><br>
+                <a href="#" class="wa-cta">View full request →</a>
+              </div>
+              <div class="wap-time">09:47 ✓✓</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:14px;background:var(--sand);border:1.5px solid var(--mist);border-radius:7px;padding:14px 16px;">
+          <div style="font-size:.67rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--mid);margin-bottom:8px;">Setup Requirements</div>
+          <div style="display:flex;flex-direction:column;gap:7px;">
+            <div style="font-size:.78rem;display:flex;gap:8px;align-items:flex-start;">
+              <span style="color:var(--teal);font-weight:700;flex-shrink:0;">1.</span>
+              <span>Create a <strong>WhatsApp Business Account</strong> at business.whatsapp.com</span>
+            </div>
+            <div style="font-size:.78rem;display:flex;gap:8px;align-items:flex-start;">
+              <span style="color:var(--teal);font-weight:700;flex-shrink:0;">2.</span>
+              <span>Connect via <strong>Twilio</strong> or <strong>360dialog</strong> API (~€50/month)</span>
+            </div>
+            <div style="font-size:.78rem;display:flex;gap:8px;align-items:flex-start;">
+              <span style="color:var(--teal);font-weight:700;flex-shrink:0;">3.</span>
+              <span>Submit message templates for <strong>Meta approval</strong> (24–48h)</span>
+            </div>
+            <div style="font-size:.78rem;display:flex;gap:8px;align-items:flex-start;">
+              <span style="color:var(--teal);font-weight:700;flex-shrink:0;">4.</span>
+              <span>Members opt-in to WhatsApp at registration (GDPR compliant)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- UPGRADE MODAL -->
+<div style="display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.55);backdrop-filter:blur(3px);align-items:center;justify-content:center;" id="upgrade-mo" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:var(--white);border-radius:10px;padding:32px;max-width:420px;width:92%;position:relative;">
+    <button onclick="document.getElementById('upgrade-mo').style.display='none'" style="position:absolute;top:12px;right:14px;background:none;border:none;font-size:1.2rem;cursor:pointer;color:var(--mid);">×</button>
+    <div style="text-align:center;margin-bottom:20px;">
+      <div style="width:52px;height:52px;background:var(--gold-pale);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      </div>
+      <h3 style="font-family:Cairo,sans-serif;font-size:1.15rem;font-weight:700;margin-bottom:6px;">Pro Plan Required</h3>
+      <p style="font-size:.83rem;color:var(--mid);line-height:1.6;">Market Intelligence reports, full live data, and sector trends are included in the Pro Importer (€59/mo) and Pro Exporter (€89/mo) plans.</p>
+    </div>
+    <button style="width:100%;padding:12px;font-family:Inter,sans-serif;font-size:.88rem;font-weight:700;background:var(--gold);color:var(--ink);border:none;border-radius:5px;cursor:pointer;margin-bottom:8px;" onclick="window.location.href='gulftradeportal.html#packages'">Upgrade to Pro →</button>
+    <button style="width:100%;padding:10px;font-family:Inter,sans-serif;font-size:.82rem;font-weight:500;background:none;border:1.5px solid var(--mist);border-radius:5px;cursor:pointer;color:var(--mid);" onclick="document.getElementById('upgrade-mo').style.display='none'">Maybe later</button>
+  </div>
+</div>
+
+<script>
+// ── NAVIGATION ──────────────────────────────────────────────
+function showFeature(id, btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('on'));
+  document.querySelectorAll('.ntab').forEach(b => b.classList.remove('on'));
+  document.getElementById('f-'+id).classList.add('on');
+  btn.classList.add('on');
+  window.scrollTo(0,0);
+}
+
+// ── INTEL TABS ──────────────────────────────────────────────
+function setIT(id, btn) {
+  document.querySelectorAll('.itabpanel').forEach(p => p.classList.remove('on'));
+  document.querySelectorAll('.itab').forEach(b => b.classList.remove('on'));
+  document.getElementById('it-'+id).classList.add('on');
+  btn.classList.add('on');
+}
+
+function showUpgrade() {
+  document.getElementById('upgrade-mo').style.display = 'flex';
+}
+
+// ── TOAST ────────────────────────────────────────────────────
+function toast(msg, type='') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (type ? ' '+type : '');
+  setTimeout(() => t.className = 'toast', 3500);
+}
+
+// ── HALAL FILTER ─────────────────────────────────────────────
+const HALAL_SUPPLIERS = [
+  {name:'Dutch Food Export BV', country:'Netherlands', certs:['halal','fssc'], sector:'food', products:'Dairy, coffee, packaged FMCG', desc:'15 years GCC export experience. All products HALAL certified. CIF Dubai.', verified:true},
+  {name:'Iberia Food Group', country:'Spain', certs:['halal','organic'], sector:'food', products:'Olive oil, Mediterranean foods', desc:'Organic EVOO and Mediterranean food exporter. HALAL certified, private label available.', verified:true},
+  {name:'Halal Poultry EU', country:'Poland', certs:['halal','fssc'], sector:'food', products:'Frozen poultry, IQF chicken', desc:'SFDA registered. Halal IQF frozen poultry. CIF Jeddah. MOQ 20MT.', verified:true},
+  {name:'Crete Organics Ltd', country:'Greece', certs:['organic','halal'], sector:'food', products:'Organic olive oil, herbs, honey', desc:'Certified organic Greek produce. GlobalGAP, BIO certified. Halal compliant.', verified:true},
+  {name:'Belgian Dairy Export', country:'Belgium', certs:['halal','fssc'], sector:'fmcg', products:'UHT milk, butter, cheese', desc:'Belgian dairy cooperative. Halal UHT and cheese lines. Ships to 14 GCC accounts.', verified:true},
+  {name:'UK Organic Foods Ltd', country:'United Kingdom', certs:['organic','halal','kosher'], sector:'food', products:'Organic packaged foods, snacks', desc:'Multi-certified UK food exporter. HALAL, Kosher, Organic. Supply major UK halal brands.', verified:false},
+  {name:'German Pharma GmbH', country:'Germany', certs:['gdp','fssc'], sector:'pharma', products:'Pharmaceutical raw materials, API', desc:'EU GMP and GDP certified pharmaceutical manufacturer. Supplying KSA and UAE pharma.', verified:true},
+  {name:'NL Beverage Export BV', country:'Netherlands', certs:['halal','fssc'], sector:'fmcg', products:'Coffee capsules, hot beverages', desc:'Nespresso OL capsules and coffee products. EU origin. Halal line available. CIF UAE.', verified:true},
+];
+
+let activeCerts = new Set(['halal']);
+
+function toggleCert(el, cert) {
+  if (activeCerts.has(cert)) {
+    activeCerts.delete(cert);
+    el.className = 'cert-pill inactive';
+  } else {
+    activeCerts.add(cert);
+    el.className = 'cert-pill active-halal';
+  }
+  renderHalal();
+}
+
+function renderHalal() {
+  const sector = document.getElementById('halal-sector').value;
+  const filtered = HALAL_SUPPLIERS.filter(s => {
+    const certMatch = activeCerts.size === 0 || [...activeCerts].some(c => s.certs.includes(c));
+    const sectorMatch = !sector || s.sector === sector;
+    return certMatch && sectorMatch;
+  });
+  document.getElementById('halal-count').textContent = filtered.length + ' suppliers match your certification filters';
+  document.getElementById('halal-grid').innerHTML = filtered.map(s => `
+    <div class="hco-card ${s.certs.includes('halal') ? 'halal-verified' : ''}">
+      <div class="hco-top">
+        <div class="hco-name-row">
+          <div>
+            <div class="hco-name">${s.name}</div>
+            <div class="hco-country">${s.country}</div>
+          </div>
+          ${s.verified ? '<span class="hco-cert cert-verified">✓ GTP Verified</span>' : ''}
+        </div>
+        <div class="hco-certs">
+          ${s.certs.includes('halal') ? '<span class="hco-cert cert-halal">☪ Halal</span>' : ''}
+          ${s.certs.includes('organic') ? '<span class="hco-cert cert-organic">🌿 Organic</span>' : ''}
+          ${s.certs.includes('fssc') ? '<span class="hco-cert cert-fssc">FSSC 22000</span>' : ''}
+          ${s.certs.includes('gdp') ? '<span class="hco-cert cert-gdp">GDP</span>' : ''}
+          ${s.certs.includes('kosher') ? '<span class="hco-cert cert-kosher">✡ Kosher</span>' : ''}
+        </div>
+        <div class="hco-desc">${s.desc}</div>
+      </div>
+      <div class="hco-bottom">
+        <span class="hco-products" style="font-size:.71rem;color:var(--mid);">${s.products}</span>
+        <div style="display:flex;gap:6px;">
+          <button class="btn-xs bx-t">WhatsApp</button>
+          <button class="btn-xs bx-o">Profile</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+renderHalal();
+
+// ── WHATSAPP BROADCAST ───────────────────────────────────────
+function selectAud(val) {
+  document.querySelectorAll('.aud-opt').forEach(o => o.classList.remove('selected'));
+  document.getElementById('aud-'+val).classList.add('selected');
+}
+
+const TEMPLATES = {
+  'new-request': `🌍 *Gulf Trade Portal — New Import Request*\n\n📦 *[PRODUCT] — [VARIETIES]*\n📍 [COUNTRY] · Qty: [QUANTITY]\n🔵 [REQUIREMENTS]\n\nThis buyer is actively sourcing. Reply to respond directly.\n\n👉 View full request: gulftradeportal.com/request/[ID]`,
+  'urgent': `🔴 *URGENT — Gulf Trade Portal*\n\n⚡ *High-priority import request just posted*\n📦 [PRODUCT]\n📍 [COUNTRY] · Immediate sourcing required\n\nBuyer needs quotes within 48 hours.\n\n👉 Respond now: gulftradeportal.com/request/[ID]`,
+  'weekly': `📊 *GCC Trade Weekly — Gulf Trade Portal*\n\n*This week's top import requests:*\n🔵 Nespresso Capsules — UAE — 50K/mo\n🔵 Halal Frozen Chicken — KSA — 50MT\n🔵 Organic EVOO — Kuwait — 20,000L\n\n*3 new verified buyers joined this week.*\n\n👉 Browse all requests: gulftradeportal.com/trade-board`,
+  'custom': `Write your custom message here…`
+};
+
+function setTemplate(key, btn) {
+  document.querySelectorAll('.wa-tmpl').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById('wa-message').value = TEMPLATES[key];
+  updatePreview();
+}
+
+function updatePreview() {
+  const msg = document.getElementById('wa-message').value;
+  const formatted = msg
+    .replace(/\*([^*]+)\*/g, '<b>$1</b>')
+    .replace(/\n/g, '<br>');
+  document.getElementById('wa-preview-bubble').innerHTML =
+    '<strong>Gulf Trade Portal</strong>' + formatted +
+    '<br><br><a href="#" class="wa-cta">View full request →</a>';
+}
+
+function sendBroadcast() {
+  toast('✓ Broadcast queued for 342 recipients via WhatsApp Business API', 'wa');
+}
+
+// ── AI SUPPLIER MATCH ────────────────────────────────────────
+async function runAIMatch() {
+  const product = document.getElementById('ai-product').value.trim();
+  const qty = document.getElementById('ai-qty').value.trim();
+  const country = document.getElementById('ai-country').value;
+  const origin = document.getElementById('ai-origin').value;
+  const sector = document.getElementById('ai-sector').value;
+  const reqs = document.getElementById('ai-reqs').value.trim();
+  const halal = document.getElementById('ai-halal').checked;
+
+  if (!product) { toast('Please enter a product or commodity'); return; }
+
+  const btn = document.getElementById('btn-ai-match');
+  btn.disabled = true;
+  btn.classList.add('loading');
+  btn.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Analysing suppliers…`;
+
+  document.getElementById('ai-status').textContent = 'Claude is matching…';
+  document.getElementById('ai-results').innerHTML = `
+    <div class="ai-thinking">
+      <div class="ai-thinking-dots">
+        <div class="dot-pulse"></div>
+        <div class="dot-pulse"></div>
+        <div class="dot-pulse"></div>
+      </div>
+      <p>Claude is reading all 342 verified supplier profiles and matching them to your requirement…</p>
+    </div>`;
+
+  const supplierProfiles = `
+Verified supplier database on Gulf Trade Portal:
+1. Dutch Food Export BV (Netherlands) — Wholesaler/Distributor, FMCG & Food, exports: Nespresso OL capsules, coffee, dairy, packaged FMCG, HALAL certified, FSSC 22000, 15 years GCC experience, CIF Dubai available, €89/mo Pro plan
+2. NL Beverage Export BV (Netherlands) — FMCG exporter, coffee capsules, hot beverages, Nespresso compatible products, Halal line, EU origin docs, CIF UAE
+3. Belgian Dairy Export (Belgium) — Food exporter, UHT milk, butter, cheese, HALAL certified, FSSC 22000, 14 GCC accounts
+4. German Metals GmbH (Germany) — Manufacturer/Exporter, steel rebar, structural steel, CE certified, ESMA compatible
+5. Iberia Food Group (Spain) — Food exporter, organic EVOO, Mediterranean foods, HALAL certified, Organic/BIO, private label
+6. Crete Organics Ltd (Greece) — Food exporter, organic olive oil, herbs, honey, GlobalGAP, BIO, Halal compliant
+7. Halal Poultry EU (Poland) — Food exporter, frozen poultry, IQF chicken, SFDA registered, HALAL, FSSC 22000
+8. UK Chemicals Ltd (United Kingdom) — Manufacturer, industrial solvents, IPA, acetone, specialty chemicals
+9. UK Organic Foods Ltd (United Kingdom) — Food exporter, organic snacks, packaged foods, HALAL, Kosher, Organic
+10. American Agri Exports (United States) — Agri exporter, grains, pulses, processed food
+11. German Pharma GmbH (Germany) — Pharma manufacturer, API, raw materials, EU GMP, GDP certified
+12. UK Machinery Ltd (United Kingdom) — Industrial equipment, control panels, CE certified
+13. Halal Foods Malaysia Sdn Bhd (Malaysia) — JAKIM-certified Halal food manufacturer, palm oil, processed food, coconut products, Halal snacks, established UAE/KSA distribution
+14. India Spice & Agri Exports (India) — Basmati rice, spices, pulses, agri products, APEDA certified, Halal compliant, UAE-India CEPA
+15. Shanghai General Trading Co. (China) — Electronics, consumer goods, CE certified, Jebel Ali FTZ presence, competitive pricing
+16. PT Indo Halal Foods (Indonesia) — MUI-certified Halal food, coconut products, processed seafood, palm oil derivatives
+17. Korean Industrial Group (South Korea) — Industrial machinery, CNC systems, CE and KS certified, UAE manufacturing sector
+18. Thai Export Alliance Co. (Thailand) — Canned seafood, rice, processed foods, established GCC trade lane
+19. Singapore Trade Hub Pte Ltd (Singapore) — Multi-category FMCG trader, regional hub for SEA goods to GCC, ISO 9001
+20. Japan Machinery & Tech KK (Japan) — Precision machinery, industrial equipment, UAE oil & gas sector`;
+
+  const prompt = `You are the AI matching engine for Gulf Trade Portal, a GCC import/export B2B platform. A GCC buyer has posted an import requirement. Analyse the supplier database and return the TOP 3 best matching suppliers.
+
+BUYER REQUIREMENT:
+- Product: ${product}
+- Quantity: ${qty || 'Not specified'}
+- Destination: ${country}
+- Preferred origin: ${origin}
+- Sector: ${sector}
+- Key requirements: ${reqs || 'None specified'}
+- Halal required: ${halal ? 'YES — must be Halal certified' : 'No specific requirement'}
+
+SUPPLIER DATABASE:
+${supplierProfiles}
+
+Return ONLY valid JSON (no markdown, no explanation), exactly this structure:
+{
+  "matches": [
+    {
+      "rank": 1,
+      "name": "exact supplier name from database",
+      "country": "country",
+      "matchScore": 94,
+      "reason": "2-3 sentences explaining exactly why this supplier is the best match for this specific requirement",
+      "strengths": ["strength 1", "strength 2", "strength 3"],
+      "certifications": ["cert1", "cert2"],
+      "halalCertified": true
+    }
+  ],
+  "summary": "One sentence summary of the matching quality overall"
+}`;
+
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+
+    const data = await resp.json();
+    const text = data.content?.[0]?.text || '';
+    const clean = text.replace(/```json|```/g, '').trim();
+    const result = JSON.parse(clean);
+
+    renderMatches(result);
+    document.getElementById('ai-status').textContent = `${result.matches.length} suppliers matched`;
+
+  } catch(e) {
+    // Fallback with realistic demo data
+    const fallback = {
+      matches: [
+        {rank:1, name:'Dutch Food Export BV', country:'Netherlands', matchScore:96,
+          reason:`Perfect match for ${product}. Dutch Food Export BV has 15 years of GCC distribution experience and holds all required EU origin documentation. Their HALAL certification and FSSC 22000 standard align exactly with ${country} import requirements.`,
+          strengths:['15 years GCC experience','Full EU origin documentation','HALAL & FSSC 22000 certified'],
+          certifications:['Halal','FSSC 22000','EU Origin'],halalCertified:true},
+        {rank:2, name:'NL Beverage Export BV', country:'Netherlands', matchScore:88,
+          reason:`Strong secondary match. Specialises in coffee and beverage products from the Netherlands with established CIF UAE logistics. EU origin docs available, Halal line in production.`,
+          strengths:['Coffee & beverage specialist','CIF UAE direct','EU origin certified'],
+          certifications:['Halal','EU Origin'],halalCertified:true},
+        {rank:3, name:'Belgian Dairy Export', country:'Belgium', matchScore:74,
+          reason:`Broader FMCG capability. While primarily dairy-focused, their GCC distribution network and Halal certification make them worth contacting for cross-category supply opportunities.`,
+          strengths:['Established GCC network','14 active GCC accounts','HALAL certified'],
+          certifications:['Halal','FSSC 22000'],halalCertified:true}
+      ],
+      summary: `3 strong EU supplier matches found for ${product} import into ${country}.`
+    };
+    renderMatches(fallback);
+    document.getElementById('ai-status').textContent = '3 suppliers matched (demo)';
+  }
+
+  btn.disabled = false;
+  btn.classList.remove('loading');
+  btn.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> Find Best Matching Suppliers`;
+}
+
+function renderMatches(result) {
+  document.getElementById('ai-results').innerHTML = result.matches.map(m => `
+    <div class="match-card">
+      <div class="mc-header">
+        <div style="display:flex;gap:10px;align-items:flex-start;">
+          <div class="mc-rank ${m.rank===1?'gold':''}">${m.rank}</div>
+          <div>
+            <div class="mc-name">${m.name}</div>
+            <div class="mc-sub">${m.country}</div>
+          </div>
+        </div>
+        <div class="mc-score">
+          <div class="mc-score-val">${m.matchScore}%</div>
+          <div class="mc-score-lbl">match score</div>
+        </div>
+      </div>
+      <div class="mc-reason">${m.reason}</div>
+      <div class="mc-tags">
+        ${m.certifications.map(c => `<span class="mc-tag ${c==='Halal'||c==='HALAL'?'mc-halal-tag':''}">${c==='Halal'||c==='HALAL'?'☪ ':''} ${c}</span>`).join('')}
+        ${m.strengths.map(s => `<span class="mc-tag">${s}</span>`).join('')}
+      </div>
+      <div class="mc-actions">
+        <button class="btn-xs bx-t">WhatsApp Supplier</button>
+        <button class="btn-xs bx-o">View Profile</button>
+        <button class="btn-xs bx-g" onclick="toast('Intro request sent to ${m.name}')">Request Intro</button>
+      </div>
+    </div>
+  `).join('') + `<div style="padding:12px 20px;font-size:.75rem;color:var(--mid);border-top:1px solid var(--mist);background:var(--sand);">${result.summary}</div>`;
+}
+</script>
+</body>
+</html>

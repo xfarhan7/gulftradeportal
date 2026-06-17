@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gulf Trade Portal — Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --teal:#0A7369;--teal-dk:#065550;--teal-lt:#0E9B8F;--teal-pale:#E6F5F3;
+  --gold:#C8922A;--gold-lt:#E8B84B;--gold-pale:#FFF8E6;
+  --ink:#141210;--ink2:#2C2825;--mid:#6B6460;--mist:#DDD8D0;
+  --white:#FDFCFA;--sand:#F7F3EC;
+  --grn:#22A05A;--grn-pale:#E8F5E9;
+  --red:#C0392B;--red-pale:#FEE9E7;
+  --eu:#1A4FB5;
+  --sidebar:220px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Inter',sans-serif;background:#ECEAE6;color:var(--ink);font-size:13px;line-height:1.6;display:flex;min-height:100vh;}
+
+.sidebar{width:var(--sidebar);background:var(--teal-dk);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100;}
+.sb-logo{padding:18px 16px 14px;border-bottom:1px solid rgba(255,255,255,.08);}
+.sb-logo-main{font-family:'Cairo',sans-serif;font-size:.98rem;font-weight:700;color:#fff;}
+.sb-logo-main span{color:var(--gold-lt);}
+.sb-logo-sub{font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-top:2px;}
+.sb-admin{padding:11px 14px;border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;gap:9px;}
+.sb-av{width:30px;height:30px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-family:'Cairo',sans-serif;font-weight:700;font-size:.78rem;color:var(--ink);flex-shrink:0;}
+.sb-admin-name{font-size:.79rem;font-weight:600;color:#fff;line-height:1.2;}
+.sb-admin-role{font-size:.64rem;color:rgba(255,255,255,.35);}
+.sb-nav{flex:1;overflow-y:auto;padding:10px 0;}
+.sb-sec{padding:9px 14px 3px;font-size:.58rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.22);}
+.sb-link{display:flex;align-items:center;gap:9px;padding:8px 14px;font-size:.78rem;color:rgba(255,255,255,.62);text-decoration:none;transition:background .15s,color .15s;cursor:pointer;border:none;background:none;width:100%;font-family:'Inter',sans-serif;}
+.sb-link:hover{background:rgba(255,255,255,.07);color:#fff;}
+.sb-link.active{background:rgba(255,255,255,.12);color:#fff;}
+.sb-link svg{flex-shrink:0;opacity:.7;}.sb-link.active svg{opacity:1;}
+.sb-badge{margin-left:auto;background:var(--red);color:#fff;font-size:.58rem;font-weight:700;padding:1px 6px;border-radius:10px;min-width:18px;text-align:center;}
+.sb-bottom{padding:12px 14px;border-top:1px solid rgba(255,255,255,.07);}
+.sb-bottom a{display:flex;align-items:center;gap:7px;font-size:.74rem;color:rgba(255,255,255,.35);text-decoration:none;transition:color .15s;}
+.sb-bottom a:hover{color:#fff;}
+
+.main{margin-left:var(--sidebar);flex:1;display:flex;flex-direction:column;min-height:100vh;}
+.topbar{background:var(--white);border-bottom:1px solid var(--mist);padding:0 24px;height:50px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+.tb-title{font-family:'Cairo',sans-serif;font-size:1rem;font-weight:700;color:var(--ink);}
+.tb-right{display:flex;align-items:center;gap:8px;}
+.content{padding:24px;flex:1;}
+
+.panel{display:none;animation:fi .2s ease;}
+.panel.active{display:block;}
+@keyframes fi{from{opacity:0;transform:translateY(5px);}to{opacity:1;transform:translateY(0);}}
+
+/* STAT CARDS */
+.stats-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-bottom:20px;}
+.sc{background:var(--white);border:1.5px solid var(--mist);border-radius:7px;padding:16px 14px;}
+.sc-lbl{font-size:.63rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--mid);margin-bottom:5px;}
+.sc-val{font-family:'Cairo',sans-serif;font-size:1.75rem;font-weight:700;color:var(--ink);line-height:1;}
+.sc-sub{font-size:.68rem;color:var(--mid);margin-top:3px;}
+.sc-up{color:var(--grn);font-weight:600;}.sc-dn{color:var(--red);font-weight:600;}
+
+/* CARDS */
+.card{background:var(--white);border:1.5px solid var(--mist);border-radius:7px;margin-bottom:14px;}
+.card-hd{padding:12px 16px;border-bottom:1px solid var(--mist);display:flex;justify-content:space-between;align-items:center;}
+.card-title{font-family:'Cairo',sans-serif;font-size:.9rem;font-weight:700;color:var(--ink);}
+.card-body{padding:16px;}
+
+/* TABLE */
+.tbl{width:100%;border-collapse:collapse;}
+.tbl th{font-size:.63rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--mid);padding:9px 14px;text-align:left;border-bottom:1.5px solid var(--mist);background:var(--sand);white-space:nowrap;}
+.tbl td{padding:10px 14px;border-bottom:1px solid var(--mist);font-size:.79rem;color:var(--ink);vertical-align:middle;}
+.tbl tr:last-child td{border-bottom:none;}
+.tbl tr:hover td{background:#FAFAF7;}
+.tbl-wrap{overflow-x:auto;}
+
+/* BADGES */
+.bdg{display:inline-flex;align-items:center;gap:3px;font-size:.6rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:2px 8px;border-radius:10px;white-space:nowrap;}
+.bdg-grn{background:var(--grn-pale);color:#1B6E3A;}
+.bdg-gold{background:var(--gold-pale);color:#8B6200;}
+.bdg-blue{background:#EEF3FC;color:var(--eu);}
+.bdg-red{background:var(--red-pale);color:var(--red);}
+.bdg-mid{background:var(--sand);color:var(--mid);}
+.bdg-teal{background:var(--teal-pale);color:var(--teal-dk);}
+
+/* BUTTONS */
+.btn{font-size:.72rem;font-weight:600;padding:6px 13px;border-radius:4px;cursor:pointer;border:none;font-family:'Inter',sans-serif;transition:background .15s,color .15s;text-decoration:none;display:inline-block;}
+.btn-t{background:var(--teal);color:#fff;}.btn-t:hover{background:var(--teal-lt);}
+.btn-g{background:var(--gold);color:var(--ink);}.btn-g:hover{background:var(--gold-lt);}
+.btn-grn{background:var(--grn);color:#fff;}.btn-grn:hover{opacity:.88;}
+.btn-red{background:var(--red);color:#fff;}.btn-red:hover{opacity:.88;}
+.btn-out{background:none;border:1.5px solid var(--mist);color:var(--mid);}.btn-out:hover{border-color:var(--teal);color:var(--teal);}
+.btn-sm{font-size:.68rem;padding:4px 9px;}
+
+/* FORM */
+.fg{display:flex;flex-direction:column;gap:4px;margin-bottom:11px;}
+.fg label{font-size:.67rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--mid);}
+.fg input,.fg select,.fg textarea{font-family:'Inter',sans-serif;font-size:.84rem;border:1.5px solid var(--mist);border-radius:4px;padding:8px 10px;background:var(--white);color:var(--ink);outline:none;transition:border-color .2s;}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--teal);}
+.fg textarea{resize:vertical;min-height:72px;}
+.fr2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+
+/* GRID */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
+
+/* MODAL */
+.mo{display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.5);backdrop-filter:blur(2px);align-items:center;justify-content:center;}
+.mo.open{display:flex;}
+.mo-box{background:var(--white);border-radius:7px;padding:26px;max-width:500px;width:92%;position:relative;max-height:88vh;overflow-y:auto;}
+.mo-x{position:absolute;top:9px;right:11px;background:none;border:none;font-size:1.2rem;cursor:pointer;color:var(--mid);}
+.mo-h{font-family:'Cairo',sans-serif;font-size:1.05rem;font-weight:700;margin-bottom:4px;}
+.mo-sub{font-size:.77rem;color:var(--mid);margin-bottom:16px;line-height:1.5;}
+.succ{display:none;background:var(--grn-pale);border:1.5px solid rgba(34,160,90,.2);border-radius:4px;padding:10px 13px;color:#1B6E3A;font-size:.8rem;font-weight:500;margin-top:10px;}
+
+/* ALERT BOX */
+.alert{border-radius:5px;padding:12px 14px;margin-bottom:14px;display:flex;gap:10px;align-items:flex-start;font-size:.8rem;line-height:1.55;}
+.alert-gold{background:var(--gold-pale);border-left:3px solid var(--gold);}
+.alert-teal{background:var(--teal-pale);border-left:3px solid var(--teal);}
+.alert strong{font-size:.75rem;font-weight:700;display:block;margin-bottom:2px;}
+.alert-gold strong{color:#8B6200;}.alert-teal strong{color:var(--teal-dk);}
+
+/* REVENUE CHART MOCK */
+.chart-bars{display:flex;gap:4px;align-items:flex-end;height:80px;padding:0 2px;}
+.bar{flex:1;border-radius:3px 3px 0 0;background:var(--teal);opacity:.7;transition:opacity .2s;}
+.bar:hover{opacity:1;}
+.bar.gold{background:var(--gold);}
+.chart-labels{display:flex;gap:4px;margin-top:5px;}
+.chart-lbl{flex:1;font-size:.6rem;color:var(--mid);text-align:center;}
+
+/* ACTIVITY FEED */
+.activity-feed{display:flex;flex-direction:column;gap:0;}
+.af-item{display:flex;gap:10px;align-items:flex-start;padding:10px 14px;border-bottom:1px solid var(--mist);}
+.af-item:last-child{border-bottom:none;}
+.af-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:5px;}
+.ad-teal{background:var(--teal);}.ad-gold{background:var(--gold);}.ad-grn{background:var(--grn);}.ad-red{background:var(--red);}
+.af-text{flex:1;font-size:.78rem;color:var(--ink);line-height:1.4;}
+.af-time{font-size:.65rem;color:#AAA;white-space:nowrap;}
+
+/* KYB REVIEW CARD */
+.kyb-card{background:var(--white);border:1.5px solid var(--mist);border-radius:7px;padding:16px;margin-bottom:10px;transition:border-color .2s;}
+.kyb-card:hover{border-color:var(--teal);}
+.kyb-card-hd{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;}
+.kyb-co-name{font-weight:700;font-size:.88rem;color:var(--ink);}
+.kyb-co-sub{font-size:.72rem;color:var(--mid);margin-top:1px;}
+.kyb-checklist{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;}
+.kyb-check{font-size:.67rem;display:flex;align-items:center;gap:4px;padding:3px 8px;border-radius:10px;}
+.kc-ok{background:var(--grn-pale);color:#1B6E3A;}
+.kc-pend{background:var(--gold-pale);color:#8B6200;}
+.kc-miss{background:var(--red-pale);color:var(--red);}
+.kyb-actions{display:flex;gap:7px;flex-wrap:wrap;padding-top:10px;border-top:1px solid var(--mist);}
+
+/* MEMBER GRANT */
+.member-row{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-bottom:1px solid var(--mist);}
+.member-row:last-child{border-bottom:none;}
+.member-info{flex:1;}
+.member-name{font-size:.81rem;font-weight:600;color:var(--ink);}
+.member-detail{font-size:.71rem;color:var(--mid);}
+.member-plan{font-size:.72rem;font-weight:700;color:var(--teal);min-width:80px;}
+
+/* NEWSLETTER */
+.nl-preview{background:var(--ink2);border-radius:6px;padding:20px;color:#fff;margin-top:14px;}
+.nl-hd{font-family:'Cairo',sans-serif;font-size:1rem;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:8px;}
+.nl-sub-hd{font-size:.67rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:14px;}
+.nl-section{margin-bottom:12px;}
+.nl-section-title{font-size:.67rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-lt);margin-bottom:6px;}
+.nl-item{font-size:.78rem;color:rgba(255,255,255,.75);padding:5px 0;border-bottom:1px solid rgba(255,255,255,.07);line-height:1.45;}
+.nl-item:last-child{border-bottom:none;}
+</style>
+</head>
+<body>
+
+<style>
+#admin-gate{position:fixed;inset:0;z-index:99999;background:#0C0B09;display:flex;align-items:center;justify-content:center;}
+#admin-gate.hidden{display:none;}
+.gate-box{background:#1A1814;border:1.5px solid rgba(10,115,105,.3);border-radius:10px;padding:40px 36px;max-width:380px;width:92%;text-align:center;}
+.gate-logo{font-family:'Cairo',sans-serif;font-size:1.3rem;font-weight:700;color:#fff;margin-bottom:4px;}
+.gate-logo span{color:#C8922A;}
+.gate-sub{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.25);margin-bottom:28px;}
+.gate-label{font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:6px;text-align:left;}
+.gate-input{width:100%;font-family:'Inter',sans-serif;font-size:.9rem;background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.1);border-radius:5px;padding:12px 14px;color:#fff;outline:none;margin-bottom:14px;transition:border-color .2s;}
+.gate-input:focus{border-color:rgba(10,115,105,.7);}
+.gate-btn{width:100%;padding:13px;font-family:'Inter',sans-serif;font-size:.88rem;font-weight:700;background:linear-gradient(135deg,#0A7369,#0E9B8F);color:#fff;border:none;border-radius:5px;cursor:pointer;transition:opacity .2s;letter-spacing:.02em;}
+.gate-btn:hover{opacity:.88;}
+.gate-error{font-size:.78rem;color:#E74C3C;margin-top:10px;display:none;background:rgba(231,76,60,.1);padding:9px 12px;border-radius:4px;border:1px solid rgba(231,76,60,.2);}
+.gate-hint{font-size:.7rem;color:rgba(255,255,255,.18);margin-top:16px;line-height:1.6;}
+.gate-badge{display:inline-flex;align-items:center;gap:5px;font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#C8922A;background:rgba(200,146,42,.1);border:1px solid rgba(200,146,42,.2);padding:4px 10px;border-radius:20px;margin-bottom:22px;}
+</style>
+
+<div id="admin-gate">
+  <div class="gate-box">
+    <div class="gate-logo">Gulf <span>Trade</span> Portal</div>
+    <div class="gate-sub">Admin Panel</div>
+    <div class="gate-badge">
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      Restricted Access
+    </div>
+    <div class="gate-label">Email Address</div>
+    <input type="email" class="gate-input" id="gate-email" placeholder="farhan@excorpdistribution.nl" autocomplete="email">
+    <div class="gate-label">Password</div>
+    <input type="password" class="gate-input" id="gate-pass" placeholder="Enter admin password" autocomplete="current-password" onkeydown="if(event.key==='Enter')gateLogin()">
+    <button class="gate-btn" onclick="gateLogin()">Sign In to Admin →</button>
+    <div class="gate-error" id="gate-error">Incorrect email or password. Please try again.</div>
+    <div class="gate-hint">
+      Access restricted to authorised administrators only.<br>
+      All login attempts are logged.
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  /* ── Session check — stay logged in during browser session ── */
+  const SESSION_KEY = 'gtp_admin_auth';
+  if(sessionStorage.getItem(SESSION_KEY) === 'granted'){
+    document.getElementById('admin-gate').classList.add('hidden');
+    return;
+  }
+
+  /* ── Credentials ──────────────────────────────────────────
+     Hash = SHA-256 of "email:password" combined string.
+     To change password: update ADMIN_HASH below.
+     Current login:
+       Email:    farhan@excorpdistribution.nl
+       Password: GulfAdmin2025!
+     Generate new hash at: https://emn178.github.io/online-tools/sha256.html
+     Input: farhan@excorpdistribution.nl:GulfAdmin2025!
+  ────────────────────────────────────────────────────────── */
+  const ADMIN_HASH = 'b2d4f8e1a9c3f7b5e2d6a8c4f0b7e3d1a5c9f2b8e4d7a1c6f3b9e5d2a8c4f1';
+  /* NOTE: Replace the hash above with the real SHA-256 of your email:password
+     For now, the gate accepts the hardcoded credentials below as a fallback */
+  const ADMIN_EMAIL    = 'farhan@excorpdistribution.nl';
+  const ADMIN_PASSWORD = 'GulfAdmin2025!';
+  /* Add your backup email too */
+  const BACKUP_EMAIL   = 'farhan@bfglobalsolutions.nl';
+
+  window.gateLogin = async function(){
+    const email = document.getElementById('gate-email').value.trim().toLowerCase();
+    const pass  = document.getElementById('gate-pass').value;
+    const err   = document.getElementById('gate-error');
+    err.style.display = 'none';
+
+    if(!email || !pass){
+      err.textContent = 'Please enter both email and password.';
+      err.style.display = 'block'; return;
+    }
+
+    /* Try SHA-256 hash comparison first */
+    let hashMatch = false;
+    try {
+      const msgBuffer  = new TextEncoder().encode(email + ':' + pass);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+      const hashHex    = Array.from(new Uint8Array(hashBuffer))
+        .map(b => b.toString(16).padStart(2, '0')).join('');
+      hashMatch = (hashHex === ADMIN_HASH);
+    } catch(e) { /* crypto not available — fall through to plain check */ }
+
+    /* Fallback: direct credential check (replace with hash in production) */
+    const directMatch = (
+      (email === ADMIN_EMAIL.toLowerCase() || email === BACKUP_EMAIL.toLowerCase())
+      && pass === ADMIN_PASSWORD
+    );
+
+    if(hashMatch || directMatch){
+      sessionStorage.setItem(SESSION_KEY, 'granted');
+      sessionStorage.setItem('gtp_admin_user', email);
+      document.getElementById('admin-gate').classList.add('hidden');
+      /* Log access time */
+      console.log('[GTP Admin] Access granted to', email, 'at', new Date().toISOString());
+    } else {
+      /* Fake delay to prevent brute force */
+      await new Promise(r => setTimeout(r, 1200));
+      err.textContent = 'Incorrect email or password. Please try again.';
+      err.style.display = 'block';
+      document.getElementById('gate-pass').value = '';
+      document.getElementById('gate-pass').focus();
+    }
+  };
+})();
+</script>
+
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sb-logo">
+    <div class="sb-logo-main">Gulf <span>Trade</span> Portal</div>
+    <div class="sb-logo-sub">Admin Dashboard</div>
+  </div>
+  <div class="sb-admin">
+    <div class="sb-av">FA</div>
+    <div>
+      <div class="sb-admin-name" id="admin-display-name">Farhan A.</div>
+      <div class="sb-admin-role">Super Admin · Owner</div>
+    </div>
+  </div>
+  <nav class="sb-nav">
+    <div class="sb-sec">Overview</div>
+    <button class="sb-link active" onclick="go('overview',this)">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      Overview
+    </button>
+    <div class="sb-sec">Members</div>
+    <button class="sb-link" onclick="go('members',this)">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      All Members
+      <span class="sb-badge">342</span>
+    </button>
+    <button class="sb-link" onclick="go('kyb',this)">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      KYB Reviews
+      <span class="sb-badge">7</span>
+    </button>
+    <button class="sb-link" onclick="go('memberships',this)">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      Grant Memberships
+    </button>
+    <div class="sb-sec">Trade Activity</div>
+    <button class="sb-link" onclick="go('requests',this)">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      Trade Requests
+    </button>
+    <button class="sb-link" onclick="go('ads',this)">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2L15 22 11 13 2 9l20-7z"/></svg>
+      Ad Slots
+    </button>
+    <div class="sb-sec">Revenue</div>
+    <button class="sb-link" onclick="go('revenue',this)">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      Revenue & Invoices
+    </button>
+    <div class="sb-sec">Platform</div>
+    <button class="sb-link" onclick="go('newsletter',this)">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      Weekly Newsletter
+    </button>
+    <button class="sb-link" onclick="go('settings',this)">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      Platform Settings
+    </button>
+  </nav>
+  <div class="sb-bottom">
+    <a href="portal.html">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+      Switch to Client Portal
+    </a>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+  <header class="topbar">
+    <span class="tb-title" id="page-title">Overview</span>
+    <div class="tb-right">
+      <span style="font-size:.72rem;color:var(--mid);">Last updated: just now</span>
+      <button class="btn btn-t btn-sm" onclick="go('kyb',document.querySelectorAll('.sb-link')[2])">7 KYB pending</button>
+    </div>
+  </header>
+  <div class="content">
+
+  <!-- ═══ OVERVIEW ═══ -->
+  <div class="panel active" id="p-overview">
+    <div class="stats-row">
+      <div class="sc"><div class="sc-lbl">Total Members</div><div class="sc-val">428</div><div class="sc-sub"><span class="sc-up">+24</span> this month</div></div>
+      <div class="sc"><div class="sc-lbl">Active Paid</div><div class="sc-val">89</div><div class="sc-sub"><span class="sc-up">+7</span> this month</div></div>
+      <div class="sc"><div class="sc-lbl">Free Members</div><div class="sc-val">253</div><div class="sc-sub">Conversion target: 30%</div></div>
+      <div class="sc"><div class="sc-lbl">MRR</div><div class="sc-val" style="font-size:1.4rem;">€5,241</div><div class="sc-sub"><span class="sc-up">↑ 12%</span> vs last month</div></div>
+      <div class="sc"><div class="sc-lbl">KYB Pending</div><div class="sc-val" style="color:var(--gold);">7</div><div class="sc-sub">Awaiting review</div></div>
+      <div class="sc"><div class="sc-lbl">Live Requests</div><div class="sc-val">128</div><div class="sc-sub">On trade board</div></div>
+      <div class="sc"><div class="sc-lbl">Ad Revenue</div><div class="sc-val" style="font-size:1.4rem;">€1,847</div><div class="sc-sub">Jun 2025</div></div>
+    </div>
+
+    <div class="two-col">
+      <div class="card">
+        <div class="card-hd"><span class="card-title">Monthly Revenue</span><span style="font-size:.71rem;color:var(--mid);">Subscriptions + Ads</span></div>
+        <div class="card-body">
+          <div style="font-family:Cairo,sans-serif;font-size:1.6rem;font-weight:700;color:var(--teal);margin-bottom:4px;">€7,088</div>
+          <div style="font-size:.72rem;color:var(--mid);margin-bottom:14px;">June 2025 · <span style="color:var(--grn);font-weight:600;">↑ 18% vs May</span></div>
+          <div class="chart-bars">
+            <div class="bar" style="height:38%"></div>
+            <div class="bar" style="height:45%"></div>
+            <div class="bar" style="height:52%"></div>
+            <div class="bar" style="height:48%"></div>
+            <div class="bar" style="height:61%"></div>
+            <div class="bar" style="height:70%"></div>
+            <div class="bar gold" style="height:88%"></div>
+          </div>
+          <div class="chart-labels">
+            <div class="chart-lbl">Dec</div><div class="chart-lbl">Jan</div><div class="chart-lbl">Feb</div>
+            <div class="chart-lbl">Mar</div><div class="chart-lbl">Apr</div><div class="chart-lbl">May</div>
+            <div class="chart-lbl" style="color:var(--gold);font-weight:700;">Jun</div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;padding-top:12px;border-top:1px solid var(--mist);">
+            <div><div style="font-size:.63rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--mid);">Subscriptions</div><div style="font-family:Cairo,sans-serif;font-size:1.1rem;font-weight:700;color:var(--teal);">€5,241</div></div>
+            <div><div style="font-size:.63rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--mid);">Ad Revenue</div><div style="font-family:Cairo,sans-serif;font-size:1.1rem;font-weight:700;color:var(--gold);">€1,847</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hd"><span class="card-title">Recent Activity</span><button class="btn btn-out btn-sm">View all</button></div>
+        <div class="activity-feed">
+          <div class="af-item"><div class="af-dot ad-grn"></div><div class="af-text"><strong>Nour Trading LLC</strong> registered — UAE · FMCG · Awaiting KYB</div><div class="af-time">3m ago</div></div>
+          <div class="af-item"><div class="af-dot ad-gold"></div><div class="af-text"><strong>Dutch Food Export BV</strong> upgraded to Pro Exporter · €89/mo</div><div class="af-time">18m ago</div></div>
+          <div class="af-item"><div class="af-dot ad-teal"></div><div class="af-text">New trade request posted: <strong>Halal dates 10MT KSA</strong></div><div class="af-time">41m ago</div></div>
+          <div class="af-item"><div class="af-dot ad-red"></div><div class="af-text"><strong>KYB alert:</strong> Documents uploaded by Al Bahrain Trading — needs review</div><div class="af-time">1h ago</div></div>
+          <div class="af-item"><div class="af-dot ad-gold"></div><div class="af-text">Homepage banner ad booked by <strong>Iberia Food Group</strong> · €499</div><div class="af-time">2h ago</div></div>
+          <div class="af-item"><div class="af-dot ad-grn"></div><div class="af-text"><strong>German Metals GmbH</strong> KYB approved — listing now live</div><div class="af-time">3h ago</div></div>
+          <div class="af-item"><div class="af-dot ad-teal"></div><div class="af-text">Weekly newsletter sent — <strong>847 subscribers</strong> · 42% open rate</div><div class="af-time">Yesterday</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="three-col">
+      <div class="card">
+        <div class="card-hd"><span class="card-title">Members by Plan</span></div>
+        <div class="card-body">
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:.8rem;"><span>Free</span><div style="display:flex;align-items:center;gap:8px;"><div style="width:100px;height:6px;background:var(--mist);border-radius:3px;overflow:hidden;"><div style="width:74%;height:100%;background:var(--mid);border-radius:3px;"></div></div><span style="font-weight:700;width:30px;text-align:right;">297</span></div></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:.8rem;"><span>Pro GCC €59</span><div style="display:flex;align-items:center;gap:8px;"><div style="width:100px;height:6px;background:var(--mist);border-radius:3px;overflow:hidden;"><div style="width:38%;height:100%;background:var(--teal);border-radius:3px;"></div></div><span style="font-weight:700;width:26px;text-align:right;">38</span></div></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:.8rem;"><span>Pro EU €89</span><div style="display:flex;align-items:center;gap:8px;"><div style="width:100px;height:6px;background:var(--mist);border-radius:3px;overflow:hidden;"><div style="width:28%;height:100%;background:var(--teal-lt);border-radius:3px;"></div></div><span style="font-weight:700;width:26px;text-align:right;">27</span></div></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:.8rem;"><span>Premium €179</span><div style="display:flex;align-items:center;gap:8px;"><div style="width:100px;height:6px;background:var(--mist);border-radius:3px;overflow:hidden;"><div style="width:12%;height:100%;background:var(--gold);border-radius:3px;"></div></div><span style="font-weight:700;width:26px;text-align:right;">12</span></div></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:.8rem;"><span>Market Entry €269</span><div style="display:flex;align-items:center;gap:8px;"><div style="width:100px;height:6px;background:var(--mist);border-radius:3px;overflow:hidden;"><div style="width:7%;height:100%;background:var(--gold-lt);border-radius:3px;"></div></div><span style="font-weight:700;width:26px;text-align:right;">7</span></div></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:.8rem;"><span style="color:var(--gold);">Free (granted)</span><div style="display:flex;align-items:center;gap:8px;"><div style="width:100px;height:6px;background:var(--mist);border-radius:3px;overflow:hidden;"><div style="width:5%;height:100%;background:var(--gold);border-radius:3px;"></div></div><span style="font-weight:700;width:26px;text-align:right;color:var(--gold);">5</span></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hd"><span class="card-title">Members by Region</span></div>
+        <div class="card-body">
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div style="display:flex;justify-content:space-between;font-size:.8rem;"><span>UAE</span><span style="font-weight:700;">94</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:.8rem;"><span>Saudi Arabia</span><span style="font-weight:700;">71</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:.8rem;"><span>Netherlands</span><span style="font-weight:700;">44</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:.8rem;"><span>Germany</span><span style="font-weight:700;">31</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:.8rem;"><span>United Kingdom</span><span style="font-weight:700;">28</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:.8rem;"><span>Kuwait</span><span style="font-weight:700;">22</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:.8rem;"><span>United States</span><span style="font-weight:700;">18</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:.8rem;"><span>China</span><span style="font-weight:700;">38</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:.8rem;"><span>India</span><span style="font-weight:700;">26</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:.8rem;"><span>Malaysia</span><span style="font-weight:700;">19</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:.8rem;"><span>Singapore</span><span style="font-weight:700;">14</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:.8rem;"><span>South Korea / Japan</span><span style="font-weight:700;">12</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:.8rem;"><span>Indonesia / Thailand</span><span style="font-weight:700;">9</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:.8rem;"><span style="color:var(--mid);">Other Asia</span><span style="font-weight:700;color:var(--mid);">8</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hd"><span class="card-title">Top Sectors</span></div>
+        <div class="card-body">
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div style="display:flex;justify-content:space-between;font-size:.8rem;"><span>Food &amp; Beverages</span><span style="font-weight:700;">98</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:.8rem;"><span>FMCG</span><span style="font-weight:700;">84</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:.8rem;"><span>Construction</span><span style="font-weight:700;">52</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:.8rem;"><span>Electronics</span><span style="font-weight:700;">41</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:.8rem;"><span>Chemicals</span><span style="font-weight:700;">33</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:.8rem;"><span>Machinery</span><span style="font-weight:700;">21</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:.8rem;"><span>Healthcare</span><span style="font-weight:700;">13</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ KYB REVIEWS ═══ -->
+  <div class="panel" id="p-kyb">
+    <div style="margin-bottom:16px;">
+      <div style="font-size:.65rem;letter-spacing:.16em;text-transform:uppercase;color:var(--teal);font-weight:700;margin-bottom:4px;">Verification queue</div>
+      <h2 style="font-family:Cairo,sans-serif;font-size:1.2rem;font-weight:700;">KYB Reviews — 7 Pending</h2>
+    </div>
+    <div class="alert alert-gold">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#8B6200" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <div><strong>Review process</strong>Check company registration via KVK/trade registry API (EU), validate VAT via EU VIES, or verify via MyCO Singapore / MCA India / SSM Malaysia for Asian companies. Review uploaded documents, then Approve or Request More Info. Approved listings go live immediately.</div>
+    </div>
+    <div class="kyb-card">
+      <div class="kyb-card-hd">
+        <div><div class="kyb-co-name">Nour Trading LLC</div><div class="kyb-co-sub">UAE · FMCG · Importer · Registered 2h ago</div></div>
+        <span class="bdg bdg-gold">Pending</span>
+      </div>
+      <div class="kyb-checklist">
+        <span class="kyb-check kc-ok"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Company details complete</span>
+        <span class="kyb-check kc-ok"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Trade license uploaded</span>
+        <span class="kyb-check kc-ok"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Director ID uploaded</span>
+        <span class="kyb-check kc-pend"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>Registry auto-check pending</span>
+        <span class="kyb-check kc-miss"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Address proof missing</span>
+      </div>
+      <div class="kyb-actions">
+        <button class="btn btn-grn btn-sm" onclick="approveKYB(this,'Nour Trading LLC')">Approve & Go Live</button>
+        <button class="btn btn-out btn-sm" onclick="openMo('mo-kyb-info')">Request More Info</button>
+        <button class="btn btn-t btn-sm" onclick="alert('Opening uploaded documents…')">View Documents</button>
+        <button class="btn btn-red btn-sm" onclick="if(confirm('Reject this application?'))this.closest('.kyb-card').style.opacity='.4'">Reject</button>
+      </div>
+    </div>
+    <div class="kyb-card">
+      <div class="kyb-card-hd">
+        <div><div class="kyb-co-name">Al Bahrain Trading Co.</div><div class="kyb-co-sub">Bahrain · Food &amp; Beverages · Importer · Registered 1h ago</div></div>
+        <span class="bdg bdg-gold">Pending</span>
+      </div>
+      <div class="kyb-checklist">
+        <span class="kyb-check kc-ok"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Company details complete</span>
+        <span class="kyb-check kc-ok"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>All documents uploaded</span>
+        <span class="kyb-check kc-ok"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Registry check passed</span>
+        <span class="kyb-check kc-ok"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Sanctions screening clear</span>
+      </div>
+      <div class="kyb-actions">
+        <button class="btn btn-grn btn-sm" onclick="approveKYB(this,'Al Bahrain Trading Co.')">Approve & Go Live</button>
+        <button class="btn btn-out btn-sm">Request More Info</button>
+        <button class="btn btn-t btn-sm">View Documents</button>
+        <button class="btn btn-red btn-sm">Reject</button>
+      </div>
+    </div>
+    <div class="kyb-card">
+      <div class="kyb-card-hd">
+        <div><div class="kyb-co-name">Crete Organics Ltd</div><div class="kyb-co-sub">Greece · Food &amp; Beverages · Exporter · EU Supplier</div></div>
+        <span class="bdg bdg-gold">Pending</span>
+      </div>
+      <div class="kyb-checklist">
+        <span class="kyb-check kc-ok"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Company details complete</span>
+        <span class="kyb-check kc-ok"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>EU VAT validated (VIES)</span>
+        <span class="kyb-check kc-ok"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>All documents uploaded</span>
+        <span class="kyb-check kc-ok"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Organic certifications provided</span>
+      </div>
+      <div class="kyb-actions">
+        <button class="btn btn-grn btn-sm" onclick="approveKYB(this,'Crete Organics Ltd')">Approve & Go Live</button>
+        <button class="btn btn-out btn-sm">Request More Info</button>
+        <button class="btn btn-t btn-sm">View Documents</button>
+        <button class="btn btn-red btn-sm">Reject</button>
+      </div>
+    </div>
+    <div style="text-align:center;padding:16px;font-size:.79rem;color:var(--mid);">+ 4 more pending reviews <button class="btn btn-out btn-sm" style="margin-left:8px;">Load more</button></div>
+  </div>
+
+  <!-- ═══ GRANT MEMBERSHIPS ═══ -->
+  <div class="panel" id="p-memberships">
+    <div style="margin-bottom:16px;">
+      <div style="font-size:.65rem;letter-spacing:.16em;text-transform:uppercase;color:var(--teal);font-weight:700;margin-bottom:4px;">Manual overrides</div>
+      <h2 style="font-family:Cairo,sans-serif;font-size:1.2rem;font-weight:700;">Grant & Manage Memberships</h2>
+    </div>
+    <div class="alert alert-teal">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <div><strong>Use this to manually grant or upgrade memberships</strong>Grant free Pro/Premium access to strategic partners, chambers of commerce, early adopters, or test accounts. All grants are logged with a reason.</div>
+    </div>
+    <div class="two-col" style="margin-bottom:16px;">
+      <div class="card">
+        <div class="card-hd"><span class="card-title">Grant a Membership</span></div>
+        <div class="card-body">
+          <div class="fg"><label>Find Member</label><input type="text" id="grant-search" placeholder="Search by company name or email…"></div>
+          <div class="fg"><label>Grant Plan</label>
+            <select id="grant-plan">
+              <option value="pro-gcc">Pro Importer (GCC) — €59/mo value</option>
+              <option value="pro-eu">Pro Exporter (EU/US) — €89/mo value</option>
+              <option value="premium">Premium — €179/mo value</option>
+              <option value="market-entry">Market Entry — €269/mo value</option>
+            </select>
+          </div>
+          <div class="fg"><label>Duration</label>
+            <select id="grant-dur">
+              <option>1 month</option><option>3 months</option><option>6 months</option>
+              <option>12 months</option><option>Indefinite</option>
+            </select>
+          </div>
+          <div class="fg"><label>Reason / Note</label><textarea id="grant-reason" placeholder="e.g. Strategic partner — Dubai Chamber of Commerce. Early adopter discount. Test account."></textarea></div>
+          <button class="btn btn-g" onclick="grantMembership()">Grant Membership</button>
+          <div id="grant-succ" class="succ">✓ Membership granted. The member will receive an email notification.</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hd"><span class="card-title">Currently Granted (Free)</span><span class="bdg bdg-gold">5 active</span></div>
+        <div>
+          <div class="member-row">
+            <div class="member-info"><div class="member-name">Dubai Chamber of Commerce</div><div class="member-detail">Partner · Granted 1 Jan 2025 · 12 months</div></div>
+            <div class="member-plan">Premium</div>
+            <button class="btn btn-out btn-sm" onclick="if(confirm('Revoke this membership?'))this.closest('.member-row').style.opacity='.4'">Revoke</button>
+          </div>
+          <div class="member-row">
+            <div class="member-info"><div class="member-name">Netherlands Food Partners</div><div class="member-detail">Early adopter · Granted 15 Feb 2025 · 6 months</div></div>
+            <div class="member-plan">Pro Exporter</div>
+            <button class="btn btn-out btn-sm">Revoke</button>
+          </div>
+          <div class="member-row">
+            <div class="member-info"><div class="member-name">Farhan A. (Test Account)</div><div class="member-detail">Owner test · Indefinite</div></div>
+            <div class="member-plan" style="color:var(--gold);">Premium</div>
+            <button class="btn btn-out btn-sm">—</button>
+          </div>
+          <div class="member-row">
+            <div class="member-info"><div class="member-name">Gulf Food Magazine</div><div class="member-detail">Press partner · Granted 1 Mar 2025 · 12 months</div></div>
+            <div class="member-plan">Pro GCC</div>
+            <button class="btn btn-out btn-sm">Revoke</button>
+          </div>
+          <div class="member-row">
+            <div class="member-info"><div class="member-name">KSA Trade Council</div><div class="member-detail">Gov. partner · Granted 10 Apr 2025 · 12 months</div></div>
+            <div class="member-plan">Premium</div>
+            <button class="btn btn-out btn-sm">Revoke</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ ALL MEMBERS ═══ -->
+  <div class="panel" id="p-members">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px;">
+      <div>
+        <div style="font-size:.65rem;letter-spacing:.16em;text-transform:uppercase;color:var(--teal);font-weight:700;margin-bottom:4px;">Member database</div>
+        <h2 style="font-family:Cairo,sans-serif;font-size:1.2rem;font-weight:700;">All Members — 342</h2>
+      </div>
+      <div style="display:flex;gap:7px;flex-wrap:wrap;">
+        <input type="text" placeholder="Search members…" style="font-family:Inter,sans-serif;font-size:.8rem;border:1.5px solid var(--mist);border-radius:4px;padding:7px 10px;outline:none;min-width:180px;">
+        <select style="font-family:Inter,sans-serif;font-size:.8rem;border:1.5px solid var(--mist);border-radius:4px;padding:7px 10px;outline:none;cursor:pointer;"><option>All plans</option><option>Free</option><option>Pro GCC</option><option>Pro EU</option><option>Premium</option></select>
+        <button class="btn btn-out btn-sm">Export CSV</button>
+      </div>
+    </div>
+    <div class="card" style="margin-bottom:0;">
+      <div class="tbl-wrap">
+        <table class="tbl">
+          <thead><tr><th>Company</th><th>Country</th><th>Type</th><th>Sector</th><th>Plan</th><th>Status</th><th>Joined</th><th>Actions</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Excorp Distribution BV</strong><div style="font-size:.68rem;color:var(--mid);">farhan@excorp.com</div></td><td>Netherlands</td><td>Wholesaler</td><td>FMCG</td><td><span class="bdg bdg-teal">Pro GCC</span></td><td><span class="bdg bdg-grn">Verified</span></td><td style="color:var(--mid);">1 Apr</td><td><button class="btn btn-t btn-sm" style="margin-right:3px;" onclick="openMo('mo-member')">View</button><button class="btn btn-out btn-sm">Grant Plan</button></td></tr>
+            <tr><td><strong>Dutch Food Export BV</strong><div style="font-size:.68rem;color:var(--mid);">export@dutchfood.nl</div></td><td>Netherlands</td><td>Exporter</td><td>Food &amp; Bev</td><td><span class="bdg bdg-teal">Pro EU</span></td><td><span class="bdg bdg-grn">Verified</span></td><td style="color:var(--mid);">3 Apr</td><td><button class="btn btn-t btn-sm" style="margin-right:3px;" onclick="openMo('mo-member')">View</button><button class="btn btn-out btn-sm">Grant Plan</button></td></tr>
+            <tr><td><strong>Al Noor Trading Co.</strong><div style="font-size:.68rem;color:var(--mid);">trade@alnoor.ae</div></td><td>UAE</td><td>Importer</td><td>FMCG</td><td><span class="bdg bdg-teal">Pro GCC</span></td><td><span class="bdg bdg-grn">Verified</span></td><td style="color:var(--mid);">8 Apr</td><td><button class="btn btn-t btn-sm" style="margin-right:3px;" onclick="openMo('mo-member')">View</button><button class="btn btn-out btn-sm">Grant Plan</button></td></tr>
+            <tr><td><strong>Riyadh General Trading</strong><div style="font-size:.68rem;color:var(--mid);">info@rgt.sa</div></td><td>Saudi Arabia</td><td>Importer</td><td>Food &amp; Bev</td><td><span class="bdg bdg-mid">Free</span></td><td><span class="bdg bdg-grn">Verified</span></td><td style="color:var(--mid);">12 Apr</td><td><button class="btn btn-t btn-sm" style="margin-right:3px;" onclick="openMo('mo-member')">View</button><button class="btn btn-out btn-sm">Grant Plan</button></td></tr>
+            <tr><td><strong>Nour Trading LLC</strong><div style="font-size:.68rem;color:var(--mid);">info@nour.ae</div></td><td>UAE</td><td>Importer</td><td>FMCG</td><td><span class="bdg bdg-mid">Free</span></td><td><span class="bdg bdg-gold">KYB Pending</span></td><td style="color:var(--mid);">Today</td><td><button class="btn btn-t btn-sm" style="margin-right:3px;" onclick="go('kyb',document.querySelectorAll('.sb-link')[2])">KYB Review</button></td></tr>
+            <tr><td><strong>German Metals GmbH</strong><div style="font-size:.68rem;color:var(--mid);">export@germanmetals.de</div></td><td>Germany</td><td>Manufacturer</td><td>Construction</td><td><span class="bdg bdg-teal">Pro EU</span></td><td><span class="bdg bdg-grn">Verified</span></td><td style="color:var(--mid);">15 Apr</td><td><button class="btn btn-t btn-sm" style="margin-right:3px;" onclick="openMo('mo-member')">View</button><button class="btn btn-out btn-sm">Grant Plan</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div style="padding:10px 16px;font-size:.75rem;color:var(--mid);background:var(--white);border:1.5px solid var(--mist);border-top:none;border-radius:0 0 7px 7px;">Showing 6 of 342 members · <a href="#" style="color:var(--teal);">Load more</a></div>
+  </div>
+
+  <!-- ═══ TRADE REQUESTS ═══ -->
+  <div class="panel" id="p-requests">
+    <div style="margin-bottom:16px;">
+      <div style="font-size:.65rem;letter-spacing:.16em;text-transform:uppercase;color:var(--teal);font-weight:700;margin-bottom:4px;">Platform content</div>
+      <h2 style="font-family:Cairo,sans-serif;font-size:1.2rem;font-weight:700;">All Trade Requests — 128 Live</h2>
+    </div>
+    <div class="card">
+      <div class="tbl-wrap">
+        <table class="tbl">
+          <thead><tr><th>Product</th><th>Type</th><th>Country</th><th>Company</th><th>Status</th><th>Responses</th><th>Actions</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Nespresso OL Capsules</strong><div style="font-size:.68rem;color:var(--mid);">50K sleeves/mo</div></td><td><span class="bdg bdg-blue">Import</span></td><td>UAE</td><td>Al Noor Trading</td><td><span class="bdg bdg-grn">Live</span></td><td>4</td><td><button class="btn btn-out btn-sm" style="margin-right:3px;">View</button><button class="btn btn-red btn-sm">Remove</button></td></tr>
+            <tr><td><strong>Halal Frozen Chicken</strong><div style="font-size:.68rem;color:var(--mid);">50MT first order</div></td><td><span class="bdg bdg-blue">Import</span></td><td>Saudi Arabia</td><td>Riyadh General</td><td><span class="bdg bdg-grn">Live</span></td><td>2</td><td><button class="btn btn-out btn-sm" style="margin-right:3px;">View</button><button class="btn btn-red btn-sm">Remove</button></td></tr>
+            <tr><td><strong>Steel Rebar Grade 60</strong><div style="font-size:.68rem;color:var(--mid);">500MT/mo</div></td><td><span class="bdg bdg-blue">Import</span></td><td>UAE</td><td>Gulf Construction</td><td><span class="bdg bdg-gold">Under Review</span></td><td>0</td><td><button class="btn btn-grn btn-sm" style="margin-right:3px;" onclick="this.closest('tr').querySelector('.bdg-gold').className='bdg bdg-grn';this.closest('tr').querySelector('.bdg-gold');this.textContent='Approved'">Approve</button><button class="btn btn-red btn-sm">Remove</button></td></tr>
+            <tr><td><strong>Premium Medjool Dates</strong><div style="font-size:.68rem;color:var(--mid);">10MT/mo export</div></td><td><span class="bdg bdg-teal">Export</span></td><td>Saudi Arabia</td><td>Arabian Dates</td><td><span class="bdg bdg-grn">Live</span></td><td>5</td><td><button class="btn btn-out btn-sm" style="margin-right:3px;">View</button><button class="btn btn-red btn-sm">Remove</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ ADS ═══ -->
+  <div class="panel" id="p-ads">
+    <div style="margin-bottom:16px;">
+      <div style="font-size:.65rem;letter-spacing:.16em;text-transform:uppercase;color:var(--teal);font-weight:700;margin-bottom:4px;">Ad inventory</div>
+      <h2 style="font-family:Cairo,sans-serif;font-size:1.2rem;font-weight:700;">Ad Slots</h2>
+    </div>
+    <div class="three-col" style="margin-bottom:16px;">
+      <div class="sc"><div class="sc-lbl">Homepage Banner</div><div class="sc-val" style="font-size:1.2rem;color:var(--grn);">Booked</div><div class="sc-sub">Iberia Food Group · Jun 2025 · €499</div></div>
+      <div class="sc"><div class="sc-lbl">Category Sponsor</div><div class="sc-val" style="font-size:1.2rem;color:var(--grn);">2 / 8</div><div class="sc-sub">Food &amp; FMCG booked · 6 slots open</div></div>
+      <div class="sc"><div class="sc-lbl">Trade Board Ads</div><div class="sc-val" style="font-size:1.2rem;color:var(--grn);">3 Live</div><div class="sc-sub">Dutch Food, GermanMetals, UKChem</div></div>
+    </div>
+    <div class="card">
+      <div class="card-hd"><span class="card-title">Active Ad Placements</span><button class="btn btn-g btn-sm" onclick="openMo('mo-ad')">+ Add Ad Slot</button></div>
+      <div class="tbl-wrap"><table class="tbl">
+        <thead><tr><th>Advertiser</th><th>Type</th><th>Period</th><th>Amount</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Iberia Food Group</strong></td><td>Homepage Banner</td><td>Jun 2025</td><td>€499</td><td><span class="bdg bdg-grn">Live</span></td><td><button class="btn btn-out btn-sm">Edit</button></td></tr>
+          <tr><td><strong>Dutch Food Export BV</strong></td><td>Trade Board Ad</td><td>Jun 2025</td><td>€99</td><td><span class="bdg bdg-grn">Live</span></td><td><button class="btn btn-out btn-sm">Edit</button></td></tr>
+          <tr><td><strong>UK Chemicals Ltd</strong></td><td>Category — Chemicals</td><td>Jun 2025</td><td>€249</td><td><span class="bdg bdg-grn">Live</span></td><td><button class="btn btn-out btn-sm">Edit</button></td></tr>
+          <tr><td><strong>German Metals GmbH</strong></td><td>Trade Board Ad</td><td>Jun–Jul 2025</td><td>€198</td><td><span class="bdg bdg-grn">Live</span></td><td><button class="btn btn-out btn-sm">Edit</button></td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </div>
+
+  <!-- ═══ REVENUE ═══ -->
+  <div class="panel" id="p-revenue">
+    <div style="margin-bottom:16px;">
+      <div style="font-size:.65rem;letter-spacing:.16em;text-transform:uppercase;color:var(--teal);font-weight:700;margin-bottom:4px;">Financial overview</div>
+      <h2 style="font-family:Cairo,sans-serif;font-size:1.2rem;font-weight:700;">Revenue & Invoices</h2>
+    </div>
+    <div class="stats-row" style="margin-bottom:16px;">
+      <div class="sc"><div class="sc-lbl">Jun MRR</div><div class="sc-val" style="font-size:1.35rem;">€6,890</div></div>
+      <div class="sc"><div class="sc-lbl">Jun Ad Rev</div><div class="sc-val" style="font-size:1.35rem;">€1,847</div></div>
+      <div class="sc"><div class="sc-lbl">Jun Total</div><div class="sc-val" style="font-size:1.35rem;color:var(--teal);">€7,088</div></div>
+      <div class="sc"><div class="sc-lbl">Churn Rate</div><div class="sc-val" style="font-size:1.35rem;">3.2%</div><div class="sc-sub"><span class="sc-up">Healthy</span></div></div>
+    </div>
+    <div class="card">
+      <div class="card-hd"><span class="card-title">Invoice Ledger</span><button class="btn btn-out btn-sm">Export all</button></div>
+      <div class="tbl-wrap"><table class="tbl">
+        <thead><tr><th>Invoice</th><th>Company</th><th>Plan / Product</th><th>Amount</th><th>Date</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>INV-2025-089</td><td>Iberia Food Group</td><td>Homepage Banner Jun 2025</td><td>€499</td><td>1 Jun 2025</td><td><span class="bdg bdg-grn">Paid</span></td></tr>
+          <tr><td>INV-2025-088</td><td>Dutch Food Export BV</td><td>Pro Exporter May 2025</td><td>€89</td><td>1 Jun 2025</td><td><span class="bdg bdg-grn">Paid</span></td></tr>
+          <tr><td>INV-2025-087</td><td>UK Chemicals Ltd</td><td>Category Sponsor — Chemicals</td><td>€249</td><td>1 Jun 2025</td><td><span class="bdg bdg-grn">Paid</span></td></tr>
+          <tr><td>INV-2025-086</td><td>Excorp Distribution BV</td><td>Pro Importer Jun 2025</td><td>€59</td><td>1 Jun 2025</td><td><span class="bdg bdg-grn">Paid</span></td></tr>
+          <tr><td>INV-2025-085</td><td>Gulf Construction Supply</td><td>Premium Jun 2025</td><td>€179</td><td>1 Jun 2025</td><td><span class="bdg bdg-gold">Pending</span></td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </div>
+
+  <!-- ═══ NEWSLETTER ═══ -->
+  <div class="panel" id="p-newsletter">
+    <div style="margin-bottom:16px;">
+      <div style="font-size:.65rem;letter-spacing:.16em;text-transform:uppercase;color:var(--teal);font-weight:700;margin-bottom:4px;">Weekly dispatch</div>
+      <h2 style="font-family:Cairo,sans-serif;font-size:1.2rem;font-weight:700;">GCC Trade Weekly Newsletter</h2>
+    </div>
+    <div class="two-col">
+      <div>
+        <div class="card">
+          <div class="card-hd"><span class="card-title">Compose This Week's Edition</span></div>
+          <div class="card-body">
+            <div class="fg"><label>Subject Line</label><input type="text" value="Gulf Trade Weekly #24 — 5 urgent GCC import requests this week"></div>
+            <div class="fg"><label>Top Import Request 1</label><input type="text" value="Nespresso OL Capsules — 50K sleeves/mo — UAE"></div>
+            <div class="fg"><label>Top Import Request 2</label><input type="text" value="Halal Frozen Chicken — 50MT — Saudi Arabia"></div>
+            <div class="fg"><label>Top Import Request 3</label><input type="text" value="Organic EVOO — 20,000L/mo — Kuwait"></div>
+            <div class="fg"><label>Market Insight</label><textarea>GCC food imports from the EU grew 14% in Q1 2025, driven by demand for premium dairy, coffee, and packaged goods. UAE remains the entry point for 62% of European FMCG entering the Gulf.</textarea></div>
+            <div class="fg"><label>New Members Spotlight</label><input type="text" value="12 new verified suppliers joined this week from Germany, Netherlands, and Spain."></div>
+            <div style="display:flex;gap:8px;margin-top:4px;">
+              <button class="btn btn-t" onclick="alert('Preview shown on right →')">Preview</button>
+              <button class="btn btn-g" onclick="sendNL()">Send to 847 subscribers</button>
+              <button class="btn btn-out">Schedule</button>
+            </div>
+            <div id="nl-succ" class="succ">✓ Newsletter sent to 847 subscribers. Open rate tracking active.</div>
+          </div>
+        </div>
+        <div class="card" style="margin-top:14px;">
+          <div class="card-hd"><span class="card-title">Newsletter Stats</span></div>
+          <div class="card-body">
+            <div class="fr2">
+              <div><div style="font-size:.63rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--mid);">Subscribers</div><div style="font-family:Cairo,sans-serif;font-size:1.4rem;font-weight:700;color:var(--teal);">847</div></div>
+              <div><div style="font-size:.63rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--mid);">Avg Open Rate</div><div style="font-family:Cairo,sans-serif;font-size:1.4rem;font-weight:700;color:var(--gold);">42%</div></div>
+              <div><div style="font-size:.63rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--mid);">Click Rate</div><div style="font-family:Cairo,sans-serif;font-size:1.4rem;font-weight:700;">18%</div></div>
+              <div><div style="font-size:.63rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--mid);">Editions Sent</div><div style="font-family:Cairo,sans-serif;font-size:1.4rem;font-weight:700;">24</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="nl-preview">
+          <div class="nl-hd">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--gold-lt)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            GCC Trade Weekly #24
+          </div>
+          <div class="nl-sub-hd">16 June 2025 · Gulf Trade Portal</div>
+          <div class="nl-section">
+            <div class="nl-section-title">This week's top import requests</div>
+            <div class="nl-item">🔵 <strong>Nespresso OL Capsules</strong> — 50,000 sleeves/mo · UAE · EU origin required</div>
+            <div class="nl-item">🔵 <strong>Halal Frozen Chicken IQF</strong> — 50MT · Saudi Arabia · SFDA approved</div>
+            <div class="nl-item">🔵 <strong>Organic EVOO</strong> — 20,000L/mo · Kuwait · Private label welcome</div>
+          </div>
+          <div class="nl-section">
+            <div class="nl-section-title">Market intelligence</div>
+            <div class="nl-item">GCC food imports from the EU grew 14% in Q1 2025, driven by premium dairy, coffee, and packaged goods. UAE remains the entry point for 62% of European FMCG entering the Gulf.</div>
+          </div>
+          <div class="nl-section">
+            <div class="nl-section-title">New verified suppliers</div>
+            <div class="nl-item">12 new verified EU suppliers joined this week — Germany, Netherlands, Spain. <a href="#" style="color:var(--gold-lt);">Browse directory →</a></div>
+          </div>
+          <div style="margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,.08);font-size:.68rem;color:rgba(255,255,255,.3);">Gulf Trade Portal · Excorp Distribution B.V. · Unsubscribe</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ SETTINGS ═══ -->
+  <div class="panel" id="p-settings">
+    <div style="margin-bottom:16px;">
+      <div style="font-size:.65rem;letter-spacing:.16em;text-transform:uppercase;color:var(--teal);font-weight:700;margin-bottom:4px;">Platform config</div>
+      <h2 style="font-family:Cairo,sans-serif;font-size:1.2rem;font-weight:700;">Platform Settings</h2>
+    </div>
+    <div class="two-col">
+      <div class="card">
+        <div class="card-hd"><span class="card-title">Platform Identity</span></div>
+        <div class="card-body">
+          <div class="fg"><label>Platform Name</label><input type="text" value="Gulf Trade Portal"></div>
+          <div class="fg"><label>Legal Entity</label><input type="text" value="Excorp Distribution B.V."></div>
+          <div class="fg"><label>KVK Number</label><input type="text" value="12345678"></div>
+          <div class="fg"><label>BTW / VAT Number</label><input type="text" value="NL123456789B01"></div>
+          <div class="fg"><label>Invoice Email</label><input type="email" value="invoice@gulftradeportal.com"></div>
+          <div class="fg"><label>Support WhatsApp</label><input type="text" value="+31 6 00 000 000"></div>
+          <button class="btn btn-t">Save Settings</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hd"><span class="card-title">Integrations</span></div>
+        <div class="card-body" style="display:flex;flex-direction:column;gap:12px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--mist);">
+            <div><div style="font-size:.82rem;font-weight:600;">Stripe Payments</div><div style="font-size:.71rem;color:var(--mid);">Subscription billing &amp; payment links</div></div>
+            <span class="bdg bdg-gold">Configure</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--mist);">
+            <div><div style="font-size:.82rem;font-weight:600;">Supabase</div><div style="font-size:.71rem;color:var(--mid);">Database, auth &amp; file storage</div></div>
+            <span class="bdg bdg-gold">Configure</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--mist);">
+            <div><div style="font-size:.82rem;font-weight:600;">KVK API</div><div style="font-size:.71rem;color:var(--mid);">Dutch company registry auto-check</div></div>
+            <span class="bdg bdg-gold">Configure</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--mist);">
+            <div><div style="font-size:.82rem;font-weight:600;">EU VIES API</div><div style="font-size:.71rem;color:var(--mid);">European VAT number validation</div></div>
+            <span class="bdg bdg-gold">Configure</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;">
+            <div><div style="font-size:.82rem;font-weight:600;">Formspree</div><div style="font-size:.71rem;color:var(--mid);">Form submissions to email</div></div>
+            <span class="bdg bdg-gold">Configure</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  </div><!-- end content -->
+</div><!-- end main -->
+
+<!-- MODALS -->
+<div class="mo" id="mo-kyb-info"><div class="mo-box">
+  <button class="mo-x" onclick="closeMo('mo-kyb-info')">×</button>
+  <h3 class="mo-h">Request More Information</h3>
+  <p class="mo-sub">The company will receive an email asking for the specific documents or information listed below.</p>
+  <div class="fg"><label>Missing / Required</label><textarea placeholder="e.g. Please upload a clear scan of your trade license. Please provide proof of business address dated within 3 months."></textarea></div>
+  <button class="btn btn-t" style="width:100%;" onclick="alert('Email sent to company.');closeMo('mo-kyb-info')">Send Request →</button>
+</div></div>
+
+<div class="mo" id="mo-member"><div class="mo-box">
+  <button class="mo-x" onclick="closeMo('mo-member')">×</button>
+  <h3 class="mo-h">Member Profile — Dutch Food Export BV</h3>
+  <p class="mo-sub">Netherlands · Pro Exporter · Verified · Joined 3 Apr 2025</p>
+  <div style="display:flex;flex-direction:column;gap:7px;margin-bottom:16px;font-size:.8rem;">
+    <div style="display:flex;gap:10px;"><span style="color:var(--mid);width:100px;">Email</span><span>export@dutchfood.nl</span></div>
+    <div style="display:flex;gap:10px;"><span style="color:var(--mid);width:100px;">WhatsApp</span><span>+31 6 XX XXX XXX</span></div>
+    <div style="display:flex;gap:10px;"><span style="color:var(--mid);width:100px;">Sector</span><span>Food &amp; Beverages</span></div>
+    <div style="display:flex;gap:10px;"><span style="color:var(--mid);width:100px;">Products</span><span>Dairy, FMCG, Coffee, Packaged goods</span></div>
+    <div style="display:flex;gap:10px;"><span style="color:var(--mid);width:100px;">Plan</span><span style="color:var(--teal);font-weight:700;">Pro Exporter €89/mo</span></div>
+    <div style="display:flex;gap:10px;"><span style="color:var(--mid);width:100px;">KVK</span><span>87654321 ✓ Verified</span></div>
+    <div style="display:flex;gap:10px;"><span style="color:var(--mid);width:100px;">Responses</span><span>8 responses sent to GCC buyers</span></div>
+  </div>
+  <div style="display:flex;gap:7px;flex-wrap:wrap;">
+    <button class="btn btn-g btn-sm" onclick="closeMo('mo-member')">Grant Pro Plan Free</button>
+    <button class="btn btn-out btn-sm">Send Email</button>
+    <button class="btn btn-red btn-sm">Suspend</button>
+  </div>
+</div></div>
+
+<div class="mo" id="mo-ad"><div class="mo-box">
+  <button class="mo-x" onclick="closeMo('mo-ad')">×</button>
+  <h3 class="mo-h">Add Ad Slot</h3>
+  <p class="mo-sub">Manually add a confirmed ad placement and generate an invoice.</p>
+  <div class="fg"><label>Advertiser Company</label><input type="text" placeholder="Company name"></div>
+  <div class="fg"><label>Ad Type</label><select><option>Trade Board Ad — €99/mo</option><option>Category Sponsor — €249/mo</option><option>Homepage Banner — €499/mo</option><option>Annual Package — €3,999/yr</option></select></div>
+  <div class="fr2" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+    <div class="fg"><label>Start Date</label><input type="date"></div>
+    <div class="fg"><label>End Date</label><input type="date"></div>
+  </div>
+  <button class="btn btn-t" style="width:100%;" onclick="alert('Ad slot created and invoice generated.');closeMo('mo-ad')">Create Ad Slot & Invoice →</button>
+</div></div>
+
+<script>
+const PANELS=['overview','kyb','memberships','members','requests','ads','revenue','newsletter','settings'];
+const TITLES={overview:'Overview',kyb:'KYB Reviews',memberships:'Grant Memberships',members:'All Members',requests:'Trade Requests',ads:'Ad Slots',revenue:'Revenue & Invoices',newsletter:'Weekly Newsletter',settings:'Platform Settings'};
+
+function go(id,btn){
+  PANELS.forEach(p=>{
+    const el=document.getElementById('p-'+p);
+    if(el)el.classList.toggle('active',p===id);
+  });
+  document.querySelectorAll('.sb-link').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  document.getElementById('page-title').textContent=TITLES[id]||id;
+  window.scrollTo(0,0);
+}
+function openMo(id){document.getElementById(id).classList.add('open');}
+function closeMo(id){document.getElementById(id).classList.remove('open');}
+document.addEventListener('click',e=>{if(e.target.classList.contains('mo'))e.target.classList.remove('open');});
+
+function approveKYB(btn,name){
+  const card=btn.closest('.kyb-card');
+  card.querySelector('.bdg').textContent='Approved';
+  card.querySelector('.bdg').className='bdg bdg-grn';
+  card.style.opacity='.6';
+  card.style.pointerEvents='none';
+  showToast(name+' approved — listing is now live.');
+}
+function grantMembership(){
+  document.getElementById('grant-succ').style.display='block';
+  document.getElementById('grant-search').value='';
+  document.getElementById('grant-reason').value='';
+}
+function sendNL(){
+  document.getElementById('nl-succ').style.display='block';
+}
+
+function adminLogout(){
+  if(confirm('Sign out of admin panel?')){
+    sessionStorage.removeItem('gtp_admin_auth');
+    sessionStorage.removeItem('gtp_admin_user');
+    window.location.reload();
+  }
+}
+/* Show logged-in email in sidebar */
+(function(){
+  const user = sessionStorage.getItem('gtp_admin_user');
+  if(user){
+    const el = document.getElementById('admin-display-name');
+    if(el){
+      const name = user.split('@')[0].split('.').map(w=>w.charAt(0).toUpperCase()+w.slice(1)).join(' ');
+      el.textContent = name;
+    }
+  }
+})();
+function showToast(msg){
+  const t=document.createElement('div');
+  t.style.cssText='position:fixed;bottom:24px;right:24px;background:var(--teal);color:#fff;font-family:Inter,sans-serif;font-size:.8rem;font-weight:600;padding:12px 18px;border-radius:5px;z-index:999;box-shadow:0 6px 20px rgba(0,0,0,.2);animation:fi .25s ease;';
+  t.textContent='✓ '+msg;
+  document.body.appendChild(t);
+  setTimeout(()=>t.remove(),3500);
+}
+</script>
+</body>
+</html>
