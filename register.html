@@ -142,10 +142,24 @@
         <div class="fg" style="margin-top:15px;"><label>Anything else? (optional)</label><textarea id="r-notes" class="mo-ta" placeholder="Certifications, target markets, specific requirements…"></textarea></div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;">
           <button class="btn-back" onclick="goRS(2)">← Back</button>
-          <label style="display:flex;align-items:flex-start;gap:9px;margin:14px 0;font-size:.8rem;color:var(--mid);line-height:1.5;cursor:pointer;">
-  <input type="checkbox" id="reg-consent" style="margin-top:2px;width:16px;height:16px;flex-shrink:0;accent-color:var(--teal);">
-  <span>I agree to the <a href="terms.html" target="_blank" style="color:var(--teal);">Terms of Service</a> and <a href="privacy.html" target="_blank" style="color:var(--teal);">Privacy Policy</a>, and consent to my company details being shared with matched trade counterparties.</span>
-</label>
+          <div style="background:var(--sand);border:1.5px solid var(--mist);border-radius:9px;padding:16px 18px;margin:18px 0;">
+          <div style="font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink2);margin-bottom:12px;">Before you join — please confirm</div>
+          
+          <label style="display:flex;align-items:flex-start;gap:9px;margin-bottom:11px;font-size:.8rem;color:var(--ink2);line-height:1.5;cursor:pointer;">
+            <input type="checkbox" id="reg-consent-1" style="margin-top:2px;width:16px;height:16px;flex-shrink:0;accent-color:var(--teal);">
+            <span>I have read and accept the <a href="terms.html" target="_blank" style="color:var(--teal);font-weight:600;">Terms of Service</a> and <a href="privacy.html" target="_blank" style="color:var(--teal);font-weight:600;">Privacy Policy</a>.</span>
+          </label>
+
+          <label style="display:flex;align-items:flex-start;gap:9px;margin-bottom:11px;font-size:.8rem;color:var(--ink2);line-height:1.5;cursor:pointer;">
+            <input type="checkbox" id="reg-consent-2" style="margin-top:2px;width:16px;height:16px;flex-shrink:0;accent-color:var(--teal);">
+            <span>I understand that <strong>Gulf Trade Portal is a neutral matchmaking platform only</strong>. It is not a party to any transaction, takes no commission, and is <strong>not responsible for any deal, payment, shipment, or dispute</strong> between members. Any business I conduct with other members is <strong>entirely at my own risk</strong>, and I am responsible for my own due diligence.</span>
+          </label>
+
+          <label style="display:flex;align-items:flex-start;gap:9px;font-size:.8rem;color:var(--ink2);line-height:1.5;cursor:pointer;">
+            <input type="checkbox" id="reg-consent-3" style="margin-top:2px;width:16px;height:16px;flex-shrink:0;accent-color:var(--teal);">
+            <span>I confirm I am authorised to register on behalf of my company, and that the information I provide is accurate.</span>
+          </label>
+        </div>
         <button class="btn-sub" onclick="submitReg()">Complete Registration →</button>
         </div>
         <div id="r-succ" class="succ"></div>
@@ -404,9 +418,11 @@ function goRS(n){
   });
 }
 function submitReg(){
-  const consent = document.getElementById('reg-consent');
-  if(consent && !consent.checked){
-    alert('Please agree to the Terms of Service and Privacy Policy to continue.');
+  const c1 = document.getElementById('reg-consent-1');
+  const c2 = document.getElementById('reg-consent-2');
+  const c3 = document.getElementById('reg-consent-3');
+  if(!c1 || !c1.checked || !c2 || !c2.checked || !c3 || !c3.checked){
+    alert('Please confirm all three statements to complete your registration. You must accept the Terms of Service and acknowledge that trades are conducted at your own risk.');
     return;
   }
   const s=document.getElementById('r-succ');
