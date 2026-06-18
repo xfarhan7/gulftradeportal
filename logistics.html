@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Logistics & Freight — Gulf Trade Portal</title>
+<meta name="description" content="Freight forwarders, customs brokers & door-to-door shipping for GCC trade. Get freight quotes, customs clearance, and VAT handling from verified logistics partners.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
+<style>
+.lg-hero{background:linear-gradient(135deg,var(--teal-dk) 0%,#0a5751 100%);padding:42px 32px 38px;position:relative;overflow:hidden;}
+.lg-hero::after{content:'';position:absolute;inset:0;background-image:radial-gradient(circle at 85% 20%,rgba(200,146,42,.12) 0%,transparent 45%);}
+.lg-hero-inner{max-width:1100px;margin:0 auto;position:relative;z-index:2;}
+.lg-route{display:flex;align-items:center;gap:10px;margin-top:18px;flex-wrap:wrap;}
+.lg-route-node{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:6px;padding:7px 13px;font-size:.8rem;color:#fff;}
+.lg-route-line{flex:1;min-width:30px;height:2px;background:linear-gradient(90deg,rgba(200,146,42,.5),rgba(255,255,255,.2));position:relative;}
+.lg-route-line::after{content:'→';position:absolute;right:-4px;top:-10px;color:var(--gold-lt);font-size:.9rem;}
+
+.lg-main{max-width:1100px;margin:0 auto;padding:36px 32px 60px;}
+
+/* SERVICE STRIP */
+.lg-services{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:42px;}
+.lg-svc{background:var(--white);border:1.5px solid var(--mist);border-radius:10px;padding:20px;transition:border-color .2s,box-shadow .2s;}
+.lg-svc:hover{border-color:var(--teal);box-shadow:0 4px 18px rgba(10,115,105,.07);}
+.lg-svc-ic{width:40px;height:40px;background:var(--teal-pale);border-radius:9px;display:flex;align-items:center;justify-content:center;margin-bottom:13px;}
+.lg-svc-t{font-family:'Cairo',sans-serif;font-size:.98rem;font-weight:700;color:var(--ink);margin-bottom:5px;}
+.lg-svc-d{font-size:.79rem;color:var(--mid);line-height:1.55;}
+
+/* QUOTE TOOL */
+.lg-quote{background:linear-gradient(135deg,#0C0B09,#14302c);border-radius:14px;padding:30px;margin-bottom:46px;position:relative;overflow:hidden;}
+.lg-quote::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle at 80% 30%,rgba(200,146,42,.1) 0%,transparent 50%);}
+.lg-quote-inner{position:relative;z-index:2;}
+.lg-quote h2{font-family:'Cairo',sans-serif;font-size:1.5rem;font-weight:700;color:#fff;margin-bottom:6px;}
+.lg-quote p{font-size:.88rem;color:rgba(255,255,255,.6);margin-bottom:22px;max-width:560px;line-height:1.6;}
+.lg-form{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.lg-fg{display:flex;flex-direction:column;gap:6px;}
+.lg-fg.full{grid-column:1/-1;}
+.lg-fg label{font-size:.72rem;font-weight:600;color:rgba(255,255,255,.7);letter-spacing:.02em;}
+.lg-fg input,.lg-fg select,.lg-fg textarea{font-family:'Inter',sans-serif;font-size:.86rem;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.12);border-radius:6px;padding:11px 13px;color:#fff;outline:none;transition:border-color .2s;}
+.lg-fg input::placeholder,.lg-fg textarea::placeholder{color:rgba(255,255,255,.3);}
+.lg-fg input:focus,.lg-fg select:focus,.lg-fg textarea:focus{border-color:var(--gold);}
+.lg-fg select option{background:#14302c;color:#fff;}
+.lg-quote-btn{grid-column:1/-1;background:linear-gradient(135deg,var(--gold),var(--gold-lt));color:var(--ink);font-family:'Inter',sans-serif;font-size:.9rem;font-weight:700;border:none;border-radius:7px;padding:14px;cursor:pointer;transition:opacity .2s;margin-top:4px;}
+.lg-quote-btn:hover{opacity:.9;}
+.lg-quote-note{grid-column:1/-1;font-size:.74rem;color:rgba(255,255,255,.4);text-align:center;margin-top:4px;}
+.lg-succ{grid-column:1/-1;display:none;background:rgba(55,184,158,.15);border:1px solid rgba(55,184,158,.4);color:#7DECCB;padding:13px;border-radius:7px;font-size:.85rem;text-align:center;}
+
+/* PARTNER DIRECTORY */
+.lg-sec-hd{margin-bottom:22px;}
+.lg-sec-hd .ey{font-size:.67rem;letter-spacing:.16em;text-transform:uppercase;color:var(--teal);font-weight:700;margin-bottom:6px;}
+.lg-sec-hd h2{font-family:'Cairo',sans-serif;font-size:1.55rem;font-weight:700;color:var(--ink);margin-bottom:6px;}
+.lg-sec-hd p{font-size:.88rem;color:var(--mid);line-height:1.6;}
+.lg-filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;}
+.lg-fbtn{background:var(--white);border:1.5px solid var(--mist);color:var(--mid);font-family:'Inter',sans-serif;font-size:.79rem;font-weight:600;padding:8px 16px;border-radius:20px;cursor:pointer;transition:all .15s;}
+.lg-fbtn:hover{border-color:var(--teal);color:var(--teal);}
+.lg-fbtn.on{background:var(--teal);color:#fff;border-color:var(--teal);}
+.lg-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:16px;}
+.lg-card{background:var(--white);border:1.5px solid var(--mist);border-radius:12px;padding:22px;position:relative;transition:border-color .2s,box-shadow .2s;}
+.lg-card:hover{border-color:var(--teal);box-shadow:0 4px 20px rgba(10,115,105,.08);}
+.lg-card.featured{border-color:var(--gold);background:linear-gradient(140deg,#fffdf8,#fff 60%);}
+.lg-card-badge{position:absolute;top:-11px;left:20px;background:var(--gold);color:var(--ink);font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:3px 11px;border-radius:20px;}
+.lg-card-hd{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
+.lg-card-logo{width:46px;height:46px;border-radius:10px;background:linear-gradient(135deg,var(--teal),var(--teal-dk));display:flex;align-items:center;justify-content:center;font-family:'Cairo',sans-serif;font-size:1.3rem;font-weight:900;color:#fff;flex-shrink:0;}
+.lg-card.featured .lg-card-logo{background:linear-gradient(135deg,var(--gold),var(--gold-lt));color:var(--ink);}
+.lg-card-name{font-family:'Cairo',sans-serif;font-size:1rem;font-weight:700;color:var(--ink);line-height:1.2;}
+.lg-card-loc{font-size:.77rem;color:var(--mid);margin-top:2px;}
+.lg-card-desc{font-size:.82rem;color:var(--ink2);line-height:1.55;margin-bottom:14px;}
+.lg-card-services{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;}
+.lg-tag{background:var(--sand);border:1px solid var(--mist);color:var(--ink2);font-size:.71rem;font-weight:500;padding:4px 10px;border-radius:14px;}
+.lg-card-lanes{font-size:.74rem;color:var(--mid);margin-bottom:16px;display:flex;align-items:center;gap:6px;}
+.lg-card-ft{display:flex;gap:8px;}
+.lg-card-ft button,.lg-card-ft a{flex:1;font-family:'Inter',sans-serif;font-size:.79rem;font-weight:600;padding:9px;border-radius:6px;cursor:pointer;border:none;text-align:center;text-decoration:none;transition:opacity .2s;}
+.lg-btn-t{background:var(--teal);color:#fff;}
+.lg-btn-o{background:none;border:1.5px solid var(--mist) !important;color:var(--mid);}
+.lg-btn-t:hover{opacity:.88;}
+
+/* ADVERTISE CTA */
+.lg-advertise{background:var(--sand);border:1.5px solid var(--mist);border-radius:14px;padding:30px;margin-top:44px;display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap;}
+.lg-advertise h3{font-family:'Cairo',sans-serif;font-size:1.3rem;font-weight:700;color:var(--ink);margin-bottom:6px;}
+.lg-advertise p{font-size:.86rem;color:var(--mid);line-height:1.6;max-width:480px;}
+
+@media(max-width:768px){
+  .lg-form{grid-template-columns:1fr;}
+  .lg-advertise{flex-direction:column;align-items:flex-start;}
+  .lg-route{font-size:.7rem;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">Gulf <span>Trade</span> Portal</a>
+    <a href="trade-board.html" class="nav-trigger" style="text-decoration:none;">Trade Board</a>
+    <a href="directory.html" class="nav-trigger" style="text-decoration:none;">Directory</a>
+    <a href="logistics.html" class="nav-trigger" style="text-decoration:none;color:#fff;border-bottom:2px solid var(--gold);margin-bottom:-2px;">Logistics</a>
+    <a href="packages.html" class="nav-trigger" style="text-decoration:none;">Packages</a>
+    <a href="features.html" class="nav-trigger" style="text-decoration:none;">Features</a>
+    <button class="mob-toggle" onclick="openMobMenu()"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <div class="nav-right">
+      <a href="portal.html" class="btn-nav btn-ghost">Sign In</a>
+      <a href="register.html" class="btn-nav btn-teal">Register Free</a>
+      <a href="#quote" class="btn-nav btn-gold">Get Freight Quote</a>
+    </div>
+  </div>
+</nav>
+
+<div class="mob-drawer-bg" id="mobBg" onclick="closeMobMenu()"></div>
+<div class="mob-drawer" id="mobDrawer">
+  <button class="mob-drawer-close" onclick="closeMobMenu()">&times;</button>
+  <div class="mob-drawer-logo">Gulf <span>Trade</span> Portal</div>
+  <a class="mob-link" href="index.html">Home</a>
+  <a class="mob-link" href="trade-board.html">Trade Board</a>
+  <a class="mob-link" href="directory.html">Directory</a>
+  <a class="mob-link" href="logistics.html">Logistics</a>
+  <a class="mob-link" href="packages.html">Packages</a>
+  <a class="mob-link" href="features.html">Features</a>
+  <a class="mob-link" href="portal.html">Client Portal</a>
+</div>
+
+<!-- HERO -->
+<div class="lg-hero">
+  <div class="lg-hero-inner">
+    <p style="font-size:.67rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.45);font-weight:600;margin-bottom:8px;">Logistics & Freight</p>
+    <h1 style="font-family:'Cairo',sans-serif;font-size:2rem;font-weight:700;color:#fff;margin-bottom:10px;">Ship it. Clear it. Deliver it.</h1>
+    <p style="color:rgba(255,255,255,.65);font-size:.95rem;line-height:1.7;max-width:600px;">Freight quotes, customs clearance, VAT handling, and door-to-door shipping from verified logistics partners. The missing piece between your deal and your warehouse — solved on one platform.</p>
+    <div class="lg-route">
+      <div class="lg-route-node">🏭 Supplier (EU / Asia / US)</div>
+      <div class="lg-route-line"></div>
+      <div class="lg-route-node">🚢 Freight + Customs</div>
+      <div class="lg-route-line"></div>
+      <div class="lg-route-node">📦 GCC Door Delivery</div>
+    </div>
+  </div>
+</div>
+
+<div class="lg-main">
+
+  <!-- SERVICES -->
+  <div class="lg-services">
+    <div class="lg-svc">
+      <div class="lg-svc-ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 3h15v13H1z"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
+      <div class="lg-svc-t">Freight Forwarding</div>
+      <div class="lg-svc-d">Sea, air, road & rail. FCL, LCL, and breakbulk to all GCC ports.</div>
+    </div>
+    <div class="lg-svc">
+      <div class="lg-svc-ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="15" x2="15" y2="15"/></svg></div>
+      <div class="lg-svc-t">Customs Clearance</div>
+      <div class="lg-svc-d">Import/export documentation, HS coding, and GCC customs handling.</div>
+    </div>
+    <div class="lg-svc">
+      <div class="lg-svc-ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+      <div class="lg-svc-t">VAT & Duty Handling</div>
+      <div class="lg-svc-d">UAE 5% VAT, KSA 15% VAT, duty calculation and reclaim guidance.</div>
+    </div>
+    <div class="lg-svc">
+      <div class="lg-svc-ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+      <div class="lg-svc-t">Door-to-Door</div>
+      <div class="lg-svc-d">End-to-end from supplier's factory to your GCC warehouse or store.</div>
+    </div>
+    <div class="lg-svc">
+      <div class="lg-svc-ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
+      <div class="lg-svc-t">Warehousing</div>
+      <div class="lg-svc-d">Bonded storage, fulfilment, and re-export from UAE free zones.</div>
+    </div>
+    <div class="lg-svc">
+      <div class="lg-svc-ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+      <div class="lg-svc-t">Cargo Insurance</div>
+      <div class="lg-svc-d">Full coverage for high-value shipments and sensitive goods.</div>
+    </div>
+  </div>
+
+  <!-- QUOTE TOOL -->
+  <div class="lg-quote" id="quote">
+    <div class="lg-quote-inner">
+      <h2>Get a freight quote in minutes</h2>
+      <p>Tell us what you're shipping and where. Your request goes to verified logistics partners who compete to give you the best rate — free, no obligation.</p>
+      <div class="lg-form">
+        <div class="lg-fg"><label>Shipping from</label><input type="text" placeholder="e.g. Rotterdam, Shanghai, Hamburg"></div>
+        <div class="lg-fg"><label>Shipping to</label><select><option value="">Select GCC destination</option><option>UAE — Jebel Ali</option><option>UAE — Dubai</option><option>UAE — Abu Dhabi</option><option>Saudi Arabia — Jeddah</option><option>Saudi Arabia — Dammam</option><option>Saudi Arabia — Riyadh</option><option>Kuwait</option><option>Qatar — Doha</option><option>Oman — Sohar</option><option>Bahrain</option></select></div>
+        <div class="lg-fg"><label>Freight mode</label><select><option value="">Select mode</option><option>Sea — FCL (Full Container)</option><option>Sea — LCL (Less than Container)</option><option>Air Freight</option><option>Road / Land</option><option>Not sure — advise me</option></select></div>
+        <div class="lg-fg"><label>Cargo type</label><select><option value="">Select type</option><option>General cargo</option><option>FMCG / Food (temperature controlled)</option><option>Auto parts</option><option>Construction materials</option><option>Machinery</option><option>Hazardous / Special</option><option>Other</option></select></div>
+        <div class="lg-fg"><label>Volume / Weight</label><input type="text" placeholder="e.g. 2x 40ft containers, 5,000 kg"></div>
+        <div class="lg-fg"><label>Services needed</label><select><option>Freight only</option><option>Freight + Customs clearance</option><option>Door-to-door (everything)</option><option>Door-to-door + VAT handling</option></select></div>
+        <div class="lg-fg full"><label>Your contact (email or WhatsApp)</label><input type="text" placeholder="email@company.com or +971 50 000 0000"></div>
+        <button class="lg-quote-btn" onclick="submitQuote()">Request Free Quotes &rarr;</button>
+        <div class="lg-quote-note">Your request is sent to up to 3 verified logistics partners. No spam, no obligation.</div>
+        <div class="lg-succ" id="quoteSucc">✓ Quote request sent! Verified logistics partners will contact you within 24 hours with their best rates.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PARTNER DIRECTORY -->
+  <div class="lg-sec-hd">
+    <p class="ey">Verified partners</p>
+    <h2>Logistics Partner Directory</h2>
+    <p>Freight forwarders, customs brokers, and 3PLs serving GCC trade lanes. Filter by service and contact directly.</p>
+  </div>
+
+  <div class="lg-filters" id="lgFilters">
+    <button class="lg-fbtn on" onclick="filterLg('all',this)">All Partners</button>
+    <button class="lg-fbtn" onclick="filterLg('sea',this)">Sea Freight</button>
+    <button class="lg-fbtn" onclick="filterLg('air',this)">Air Freight</button>
+    <button class="lg-fbtn" onclick="filterLg('customs',this)">Customs</button>
+    <button class="lg-fbtn" onclick="filterLg('d2d',this)">Door-to-Door</button>
+    <button class="lg-fbtn" onclick="filterLg('warehouse',this)">Warehousing</button>
+  </div>
+
+  <div class="lg-grid" id="lgGrid"></div>
+
+  <!-- ADVERTISE CTA -->
+  <div class="lg-advertise">
+    <div>
+      <h3>Are you a logistics provider?</h3>
+      <p>Reach GCC importers and global exporters at the exact moment they need shipping. Get featured placement, qualified freight-quote leads, and a "Recommended Partner" badge.</p>
+    </div>
+    <a href="packages.html#ads" class="btn-nav btn-gold" style="text-decoration:none;white-space:nowrap;padding:13px 24px;">List Your Company &rarr;</a>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<section class="cta-band">
+  <p class="ey">One platform. Every step of the trade.</p>
+  <h2>Source, ship, and deliver — in one place.</h2>
+  <div class="cta-btns">
+    <a href="#quote" class="btn-hp btn-hp-g">Get a Freight Quote</a>
+    <a href="packages.html#ads" class="btn-hp btn-hp-o">Advertise as a Partner</a>
+  </div>
+</section>
+<footer>
+  <div class="foot-inner">
+    <div class="foot-bot">
+      <p style="color:#2E2E2E;font-size:.71rem;">© 2025 Gulf Trade Portal · A trading name of Excorp Distribution B.V. · KVK 96822945 · Dordrecht, Netherlands</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+function openMobMenu(){document.getElementById('mobDrawer').classList.add('open');document.getElementById('mobBg').classList.add('open');}
+function closeMobMenu(){document.getElementById('mobDrawer').classList.remove('open');document.getElementById('mobBg').classList.remove('open');}
+
+function submitQuote(){
+  document.getElementById('quoteSucc').style.display='block';
+  document.querySelector('.lg-quote-btn').disabled=true;
+  document.querySelector('.lg-quote-btn').style.opacity='.5';
+  document.querySelector('.lg-quote-btn').textContent='Request Sent ✓';
+}
+
+// ── LOGISTICS PARTNERS ──────────────────────────────────────
+const PARTNERS=[
+  {n:'Gulf Freight Solutions',loc:'Dubai, UAE',svc:['sea','air','customs','d2d'],
+   desc:'Full-service freight forwarder with 20 years on EU–GCC and Asia–GCC lanes. Specialists in FMCG and temperature-controlled cargo.',
+   tags:['Sea FCL/LCL','Air Freight','Customs','Door-to-Door'],lanes:'EU · Asia · US → GCC',featured:true},
+  {n:'Emirates Cargo Express',loc:'Jebel Ali, UAE',svc:['sea','customs','warehouse'],
+   desc:'Jebel Ali-based 3PL with bonded warehousing and re-export. Strong on container consolidation from Europe.',
+   tags:['Sea Freight','Customs','Bonded Storage'],lanes:'Europe → Jebel Ali',featured:false},
+  {n:'Red Sea Logistics',loc:'Jeddah, KSA',svc:['sea','air','customs','d2d'],
+   desc:'Saudi customs clearance experts. SABER & SASO compliance, full door-to-door into the Kingdom.',
+   tags:['Customs','SABER','Door-to-Door','VAT'],lanes:'Global → Saudi Arabia',featured:false},
+  {n:'TransGulf Forwarding BV',loc:'Rotterdam, NL',svc:['sea','air','d2d'],
+   desc:'Netherlands-based forwarder specialising in EU exports to the Gulf. EU origin documentation and CIF Gulf ports.',
+   tags:['Sea Freight','Air Freight','EU Export','CIF'],lanes:'Netherlands → GCC',featured:false},
+  {n:'Asia-Gulf Shipping Co.',loc:'Shanghai, CN',svc:['sea','customs','warehouse'],
+   desc:'China–GCC specialist. Container consolidation from Shanghai, Ningbo, Shenzhen to all Gulf ports.',
+   tags:['Sea FCL/LCL','China Export','Consolidation'],lanes:'China → GCC',featured:false},
+  {n:'Falcon Air Cargo',loc:'Doha, QA',svc:['air','customs','d2d'],
+   desc:'Air freight specialist for urgent and high-value shipments. Express customs clearance into Qatar and the GCC.',
+   tags:['Air Freight','Express','Customs'],lanes:'Global → Qatar / GCC',featured:false},
+];
+
+function renderPartners(filter){
+  const data = filter==='all' ? PARTNERS : PARTNERS.filter(p=>p.svc.includes(filter));
+  document.getElementById('lgGrid').innerHTML = data.map(p=>`
+    <div class="lg-card ${p.featured?'featured':''}">
+      ${p.featured?'<div class="lg-card-badge">★ Recommended Partner</div>':''}
+      <div class="lg-card-hd">
+        <div class="lg-card-logo">${p.n[0]}</div>
+        <div>
+          <div class="lg-card-name">${p.n}</div>
+          <div class="lg-card-loc">📍 ${p.loc}</div>
+        </div>
+      </div>
+      <div class="lg-card-desc">${p.desc}</div>
+      <div class="lg-card-services">${p.tags.map(t=>`<span class="lg-tag">${t}</span>`).join('')}</div>
+      <div class="lg-card-lanes">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        ${p.lanes}
+      </div>
+      <div class="lg-card-ft">
+        <a href="#quote" class="lg-btn-t">Request Quote</a>
+        <button class="lg-btn-o" onclick="alert('Register free to contact logistics partners directly.')">Contact</button>
+      </div>
+    </div>`).join('');
+}
+function filterLg(f,btn){
+  document.querySelectorAll('#lgFilters .lg-fbtn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  renderPartners(f);
+}
+renderPartners('all');
+</script>
+</body>
+</html>
