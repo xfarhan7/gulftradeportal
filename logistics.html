@@ -13,7 +13,7 @@
 .lg-hero::after{content:'';position:absolute;inset:0;background-image:radial-gradient(circle at 85% 20%,rgba(200,146,42,.12) 0%,transparent 45%);}
 .lg-hero-inner{max-width:1100px;margin:0 auto;position:relative;z-index:2;}
 .lg-route{display:flex;align-items:center;gap:10px;margin-top:18px;flex-wrap:wrap;}
-.lg-route-node{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:6px;padding:7px 13px;font-size:.8rem;color:#fff;}
+.lg-route-node{display:flex;align-items:center;gap:7px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.16);border-radius:7px;padding:9px 15px;font-size:.79rem;font-weight:500;color:#fff;letter-spacing:.01em;}
 .lg-route-line{flex:1;min-width:30px;height:2px;background:linear-gradient(90deg,rgba(200,146,42,.5),rgba(255,255,255,.2));position:relative;}
 .lg-route-line::after{content:'→';position:absolute;right:-4px;top:-10px;color:var(--gold-lt);font-size:.9rem;}
 
@@ -126,11 +126,20 @@
     <h1 style="font-family:'Cairo',sans-serif;font-size:2rem;font-weight:700;color:#fff;margin-bottom:10px;">Ship it. Clear it. Deliver it.</h1>
     <p style="color:rgba(255,255,255,.65);font-size:.95rem;line-height:1.7;max-width:600px;">Freight quotes, customs clearance, VAT handling, and door-to-door shipping from verified logistics partners. The missing piece between your deal and your warehouse — solved on one platform.</p>
     <div class="lg-route">
-      <div class="lg-route-node">🏭 Supplier (EU / Asia / US)</div>
+      <div class="lg-route-node">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--gold-lt)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20h20"/><path d="M4 20V8l5-3v15"/><path d="M9 20V5l11 5v10"/><line x1="13" y1="11" x2="13" y2="11.01"/><line x1="16" y1="13" x2="16" y2="13.01"/><line x1="13" y1="15" x2="13" y2="15.01"/><line x1="16" y1="17" x2="16" y2="17.01"/></svg>
+        Supplier · EU / Asia / US
+      </div>
       <div class="lg-route-line"></div>
-      <div class="lg-route-node">🚢 Freight + Customs</div>
+      <div class="lg-route-node">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--gold-lt)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 3h15v13H1z"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+        Freight &amp; Customs
+      </div>
       <div class="lg-route-line"></div>
-      <div class="lg-route-node">📦 GCC Door Delivery</div>
+      <div class="lg-route-node">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--gold-lt)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+        GCC Door Delivery
+      </div>
     </div>
   </div>
 </div>
