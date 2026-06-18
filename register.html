@@ -142,7 +142,11 @@
         <div class="fg" style="margin-top:15px;"><label>Anything else? (optional)</label><textarea id="r-notes" class="mo-ta" placeholder="Certifications, target markets, specific requirements…"></textarea></div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;">
           <button class="btn-back" onclick="goRS(2)">← Back</button>
-          <button class="btn-sub" onclick="submitReg()">Complete Registration →</button>
+          <label style="display:flex;align-items:flex-start;gap:9px;margin:14px 0;font-size:.8rem;color:var(--mid);line-height:1.5;cursor:pointer;">
+  <input type="checkbox" id="reg-consent" style="margin-top:2px;width:16px;height:16px;flex-shrink:0;accent-color:var(--teal);">
+  <span>I agree to the <a href="terms.html" target="_blank" style="color:var(--teal);">Terms of Service</a> and <a href="privacy.html" target="_blank" style="color:var(--teal);">Privacy Policy</a>, and consent to my company details being shared with matched trade counterparties.</span>
+</label>
+        <button class="btn-sub" onclick="submitReg()">Complete Registration →</button>
         </div>
         <div id="r-succ" class="succ"></div>
       </div>
@@ -185,7 +189,7 @@
     <a href="#">How It Works</a>
     <a href="packages.html">Pricing</a>
     <a href="mailto:info@gulftradeportal.com">Contact</a>
-    <a href="#">Privacy Policy</a>
+    <a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms of Service</a>
   </div>
 </div>
     </div>
@@ -400,6 +404,11 @@ function goRS(n){
   });
 }
 function submitReg(){
+  const consent = document.getElementById('reg-consent');
+  if(consent && !consent.checked){
+    alert('Please agree to the Terms of Service and Privacy Policy to continue.');
+    return;
+  }
   const s=document.getElementById('r-succ');
   const email=document.getElementById('r-email').value.trim();
   const isPaid=selPkg&&selPkg.p!=='€0';

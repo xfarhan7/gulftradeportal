@@ -193,6 +193,10 @@
         <div class="lg-fg"><label>Volume / Weight</label><input type="text" placeholder="e.g. 2x 40ft containers, 5,000 kg"></div>
         <div class="lg-fg"><label>Services needed</label><select><option>Freight only</option><option>Freight + Customs clearance</option><option>Door-to-door (everything)</option><option>Door-to-door + VAT handling</option></select></div>
         <div class="lg-fg full"><label>Your contact (email or WhatsApp)</label><input type="text" placeholder="email@company.com or +971 50 000 0000"></div>
+        <label class="lg-fg full" style="flex-direction:row;align-items:flex-start;gap:9px;cursor:pointer;">
+          <input type="checkbox" id="quote-consent" style="margin-top:2px;width:16px;height:16px;flex-shrink:0;accent-color:var(--gold);">
+          <span style="font-size:.78rem;color:rgba(255,255,255,.55);line-height:1.5;">I agree to the <a href="terms.html" target="_blank" style="color:var(--gold-lt);">Terms</a> and <a href="privacy.html" target="_blank" style="color:var(--gold-lt);">Privacy Policy</a>, and consent to my request being shared with verified logistics partners.</span>
+        </label>
         <button class="lg-quote-btn" onclick="submitQuote()">Request Free Quotes &rarr;</button>
         <div class="lg-quote-note">Your request is sent to up to 3 verified logistics partners. No spam, no obligation.</div>
         <div class="lg-succ" id="quoteSucc">✓ Quote request sent! Verified logistics partners will contact you within 24 hours with their best rates.</div>
@@ -251,6 +255,11 @@ function openMobMenu(){document.getElementById('mobDrawer').classList.add('open'
 function closeMobMenu(){document.getElementById('mobDrawer').classList.remove('open');document.getElementById('mobBg').classList.remove('open');}
 
 function submitQuote(){
+  const consent = document.getElementById('quote-consent');
+  if(consent && !consent.checked){
+    alert('Please agree to the Terms and Privacy Policy to continue.');
+    return;
+  }
   document.getElementById('quoteSucc').style.display='block';
   document.querySelector('.lg-quote-btn').disabled=true;
   document.querySelector('.lg-quote-btn').style.opacity='.5';
