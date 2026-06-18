@@ -53,15 +53,15 @@
 .pb-t{background:var(--teal);color:#fff;}.pb-t:hover{opacity:.88;}
 .pb-g{background:var(--gold);color:var(--ink);}.pb-g:hover{opacity:.88;}
 .pb-o{background:none;border:1.5px solid var(--mist);color:var(--mid);cursor:pointer;}.pb-o:hover{border-color:var(--teal);color:var(--teal);}
-.ad-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;margin-bottom:24px;}
-.ad-card{background:var(--white);border:1.5px solid var(--mist);border-radius:10px;padding:22px;transition:border-color .2s;}
+.ad-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-bottom:24px;align-items:stretch;}
+.ad-card{background:var(--white);border:1.5px solid var(--mist);border-radius:10px;padding:22px;transition:border-color .2s;display:flex;flex-direction:column;}
 .ad-card:hover{border-color:var(--gold);}
 .ad-badge{display:inline-block;font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);background:var(--gold-pale);padding:3px 9px;border-radius:10px;margin-bottom:8px;}
 .ad-name{font-family:'Cairo',sans-serif;font-size:1.1rem;font-weight:700;color:var(--ink);margin-bottom:4px;}
 .ad-price{font-family:'Cairo',sans-serif;font-size:1.9rem;font-weight:900;color:var(--ink);margin-bottom:6px;}
 .ad-price sub{font-size:.8rem;font-weight:400;color:var(--mid);}
 .ad-desc{font-size:.78rem;color:var(--mid);line-height:1.55;margin-bottom:14px;}
-.ad-feats{list-style:none;padding:0;display:flex;flex-direction:column;gap:6px;margin-bottom:16px;}
+.ad-feats{list-style:none;padding:0;display:flex;flex-direction:column;gap:6px;margin-bottom:16px;flex:1;}
 .ad-feats li{font-size:.77rem;color:var(--ink2);display:flex;gap:6px;align-items:flex-start;}
 
 .billing-toggle{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:28px;}
