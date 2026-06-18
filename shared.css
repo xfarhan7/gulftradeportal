@@ -284,3 +284,107 @@ footer{background:#0D0D0D;padding:46px 32px 24px;}
   .hero{padding:40px 16px 0;}
 }
 @media(max-width:560px){.pkg-grid,.psel-grid{grid-template-columns:1fr;}.foot-top{grid-template-columns:1fr;}.pt-feats{grid-template-columns:1fr;}}
+
+
+/* ═══════════════════════════════════════════════════
+   MOBILE RESPONSIVE — fixes horizontal scroll
+═══════════════════════════════════════════════════ */
+* { max-width: 100%; }
+html, body { overflow-x: hidden; width: 100%; }
+img, svg, canvas { max-width: 100%; height: auto; }
+
+/* TABLET & BELOW */
+@media (max-width: 1024px) {
+  .nav-inner { padding: 0 16px; }
+  .sec-inner, .foot-inner { padding-left: 16px; padding-right: 16px; }
+}
+
+/* MOBILE — 768px and below */
+@media (max-width: 768px) {
+  /* Nav becomes compact */
+  .nav-inner { height: auto; min-height: 54px; padding: 8px 14px; flex-wrap: wrap; gap: 4px; }
+  .nav-logo { font-size: .95rem; flex: 1; }
+  .nav-item, .nav-trigger { display: none !important; }
+  .nav-right { display: flex; gap: 6px; margin-left: auto; }
+  .btn-nav { padding: 7px 12px; font-size: .73rem; }
+  .btn-nav.btn-ghost { display: none; }
+
+  /* Mobile hamburger menu */
+  .mob-toggle { display: flex !important; }
+
+  /* Hero stacks vertically */
+  .hero { padding: 28px 16px !important; }
+  .hero-inner, .hero-grid { grid-template-columns: 1fr !important; gap: 24px !important; }
+  .hero h1, .hero-title { font-size: 1.7rem !important; }
+  .hero-sub { font-size: .9rem !important; }
+
+  /* Region strip wraps */
+  .rstrip { flex-wrap: wrap !important; gap: 8px !important; padding: 14px 16px !important; justify-content: center; }
+
+  /* Stats strip wraps */
+  .stats-strip { flex-wrap: wrap !important; gap: 16px !important; justify-content: space-around; padding: 20px 16px !important; }
+  .stat-item, .stat { flex: 0 0 40% !important; }
+
+  /* All grids become single column */
+  .board-grid, .co-grid, .pkg-grid, .ad-grid,
+  .two-col, .three-col, .report-grid, .halal-grid {
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+  }
+
+  /* Sections tighter padding */
+  .sec, section { padding-left: 16px !important; padding-right: 16px !important; }
+  .sec-inner { padding: 0 !important; }
+
+  /* Filter bars scroll horizontally but contained */
+  .fbar, .pkg-tabs, .intel-tabs {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    flex-wrap: nowrap;
+    max-width: 100%;
+    padding-bottom: 4px;
+  }
+  .fbar::-webkit-scrollbar, .pkg-tabs::-webkit-scrollbar { height: 0; }
+  .ptab { padding: 10px 14px; font-size: .76rem; white-space: nowrap; }
+
+  /* Search row stacks */
+  .srow { flex-direction: column; gap: 8px; }
+  .srow input, .srow select, .srow button { width: 100%; }
+
+  /* Footer single column */
+  .foot-top { grid-template-columns: 1fr 1fr !important; gap: 20px !important; }
+  .foot-brand { grid-column: 1 / -1; }
+  .foot-bot { flex-direction: column; gap: 10px; text-align: center; }
+
+  /* Modals fit screen */
+  .mo-box { width: 94% !important; max-width: 94% !important; padding: 22px 18px !important; max-height: 90vh; }
+
+  /* CTA band */
+  .cta-band { padding: 36px 16px !important; }
+  .cta-band h2 { font-size: 1.5rem !important; }
+  .cta-btns { flex-direction: column; gap: 10px; }
+  .cta-btns a { width: 100%; text-align: center; }
+
+  /* Tables scroll */
+  .tbl-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+  /* Billing toggle */
+  .billing-toggle { flex-wrap: wrap; gap: 10px; }
+
+  /* Package cards full width */
+  .pkg-card { padding: 20px 18px; }
+  .pkg-price { font-size: 2rem; }
+}
+
+/* SMALL MOBILE — 480px and below */
+@media (max-width: 480px) {
+  .nav-logo { font-size: .88rem; }
+  .btn-nav { padding: 6px 10px; font-size: .68rem; }
+  .hero h1, .hero-title { font-size: 1.45rem !important; }
+  .stat-item, .stat { flex: 0 0 45% !important; }
+  .foot-top { grid-template-columns: 1fr !important; }
+  .sech { font-size: 1.3rem !important; }
+  .pkg-tabs { width: 100%; }
+  .ptab { flex: 1; justify-content: center; padding: 9px 6px; font-size: .7rem; }
+  .ptab svg { display: none; }
+}

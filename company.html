@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Company Profile — Gulf Trade Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
+<style>
+.cp-hero{background:linear-gradient(135deg,var(--teal-dk) 0%,#0a5751 100%);padding:0;position:relative;overflow:hidden;}
+.cp-cover{height:140px;background:linear-gradient(135deg,rgba(200,146,42,.15),rgba(10,115,105,.3));position:relative;border-bottom:1px solid rgba(255,255,255,.08);}
+.cp-cover::after{content:'';position:absolute;inset:0;background-image:radial-gradient(circle at 20% 50%,rgba(200,146,42,.1) 0%,transparent 40%);}
+.cp-main{max-width:980px;margin:0 auto;padding:0 24px;}
+.cp-head{display:flex;gap:22px;align-items:flex-end;margin-top:-50px;position:relative;z-index:2;padding-bottom:24px;}
+.cp-logo{width:100px;height:100px;border-radius:16px;background:linear-gradient(135deg,var(--teal),var(--teal-dk));display:flex;align-items:center;justify-content:center;font-family:'Cairo',sans-serif;font-size:2.6rem;font-weight:900;color:#fff;border:4px solid var(--white);box-shadow:0 8px 24px rgba(0,0,0,.15);flex-shrink:0;}
+.cp-head-info{flex:1;padding-bottom:6px;}
+.cp-name{font-family:'Cairo',sans-serif;font-size:1.7rem;font-weight:700;color:var(--ink);margin-bottom:5px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.cp-verified{display:inline-flex;align-items:center;gap:4px;background:var(--teal-pale);color:var(--teal);font-size:.7rem;font-weight:700;padding:3px 10px;border-radius:20px;}
+.cp-meta{display:flex;gap:16px;flex-wrap:wrap;color:var(--mid);font-size:.85rem;}
+.cp-meta span{display:flex;align-items:center;gap:5px;}
+.cp-actions{display:flex;gap:10px;padding-bottom:8px;}
+.cp-body{display:grid;grid-template-columns:1fr 320px;gap:32px;padding:32px 0 60px;}
+.cp-section{margin-bottom:32px;}
+.cp-section h3{font-family:'Cairo',sans-serif;font-size:1.1rem;font-weight:700;color:var(--ink);margin-bottom:14px;padding-bottom:8px;border-bottom:2px solid var(--mist);}
+.cp-about{font-size:.92rem;line-height:1.8;color:var(--ink2);}
+.cp-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;}
+.cp-tag{background:var(--sand);border:1px solid var(--mist);color:var(--ink2);font-size:.78rem;font-weight:500;padding:5px 13px;border-radius:20px;}
+.cp-products{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.cp-product{background:var(--white);border:1.5px solid var(--mist);border-radius:8px;padding:14px 16px;}
+.cp-product-name{font-weight:600;font-size:.88rem;color:var(--ink);margin-bottom:3px;}
+.cp-product-desc{font-size:.78rem;color:var(--mid);line-height:1.4;}
+.cp-side-card{background:var(--white);border:1.5px solid var(--mist);border-radius:12px;padding:22px;margin-bottom:18px;position:sticky;top:74px;}
+.cp-stat-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--sand-dk);font-size:.85rem;}
+.cp-stat-row:last-child{border-bottom:none;}
+.cp-stat-label{color:var(--mid);}
+.cp-stat-val{font-weight:600;color:var(--ink);}
+.cp-cta-btn{width:100%;padding:12px;font-family:'Inter',sans-serif;font-size:.86rem;font-weight:700;border:none;border-radius:6px;cursor:pointer;margin-top:14px;text-decoration:none;display:block;text-align:center;transition:opacity .2s;}
+.cp-cta-wa{background:#25D366;color:#fff;}
+.cp-cta-email{background:var(--teal);color:#fff;}
+.cp-cta-btn:hover{opacity:.88;}
+.cp-cert{display:flex;align-items:center;gap:8px;padding:8px 0;font-size:.83rem;color:var(--ink2);}
+.cp-cert svg{color:var(--teal);flex-shrink:0;}
+.cp-locked{filter:blur(5px);user-select:none;}
+.cp-lock-note{background:var(--gold-pale);border:1px solid rgba(200,146,42,.3);border-radius:8px;padding:14px;text-align:center;margin-top:12px;}
+@media(max-width:768px){.cp-body{grid-template-columns:1fr;}.cp-head{flex-direction:column;align-items:flex-start;gap:14px;}.cp-side-card{position:static;}.cp-products{grid-template-columns:1fr;}.cp-actions{width:100%;}.cp-actions a{flex:1;text-align:center;}}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">Gulf <span>Trade</span> Portal</a>
+    <a href="trade-board.html" class="nav-trigger" style="text-decoration:none;">Trade Board</a>
+    <a href="directory.html" class="nav-trigger" style="text-decoration:none;color:#fff;border-bottom:2px solid var(--gold);margin-bottom:-2px;">Directory</a>
+    <a href="packages.html" class="nav-trigger" style="text-decoration:none;">Packages</a>
+    <a href="features.html" class="nav-trigger" style="text-decoration:none;">Features</a>
+    <button class="mob-toggle" onclick="openMobMenu()"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <div class="nav-right">
+      <a href="portal.html" class="btn-nav btn-ghost">Sign In</a>
+      <a href="register.html" class="btn-nav btn-teal">Register Free</a>
+    </div>
+  </div>
+</nav>
+
+<div class="mob-drawer-bg" id="mobBg" onclick="closeMobMenu()"></div>
+<div class="mob-drawer" id="mobDrawer">
+  <button class="mob-drawer-close" onclick="closeMobMenu()">&times;</button>
+  <div class="mob-drawer-logo">Gulf <span>Trade</span> Portal</div>
+  <a class="mob-link" href="index.html">Home</a>
+  <a class="mob-link" href="trade-board.html">Trade Board</a>
+  <a class="mob-link" href="directory.html">Directory</a>
+  <a class="mob-link" href="packages.html">Packages</a>
+  <a class="mob-link" href="features.html">Features</a>
+  <a class="mob-link" href="portal.html">Client Portal</a>
+</div>
+
+<!-- HERO -->
+<div class="cp-hero"><div class="cp-cover"></div></div>
+
+<div class="cp-main">
+  <!-- HEAD -->
+  <div class="cp-head">
+    <div class="cp-logo" id="cpLogo">A</div>
+    <div class="cp-head-info">
+      <div class="cp-name"><span id="cpName">Company Name</span> <span class="cp-verified" id="cpVerified"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Verified</span></div>
+      <div class="cp-meta">
+        <span id="cpSector">🏷 Sector</span>
+        <span id="cpCountry">📍 Country</span>
+        <span id="cpRegion">🌍 Region</span>
+      </div>
+    </div>
+    <div class="cp-actions">
+      <a href="#contact" class="btn-nav btn-teal" style="text-decoration:none;">Contact</a>
+    </div>
+  </div>
+
+  <!-- BODY -->
+  <div class="cp-body">
+    <div>
+      <div class="cp-section">
+        <h3>About</h3>
+        <p class="cp-about" id="cpAbout">Loading company information...</p>
+        <div class="cp-tags" id="cpTags"></div>
+      </div>
+
+      <div class="cp-section">
+        <h3>Products & Services</h3>
+        <div class="cp-products" id="cpProducts"></div>
+      </div>
+
+      <div class="cp-section">
+        <h3>Certifications & Compliance</h3>
+        <div id="cpCerts"></div>
+      </div>
+    </div>
+
+    <!-- SIDEBAR -->
+    <div>
+      <div class="cp-side-card" id="contact">
+        <div style="font-family:'Cairo',sans-serif;font-size:1rem;font-weight:700;color:var(--ink);margin-bottom:14px;">Company Details</div>
+        <div class="cp-stat-row"><span class="cp-stat-label">Type</span><span class="cp-stat-val" id="cpType">—</span></div>
+        <div class="cp-stat-row"><span class="cp-stat-label">Established</span><span class="cp-stat-val" id="cpEst">—</span></div>
+        <div class="cp-stat-row"><span class="cp-stat-label">Region</span><span class="cp-stat-val" id="cpRegion2">—</span></div>
+        <div class="cp-stat-row"><span class="cp-stat-label">Response time</span><span class="cp-stat-val">&lt; 24 hours</span></div>
+
+        <div id="cpContactArea">
+          <a href="#" class="cp-cta-btn cp-cta-wa" id="cpWa">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-2px;margin-right:5px;"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/></svg>
+            WhatsApp
+          </a>
+          <a href="#" class="cp-cta-btn cp-cta-email" id="cpEmail">Email Company</a>
+        </div>
+
+        <div class="cp-lock-note" id="cpLockNote" style="display:none;">
+          <div style="font-size:.8rem;font-weight:600;color:var(--ink);margin-bottom:8px;">🔒 Members only</div>
+          <div style="font-size:.75rem;color:var(--mid);margin-bottom:10px;">Register free to view contact details and reach out directly.</div>
+          <a href="register.html" class="cp-cta-btn cp-cta-email" style="margin-top:0;">Register Free →</a>
+        </div>
+      </div>
+
+      <div class="cp-side-card" style="position:static;">
+        <div style="font-size:.78rem;color:var(--mid);line-height:1.6;">
+          <strong style="color:var(--ink);">Verified by Gulf Trade Portal</strong><br>
+          This company's registration details have been checked against official trade registries.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<section class="cta-band">
+  <p class="ey">No platform fees. No commission.</p>
+  <h2>Gulf trade, simplified.</h2>
+  <div class="cta-btns">
+    <a href="register.html" class="btn-hp btn-hp-g">Register Your Company Free</a>
+    <a href="directory.html" class="btn-hp btn-hp-o">Browse Directory</a>
+  </div>
+</section>
+<footer>
+  <div class="foot-inner">
+    <div class="foot-bot">
+      <p style="color:#2E2E2E;font-size:.71rem;">© 2025 Gulf Trade Portal · A trading name of Excorp Distribution B.V. · KVK 96822945 · Dordrecht, Netherlands</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+function openMobMenu(){document.getElementById('mobDrawer').classList.add('open');document.getElementById('mobBg').classList.add('open');}
+function closeMobMenu(){document.getElementById('mobDrawer').classList.remove('open');document.getElementById('mobBg').classList.remove('open');}
+
+// ── COMPANY DATABASE ────────────────────────────────────────
+const COMPANIES = {
+  'al-noor-trading': {
+    n:'Al Noor Trading Co.', r:'GCC', c:'UAE', s:'FMCG', type:'Importer / Distributor', est:'2009', v:true,
+    about:'Al Noor Trading Co. is one of Dubai\\'s established wholesale FMCG importers, supplying hypermarkets, supermarkets, and cooperative societies across the UAE. With over 15 years in the market, we specialise in coffee, packaged foods, dairy, and household goods sourced from verified European and Asian suppliers.',
+    tags:['Importer','Distributor','FMCG','Coffee','Hypermarket Supply'],
+    products:[
+      {n:'Coffee & Capsules',d:'Nespresso-compatible, ground, beans — retail & HORECA'},
+      {n:'Packaged Foods',d:'Ambient groceries, snacks, confectionery'},
+      {n:'Dairy Products',d:'UHT milk, cheese, butter — Halal certified'},
+      {n:'Household Goods',d:'Cleaning, paper, disposables'},
+    ],
+    certs:['UAE Trade License','Dubai Municipality Approved','HALAL Import Certified','ISO 22000 Food Safety'],
+  },
+  'dutch-food-export': {
+    n:'Dutch Food Export BV', r:'EU', c:'Netherlands', s:'Food & Beverages', type:'Exporter / Manufacturer', est:'2010', v:true,
+    about:'Dutch Food Export BV is a Netherlands-based FMCG and dairy exporter with 15 years of GCC distribution experience. We supply HALAL-certified dairy, coffee, and packaged goods to importers across the UAE, Saudi Arabia, Kuwait, and Qatar. EU origin documentation provided for all shipments.',
+    tags:['Exporter','Dairy','FMCG','Halal','EU Origin'],
+    products:[
+      {n:'Dairy Range',d:'UHT milk, cream, cheese, butter — HALAL'},
+      {n:'Coffee Products',d:'Nespresso OL capsules, ground coffee — wholesale'},
+      {n:'Packaged Goods',d:'Confectionery, biscuits, ambient foods'},
+      {n:'Private Label',d:'Custom branding for GCC distributors'},
+    ],
+    certs:['EU Export License','HALAL Certified (HFCE)','FSSC 22000','BRC Grade A'],
+  },
+  'bf-global-solutions': {
+    n:'B&F Global Solutions B.V.', r:'EU', c:'Netherlands', s:'FMCG', type:'Wholesale Distributor', est:'2021', v:true,
+    about:'B&F Global Solutions B.V. is a Dordrecht-based B2B wholesale distributor specialising in genuine Nespresso Original Line capsules and Nespresso machines. We supply verified GCC importers and re-export wholesalers with EU origin documentation, competitive floor pricing, and reliable container logistics to Gulf ports.',
+    tags:['Wholesale','Nespresso','Coffee Capsules','Machines','EU Origin','Liquidation Stock'],
+    products:[
+      {n:'Nespresso OL Capsules',d:'All varieties, genuine, EU origin — min 1,000 sleeves'},
+      {n:'Nespresso Machines',d:'Inissia, Vertuo, Pro — bulk pallets, EU & UK plug'},
+      {n:'Liquidation Stock',d:'Machine overstock at competitive floor pricing'},
+      {n:'Private Label Coffee',d:'Custom capsule branding available'},
+    ],
+    certs:['KVK Registered (96822945)','EU VAT Registered','HALAL Product Range','EU Origin Documentation'],
+  },
+  'gulf-auto-spares': {
+    n:'Gulf Auto Spares LLC', r:'GCC', c:'UAE', s:'Auto Parts', type:'Importer / Distributor', est:'2015', v:true,
+    about:'Gulf Auto Spares LLC is a Dubai-based automotive parts distributor specialising in genuine OEM components for European, Japanese, and Korean vehicles. We supply workshops, fleet operators, and retailers across the GCC with brake systems, filters, belts, and electrical parts from trusted manufacturers.',
+    tags:['Importer','Auto Parts','OEM','Brake Systems','Filters'],
+    products:[
+      {n:'Brake Components',d:'Pads, discs, calipers — Bosch, ATE, Brembo'},
+      {n:'Filters',d:'Oil, air, fuel, cabin — Mann, Mahle'},
+      {n:'Belts & Timing',d:'Drive belts, timing kits — Gates, Continental'},
+      {n:'Electrical Parts',d:'Sensors, batteries, alternators'},
+    ],
+    certs:['UAE Trade License','OEM Authorised Dealer','SASO Compliant','ISO 9001'],
+  },
+};
+
+// Load company from URL ?id=
+function loadCompany() {
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get('id') || 'bf-global-solutions';
+  const co = COMPANIES[id] || COMPANIES['bf-global-solutions'];
+
+  document.title = co.n + ' — Gulf Trade Portal';
+  document.getElementById('cpLogo').textContent = co.n[0];
+  document.getElementById('cpName').textContent = co.n;
+  document.getElementById('cpSector').textContent = '🏷 ' + co.s;
+  document.getElementById('cpCountry').textContent = '📍 ' + co.c;
+  const regionLabels = {GCC:'🌍 GCC',EU:'🇪🇺 Europe',US:'🇺🇸 USA',ASIA:'🌏 Asia'};
+  document.getElementById('cpRegion').textContent = regionLabels[co.r] || co.r;
+  document.getElementById('cpRegion2').textContent = (regionLabels[co.r]||co.r).replace(/[^\\w\\s]/g,'').trim();
+  document.getElementById('cpAbout').textContent = co.about;
+  document.getElementById('cpType').textContent = co.type;
+  document.getElementById('cpEst').textContent = co.est;
+
+  if(!co.v) document.getElementById('cpVerified').style.display = 'none';
+
+  document.getElementById('cpTags').innerHTML = co.tags.map(t => '<span class="cp-tag">' + t + '</span>').join('');
+
+  document.getElementById('cpProducts').innerHTML = co.products.map(p =>
+    '<div class="cp-product"><div class="cp-product-name">' + p.n + '</div><div class="cp-product-desc">' + p.d + '</div></div>'
+  ).join('');
+
+  document.getElementById('cpCerts').innerHTML = co.certs.map(cert =>
+    '<div class="cp-cert"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>' + cert + '</div>'
+  ).join('');
+
+  // Contact gating — free users must register
+  const plan = localStorage.getItem('gtp_plan');
+  const isRegistered = plan && plan !== '';
+  if(!isRegistered) {
+    document.getElementById('cpContactArea').style.display = 'none';
+    document.getElementById('cpLockNote').style.display = 'block';
+  } else {
+    document.getElementById('cpWa').href = 'https://wa.me/';
+    document.getElementById('cpEmail').href = 'mailto:trade@gulftradeportal.com?subject=Enquiry via Gulf Trade Portal — ' + encodeURIComponent(co.n);
+  }
+}
+loadCompany();
+</script>
+</body>
+</html>

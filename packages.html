@@ -5,18 +5,73 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Pricing & Packages — Gulf Trade Portal</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="shared.css">
 <style>
-/* Inline critical pkg styles to ensure they load */
-.pkg-tabs{display:flex;gap:0;border-radius:5px;overflow:hidden;border:1.5px solid var(--mist);width:fit-content;margin-bottom:28px;}
-.ptab{padding:10px 22px;font-size:.82rem;font-weight:600;cursor:pointer;border:none;font-family:'Inter',sans-serif;transition:background .15s,color .15s;display:flex;align-items:center;gap:7px;}
-.ptab.on{background:var(--teal);color:#fff;}
-.ptab:not(.on){background:var(--white);color:var(--mid);border-left:1.5px solid var(--mist);}
-.ptab:not(.on):hover{background:var(--sand);color:var(--teal);}
+.mob-toggle{display:none;background:none;border:none;cursor:pointer;padding:6px;margin-left:8px;}
+.mob-drawer{position:fixed;top:0;right:-100%;width:80%;max-width:300px;height:100vh;background:var(--ink2);z-index:9999;transition:right .3s ease;padding:20px;overflow-y:auto;box-shadow:-4px 0 20px rgba(0,0,0,.3);}
+.mob-drawer.open{right:0;}
+.mob-drawer-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9998;opacity:0;visibility:hidden;transition:opacity .3s;}
+.mob-drawer-bg.open{opacity:1;visibility:visible;}
+.mob-drawer-close{position:absolute;top:16px;right:16px;background:none;border:none;color:#fff;font-size:1.6rem;cursor:pointer;}
+.mob-drawer-logo{font-family:'Cairo',sans-serif;font-size:1.1rem;font-weight:700;color:#fff;margin-bottom:24px;}
+.mob-drawer-logo span{color:var(--gold);}
+.mob-link{display:flex;align-items:center;gap:10px;padding:13px 0;font-size:.95rem;color:rgba(255,255,255,.75);text-decoration:none;border-bottom:1px solid rgba(255,255,255,.08);transition:color .15s;}
+.mob-link:hover{color:#fff;}
+.mob-link svg{opacity:.7;}
+.mob-drawer-cta{margin-top:20px;display:flex;flex-direction:column;gap:10px;}
+.mob-drawer-cta a{padding:12px;text-align:center;border-radius:5px;font-weight:700;font-size:.85rem;text-decoration:none;}
+@media(max-width:768px){.mob-toggle{display:flex !important;}}
+</style>
+<style>
+.pkg-tabs{display:flex;gap:0;border-radius:6px;overflow:hidden;border:1.5px solid var(--mist);width:fit-content;margin-bottom:32px;background:var(--white);}
+.ptab{padding:11px 24px;font-size:.82rem;font-weight:600;cursor:pointer;border:none;font-family:'Inter',sans-serif;display:flex;align-items:center;gap:7px;color:var(--mid);background:var(--white);border-right:1.5px solid var(--mist);transition:all .15s;}
+.ptab:last-child{border-right:none;}
+.ptab:hover:not(.on){color:var(--teal);background:var(--teal-pale);}
+.ptab.on{background:var(--teal) !important;color:#fff !important;}
 .ppanel{display:none;}
-.ppanel.on{display:block;}
-.pkg-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(218px,1fr));gap:16px;}
+.ppanel.on{display:block;animation:pkgfade .25s ease;}
+@keyframes pkgfade{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+.pkg-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(235px,1fr));gap:16px;}
+.pkg-card{background:var(--white);border:1.5px solid var(--mist);border-radius:10px;padding:24px 22px;position:relative;display:flex;flex-direction:column;transition:border-color .2s,box-shadow .2s;}
+.pkg-card:hover{border-color:var(--teal);box-shadow:0 4px 20px rgba(10,115,105,.08);}
+.pkg-card.pop{border-color:var(--teal);border-width:2px;box-shadow:0 6px 28px rgba(10,115,105,.12);}
+.pop-tag{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--teal);color:#fff;font-size:.63rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:4px 14px;border-radius:20px;white-space:nowrap;}
+.pkg-tier{font-size:.63rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--mid);margin-bottom:6px;}
+.pkg-name{font-family:'Cairo',sans-serif;font-size:1.25rem;font-weight:700;color:var(--ink);margin-bottom:5px;line-height:1.2;}
+.pkg-price{font-family:'Cairo',sans-serif;font-size:2.4rem;font-weight:900;color:var(--ink);line-height:1;margin-bottom:5px;}
+.pkg-price sup{font-size:1.1rem;font-weight:700;vertical-align:top;margin-top:6px;}
+.pkg-price sub{font-size:.82rem;font-weight:400;color:var(--mid);}
+.pkg-line{font-size:.79rem;color:var(--mid);margin-bottom:14px;line-height:1.5;}
+.pkg-div{height:1px;background:var(--mist);margin-bottom:14px;}
+.pkg-feats{list-style:none;display:flex;flex-direction:column;gap:7px;flex:1;margin-bottom:18px;padding:0;}
+.pkg-feats li{font-size:.78rem;color:var(--ink2);display:flex;gap:7px;align-items:flex-start;line-height:1.4;}
+.pkg-feats li.dim{color:var(--mid);}
+.fi-y{color:var(--teal);font-weight:700;flex-shrink:0;margin-top:1px;}
+.fi-n{color:var(--mist);flex-shrink:0;margin-top:1px;}
+.pkg-btn{width:100%;padding:12px;font-family:'Inter',sans-serif;font-size:.84rem;font-weight:700;border:none;border-radius:5px;cursor:pointer;transition:opacity .2s;margin-top:auto;}
+.pb-t{background:var(--teal);color:#fff;}.pb-t:hover{opacity:.88;}
+.pb-g{background:var(--gold);color:var(--ink);}.pb-g:hover{opacity:.88;}
+.pb-o{background:none;border:1.5px solid var(--mist);color:var(--mid);cursor:pointer;}.pb-o:hover{border-color:var(--teal);color:var(--teal);}
+.ad-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;margin-bottom:24px;}
+.ad-card{background:var(--white);border:1.5px solid var(--mist);border-radius:10px;padding:22px;transition:border-color .2s;}
+.ad-card:hover{border-color:var(--gold);}
+.ad-badge{display:inline-block;font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);background:var(--gold-pale);padding:3px 9px;border-radius:10px;margin-bottom:8px;}
+.ad-name{font-family:'Cairo',sans-serif;font-size:1.1rem;font-weight:700;color:var(--ink);margin-bottom:4px;}
+.ad-price{font-family:'Cairo',sans-serif;font-size:1.9rem;font-weight:900;color:var(--ink);margin-bottom:6px;}
+.ad-price sub{font-size:.8rem;font-weight:400;color:var(--mid);}
+.ad-desc{font-size:.78rem;color:var(--mid);line-height:1.55;margin-bottom:14px;}
+.ad-feats{list-style:none;padding:0;display:flex;flex-direction:column;gap:6px;margin-bottom:16px;}
+.ad-feats li{font-size:.77rem;color:var(--ink2);display:flex;gap:6px;align-items:flex-start;}
+
+.billing-toggle{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:28px;}
+.bt-label{font-size:.85rem;font-weight:600;color:var(--mid);transition:color .2s;cursor:pointer;}
+.bt-label.active{color:var(--ink);}
+.bt-switch{position:relative;width:52px;height:28px;background:var(--teal);border-radius:20px;cursor:pointer;transition:background .2s;flex-shrink:0;}
+.bt-knob{position:absolute;top:3px;left:3px;width:22px;height:22px;background:#fff;border-radius:50%;transition:transform .25s cubic-bezier(.4,0,.2,1);box-shadow:0 2px 4px rgba(0,0,0,.2);}
+.bt-switch.yearly .bt-knob{transform:translateX(24px);}
+.bt-save{background:var(--gold);color:var(--ink);font-size:.66rem;font-weight:700;letter-spacing:.04em;padding:3px 10px;border-radius:20px;text-transform:uppercase;}
+.pkg-yearly-note{font-size:.7rem;color:var(--teal);font-weight:600;margin-top:-2px;margin-bottom:8px;min-height:14px;}
 </style>
 </head>
 <body>
@@ -25,341 +80,457 @@
   <div class="nav-inner">
     <a href="index.html" class="nav-logo">Gulf <span>Trade</span> Portal</a>
     <div class="nav-item">
-      <button class="nav-trigger" onclick="tog('db',this)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg> Buyers <svg width="10" height="6" fill="none" viewBox="0 0 10 6"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+      <button class="nav-trigger" onclick="tog('db',this)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+        Buyers <svg width="9" height="5" fill="none" viewBox="0 0 10 6" style="margin-left:2px;"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
       <div class="nav-drop" id="db">
-        <div class="drop-hd">For Buyers — Post what you need, receive supplier responses</div>
-        <a class="drop-link" href="register.html"><span class="dl-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></span><span><span class="dl-title">Post Import Request</span><span class="dl-desc">Tell suppliers what you need to buy or import</span></span></a>
-        <a class="drop-link" href="trade-board.html"><span class="dl-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span><span><span class="dl-title">Browse Sell Offers</span><span class="dl-desc">See what EU/US exporters have available now</span></span></a>
-        <a class="drop-link" href="directory.html"><span class="dl-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></span><span><span class="dl-title">Supplier Directory</span><span class="dl-desc">Browse verified EU & US exporters by sector</span></span></a>
-        <a class="drop-link" href="packages.html"><span class="dl-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></span><span><span class="dl-title">Buyer Packages</span><span class="dl-desc">Free to paid — upgrade for more visibility</span></span></a>
-        <a class="drop-link" href="portal.html"><span class="dl-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></span><span><span class="dl-title">Client Portal</span><span class="dl-desc">Manage requests and supplier responses</span></span></a>
-        <a class="drop-link" href="register.html"><span class="dl-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span><span class="dl-title">Register as Buyer</span><span class="dl-desc">Free GCC company listing</span></span></a>
+        <div class="drop-hd">For GCC Buyers — Post what you need</div>
+        <a class="drop-link" href="trade-board.html"><span class="dl-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span><span><span class="dl-title">Trade Board</span><span class="dl-desc">128 live import requests and export offers</span></span></a>
+        <a class="drop-link" href="directory.html"><span class="dl-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></span><span><span class="dl-title">Supplier Directory</span><span class="dl-desc">428 verified EU, US & Asia suppliers</span></span></a>
+        <a class="drop-link" href="register.html"><span class="dl-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span><span class="dl-title">Register as Buyer</span><span class="dl-desc">Free GCC company listing</span></span></a>
       </div>
     </div>
     <div class="nav-item">
-      <button class="nav-trigger" onclick="tog('ds',this)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg> Sellers <svg width="10" height="6" fill="none" viewBox="0 0 10 6"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+      <button class="nav-trigger" onclick="tog('ds',this)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+        Sellers <svg width="9" height="5" fill="none" viewBox="0 0 10 6" style="margin-left:2px;"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
       <div class="nav-drop" id="ds">
-        <div class="drop-hd">For Sellers & Exporters — Reach verified GCC buyers</div>
-        <a class="drop-link" href="trade-board.html"><span class="dl-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span><span><span class="dl-title">Browse Buy Requests</span><span class="dl-desc">Live import demand from UAE, KSA, and GCC</span></span></a>
-        <a class="drop-link" href="register.html"><span class="dl-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2L15 22 11 13 2 9l20-7z"/></svg></span><span><span class="dl-title">Post Export Offer</span><span class="dl-desc">Advertise what you have to export to GCC</span></span></a>
-        <a class="drop-link" href="register.html"><span class="dl-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span><span class="dl-title">Register as Supplier</span><span class="dl-desc">Get listed in the GCC supplier directory</span></span></a>
-        <a class="drop-link" href="packages.html"><span class="dl-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12H3a9 9 0 0 0 9 9v-2a7 7 0 0 1-7-7z"/><path d="M12 3v2a7 7 0 0 1 7 7h2a9 9 0 0 0-9-9z"/><path d="M12 12l-3 7 3-3 3 3-3-7z"/></svg></span><span><span class="dl-title">Seller Packages</span><span class="dl-desc">Respond to requests, get matched, grow exports</span></span></a>
-        <a class="drop-link" href="packages.html"><span class="dl-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg></span><span><span class="dl-title">Homepage Ad Slots</span><span class="dl-desc">Put your brand in front of every portal visitor</span></span></a>
-        <a class="drop-link" href="portal.html"><span class="dl-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></span><span><span class="dl-title">Client Portal</span><span class="dl-desc">Track leads and manage your listings</span></span></a>
+        <div class="drop-hd">For EU / US / Asia Suppliers</div>
+        <a class="drop-link" href="trade-board.html"><span class="dl-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span><span><span class="dl-title">Browse Buy Requests</span><span class="dl-desc">Live import demand from GCC buyers</span></span></a>
+        <a class="drop-link" href="register.html"><span class="dl-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span><span class="dl-title">Register as Supplier</span><span class="dl-desc">Get listed in the GCC supplier directory</span></span></a>
       </div>
     </div>
-    <a href="trade-board.html" class="nav-trigger" style="text-decoration:none;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg> Trade Board</a>
-    <a href="directory.html" class="nav-trigger" style="text-decoration:none;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Directory</a>
-    <a href="packages.html" class="nav-trigger" style="text-decoration:none;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> Packages</a>
+    <a href="trade-board.html" class="nav-trigger" style="text-decoration:none;">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      Trade Board
+    </a>
+    <a href="directory.html" class="nav-trigger" style="text-decoration:none;">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+      Directory
+    </a>
+    <a href="packages.html" class="nav-trigger" style="text-decoration:none;color:#fff;border-bottom:2px solid var(--gold);margin-bottom:-2px;">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      Packages
+    </a>
+    <a href="features.html" class="nav-trigger" style="text-decoration:none;">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      Features
+    </a>
+    <button class="mob-toggle" onclick="openMobMenu()"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
     <div class="nav-right">
       <a href="portal.html" class="btn-nav btn-ghost">Sign In</a>
-      <a href="register.html" class="btn-nav btn-teal">Register</a>
-      <a href="register.html" class="btn-nav btn-gold"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Post Request</a>
+      <a href="register.html" class="btn-nav btn-teal">Register Free</a>
+      <a href="register.html" class="btn-nav btn-gold">+ Post Request</a>
     </div>
   </div>
 </nav>
 
-<div style="background:var(--teal-dk);padding:36px 32px 32px;">
-  <div style="max-width:1200px;margin:0 auto;">
+<!-- HERO -->
+<div style="background:var(--teal-dk);padding:40px 32px 36px;">
+  <div style="max-width:1100px;margin:0 auto;">
     <p style="font-size:.67rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.45);font-weight:600;margin-bottom:8px;">Pricing &amp; Packages</p>
-    <h1 style="font-family:Cairo,sans-serif;font-size:2rem;font-weight:700;color:#fff;margin-bottom:8px;">Choose your plan</h1>
-    <p style="color:rgba(255,255,255,.6);font-size:.92rem;line-height:1.7;">Free to join. Upgrade for more visibility, leads, and Gulf market access. Cancel anytime.</p>
+    <h1 style="font-family:'Cairo',sans-serif;font-size:2rem;font-weight:700;color:#fff;margin-bottom:8px;">Choose your plan</h1>
+    <p style="color:rgba(255,255,255,.6);font-size:.92rem;line-height:1.7;max-width:560px;">Free to join. Upgrade for more visibility, leads, and direct GCC market access. Cancel anytime.</p>
   </div>
 </div>
 
-<section class="sec" style="background:var(--white);">
-  <div class="sec-inner" style="max-width:1200px;margin:0 auto;">
+<!-- PACKAGES SECTION -->
+<section style="background:var(--white);padding:36px 32px;">
+<div style="max-width:1100px;margin:0 auto;">
 
-    <div class="pkg-tabs" id="pkgTabs">
-      <button class="ptab on" id="tab-buyer" onclick="setPT('buyer',this)">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
-        GCC Buyers
-      </button>
-      <button class="ptab" id="tab-seller" onclick="setPT('seller',this)">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
-        EU / US / Asia Sellers
-      </button>
-      <button class="ptab" id="tab-ads" onclick="setPT('ads',this)">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2L15 22 11 13 2 9l20-7z"/></svg>
-        Ads &amp; Sponsorship
-      </button>
+  <!-- TABS -->
+  <!-- BILLING TOGGLE -->
+  <div class="billing-toggle">
+    <span class="bt-label active" id="bt-monthly" onclick="setBilling('monthly')">Monthly</span>
+    <div class="bt-switch" id="btSwitch" onclick="toggleBilling()">
+      <div class="bt-knob"></div>
     </div>
+    <span class="bt-label" id="bt-yearly" onclick="setBilling('yearly')">Yearly</span>
+    <span class="bt-save">Save 20%</span>
+  </div>
 
-    <div class="ppanel on" id="pp-buyer">
-      <div class="pkg-grid">
-        <div class="pkg-card"><div class="pkg-tier">Starter</div><div class="pkg-name">Free</div><div class="pkg-price">€0<sub>/mo</sub></div><div class="pkg-line">Get discovered by EU &amp; US suppliers at no cost.</div><div class="pkg-div"></div><ul class="pkg-feats"><li><span class="fi-y">✓</span>Company profile in directory</li><li><span class="fi-y">✓</span>2 trade requests per month</li><li><span class="fi-y">✓</span>WhatsApp &amp; email contact</li><li><span class="fi-y">✓</span>Browse supplier directory</li><li class="dim"><span class="fi-n">–</span>Featured search placement</li><li class="dim"><span class="fi-n">–</span>Email alerts to suppliers</li><li class="dim"><span class="fi-n">–</span>Unlimited requests</li></ul><button class="pkg-btn pb-o" onclick="stripeCheckout('gcc-free')">Get Started</button></div>
-        <div class="pkg-card pop"><div class="pop-tag">Most popular</div><div class="pkg-tier">Growth</div><div class="pkg-name">Pro Importer</div><div class="pkg-price"><sup>€</sup>59<sub>/mo</sub></div><div class="pkg-line">Unlimited requests + priority supplier matching.</div><div class="pkg-div"></div><ul class="pkg-feats"><li><span class="fi-y">✓</span>Everything in Free</li><li><span class="fi-y">✓</span>Unlimited trade requests</li><li><span class="fi-y">✓</span>Verified ✓ badge on profile</li><li><span class="fi-y">✓</span>Featured in category search</li><li><span class="fi-y">✓</span>Email blast to matching suppliers</li><li><span class="fi-y">✓</span>Urgent flag on requests</li><li><span class="fi-y">✓</span>Client portal dashboard</li></ul><button class="pkg-btn pb-t" onclick="stripeCheckout('gcc-pro')">Choose Pro →</button></div>
-        <div class="pkg-card"><div class="pkg-tier">Scale</div><div class="pkg-name">Premium</div><div class="pkg-price"><sup>€</sup>179<sub>/mo</sub></div><div class="pkg-line">Homepage placement + dedicated account manager.</div><div class="pkg-div"></div><ul class="pkg-feats"><li><span class="fi-y">✓</span>Everything in Pro</li><li><span class="fi-y">✓</span>Homepage featured slot</li><li><span class="fi-y">✓</span>Top of category search</li><li><span class="fi-y">✓</span>Dedicated account manager</li><li><span class="fi-y">✓</span>WhatsApp broadcast to suppliers</li><li><span class="fi-y">✓</span>Quarterly trade intelligence</li><li><span class="fi-y">✓</span>Intro to top 3 matching suppliers</li></ul><button class="pkg-btn pb-t" onclick="stripeCheckout('gcc-premium')">Choose Premium →</button></div>
-        <div class="pkg-card"><div class="pkg-tier">Enterprise</div><div class="pkg-name">Corporate</div><div class="pkg-price" style="font-size:1.35rem;padding-top:5px;">Custom</div><div class="pkg-line">Trading groups, chambers of commerce, govt bodies.</div><div class="pkg-div"></div><ul class="pkg-feats"><li><span class="fi-y">✓</span>Multi-user accounts (5–50)</li><li><span class="fi-y">✓</span>White-label portal page</li><li><span class="fi-y">✓</span>Custom sector landing pages</li><li><span class="fi-y">✓</span>CRM/ERP integration</li><li><span class="fi-y">✓</span>SLA-backed response tracking</li><li><span class="fi-y">✓</span>Arabic + English interface</li><li><span class="fi-y">✓</span>Annual Gulf market report</li></ul><button class="pkg-btn pb-o" onclick="openMo('mo-contact')">Contact Us</button></div>
+  <div class="pkg-tabs">
+    <button class="ptab on" id="tab-buyer" onclick="setPT('buyer',this)">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+      GCC Buyers
+    </button>
+    <button class="ptab" id="tab-seller" onclick="setPT('seller',this)">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+      EU / US / Asia Sellers
+    </button>
+    <button class="ptab" id="tab-ads" onclick="setPT('ads',this)">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2L15 22 11 13 2 9l20-7z"/></svg>
+      Ads &amp; Sponsorship
+    </button>
+  </div>
+
+  <!-- ═══ GCC BUYERS ═══ -->
+  <div class="ppanel on" id="pp-buyer">
+    <div class="pkg-grid">
+      <div class="pkg-card">
+        <div class="pkg-tier">Starter</div>
+        <div class="pkg-name">Free</div>
+        <div class="pkg-price">€0<sub>/mo</sub></div>
+        <div class="pkg-line">Start sourcing from EU, US &amp; Asia suppliers at no cost.</div>
+        <div class="pkg-div"></div>
+        <ul class="pkg-feats">
+          <li><span class="fi-y">✓</span>Company profile in directory</li>
+          <li><span class="fi-y">✓</span>2 trade requests per month</li>
+          <li><span class="fi-y">✓</span>Browse supplier directory</li>
+          <li><span class="fi-y">✓</span>WhatsApp &amp; email contact</li>
+          <li class="dim"><span class="fi-n">–</span>Featured in search results</li>
+          <li class="dim"><span class="fi-n">–</span>Email alerts to suppliers</li>
+          <li class="dim"><span class="fi-n">–</span>Unlimited trade requests</li>
+        </ul>
+        <button class="pkg-btn pb-o" onclick="window.location.href='register.html'">Get Started</button>
       </div>
-    </div>
-    <div class="ppanel" id="pp-seller">
-      <div class="pkg-grid">
-        <div class="pkg-card"><div class="pkg-tier">Starter</div><div class="pkg-name">Free Supplier</div><div class="pkg-price">€0<sub>/mo</sub></div><div class="pkg-line">Get discovered by GCC buyers at no cost.</div><div class="pkg-div"></div><ul class="pkg-feats"><li><span class="fi-y">✓</span>Profile in directory</li><li><span class="fi-y">✓</span>GCC buyers can contact you</li><li><span class="fi-y">✓</span>Browse trade board (view only)</li><li class="dim"><span class="fi-n">–</span>Respond to trade requests</li><li class="dim"><span class="fi-n">–</span>Email demand alerts</li><li class="dim"><span class="fi-n">–</span>Post export offers</li><li class="dim"><span class="fi-n">–</span>Featured in search</li></ul><button class="pkg-btn pb-o" onclick="stripeCheckout('eu-free')">Get Started</button></div>
-        <div class="pkg-card pop"><div class="pop-tag">Best for exporters</div><div class="pkg-tier">Active</div><div class="pkg-name">Pro Exporter</div><div class="pkg-price"><sup>€</sup>89<sub>/mo</sub></div><div class="pkg-line">Respond to GCC requests. Get matched automatically.</div><div class="pkg-div"></div><ul class="pkg-feats"><li><span class="fi-y">✓</span>Everything in Free</li><li><span class="fi-y">✓</span>Respond to unlimited GCC requests</li><li><span class="fi-y">✓</span>Post unlimited export offers</li><li><span class="fi-y">✓</span>Weekly GCC demand digest by email</li><li><span class="fi-y">✓</span>Verified EU/US badge on profile</li><li><span class="fi-y">✓</span>Featured in sector directory</li><li><span class="fi-y">✓</span>Client portal dashboard</li></ul><button class="pkg-btn pb-t" onclick="stripeCheckout('eu-pro')">Choose Pro →</button></div>
-        <div class="pkg-card"><div class="pkg-tier">Premium</div><div class="pkg-name">Market Entry</div><div class="pkg-price"><sup>€</sup>269<sub>/mo</sub></div><div class="pkg-line">Full GCC market entry for serious Gulf exporters.</div><div class="pkg-div"></div><ul class="pkg-feats"><li><span class="fi-y">✓</span>Everything in Pro</li><li><span class="fi-y">✓</span>Homepage featured supplier slot</li><li><span class="fi-y">✓</span>Dedicated GCC account manager</li><li><span class="fi-y">✓</span>Priority buyer matching</li><li><span class="fi-y">✓</span>Intro facilitation — top 3 buyers</li><li><span class="fi-y">✓</span>Quarterly GCC intelligence report</li><li><span class="fi-y">✓</span>Arabic profile translation</li></ul><button class="pkg-btn pb-t" onclick="stripeCheckout('eu-premium')">Choose Market Entry →</button></div>
-        <div class="pkg-card"><div class="pkg-tier">Enterprise</div><div class="pkg-name">Corporate</div><div class="pkg-price" style="font-size:1.35rem;padding-top:5px;">Custom</div><div class="pkg-line">For exporters targeting multiple GCC countries at scale.</div><div class="pkg-div"></div><ul class="pkg-feats"><li><span class="fi-y">✓</span>All Market Entry features</li><li><span class="fi-y">✓</span>Multi-user accounts</li><li><span class="fi-y">✓</span>Category sponsorship rights</li><li><span class="fi-y">✓</span>Trade show co-participation</li><li><span class="fi-y">✓</span>NDA-protected introductions</li><li><span class="fi-y">✓</span>CRM/ERP data export</li><li><span class="fi-y">✓</span>Annual Gulf market report</li></ul><button class="pkg-btn pb-o" onclick="openMo('mo-contact')">Contact Us</button></div>
+      <div class="pkg-card pop">
+        <div class="pop-tag">Most popular</div>
+        <div class="pkg-tier">Growth</div>
+        <div class="pkg-name">Pro Importer</div>
+        <div class="pkg-price" data-monthly="59" data-yearly="566"><sup>€</sup><span class="price-val">59</span><sub class="price-per">/mo</sub></div>
+        <div class="pkg-yearly-note" data-note></div>
+        <div class="pkg-line">Unlimited requests + priority supplier matching.</div>
+        <div class="pkg-div"></div>
+        <ul class="pkg-feats">
+          <li><span class="fi-y">✓</span>Everything in Free</li>
+          <li><span class="fi-y">✓</span>Unlimited trade requests</li>
+          <li><span class="fi-y">✓</span>Verified ✓ badge on profile</li>
+          <li><span class="fi-y">✓</span>Featured in category search</li>
+          <li><span class="fi-y">✓</span>Email blast to matching suppliers</li>
+          <li><span class="fi-y">✓</span>Urgent flag on requests</li>
+          <li><span class="fi-y">✓</span>Client portal dashboard</li>
+        </ul>
+        <button class="pkg-btn pb-t" onclick="window.location.href='register.html?plan=gcc-pro'">Choose Pro &rarr;</button>
       </div>
-    </div>
-    <div class="ppanel" id="pp-ads">
-      <p style="font-size:.84rem;color:var(--mid);margin-bottom:20px;max-width:560px;line-height:1.7;">Homepage ad slots put your brand in front of every portal visitor. All ads are clearly labelled — no hidden promotion.</p>
-      <div class="pkg-grid">
-        <div class="pkg-card"><div class="pkg-tier">Visibility</div><div class="pkg-name">Trade Board Ad</div><div class="pkg-price"><sup>€</sup>99<sub>/mo</sub></div><div class="pkg-line">Featured card on trade board + homepage live feed.</div><div class="pkg-div"></div><ul class="pkg-feats"><li><span class="fi-y">✓</span>Featured card on trade board</li><li><span class="fi-y">✓</span>Appears in homepage live feed</li><li><span class="fi-y">✓</span>Clearly labelled Sponsored</li><li><span class="fi-y">✓</span>Link to your profile or URL</li><li><span class="fi-y">✓</span>Monthly impressions report</li><li class="dim"><span class="fi-n">–</span>Category page placement</li><li class="dim"><span class="fi-n">–</span>Homepage banner slot</li></ul><button class="pkg-btn pb-g" onclick="stripeCheckout('ads-board')">Book Ad Slot →</button><p class="pkg-note">Min. 1 month. Cancel anytime.</p></div>
-        <div class="pkg-card pop"><div class="pop-tag">High visibility</div><div class="pkg-tier">Premium Placement</div><div class="pkg-name">Category Sponsor</div><div class="pkg-price"><sup>€</sup>249<sub>/mo</sub></div><div class="pkg-line">Own a trade category. Top placement + email banner.</div><div class="pkg-div"></div><ul class="pkg-feats"><li><span class="fi-y">✓</span>Top of 1 category page</li><li><span class="fi-y">✓</span>Trade board featured card</li><li><span class="fi-y">✓</span>Homepage live feed slot</li><li><span class="fi-y">✓</span>Official Sponsor badge</li><li><span class="fi-y">✓</span>Email banner to subscribers</li><li><span class="fi-y">✓</span>Monthly reach + clicks report</li><li class="dim"><span class="fi-n">–</span>Homepage banner slot</li></ul><button class="pkg-btn pb-g" onclick="stripeCheckout('ads-cat')">Book Category Spot →</button><p class="pkg-note">1 sponsor per category.</p></div>
-        <div class="pkg-card"><div class="pkg-tier">Maximum</div><div class="pkg-name">Homepage Banner</div><div class="pkg-price"><sup>€</sup>499<sub>/mo</sub></div><div class="pkg-line">Full-width homepage banner. Max exposure to all visitors.</div><div class="pkg-div"></div><ul class="pkg-feats"><li><span class="fi-y">✓</span>Full-width homepage banner</li><li><span class="fi-y">✓</span>All trade board placements</li><li><span class="fi-y">✓</span>Homepage live feed priority</li><li><span class="fi-y">✓</span>Featured on all category pages</li><li><span class="fi-y">✓</span>Weekly reach + conversion report</li><li><span class="fi-y">✓</span>Banner design support included</li><li><span class="fi-y">✓</span>Social media mention</li></ul><button class="pkg-btn pb-g" onclick="stripeCheckout('ads-banner')">Book Homepage Banner →</button><p class="pkg-note">1 slot/month. Book in advance.</p></div>
-        <div class="pkg-card"><div class="pkg-tier">Full Reach</div><div class="pkg-name">Annual Package</div><div class="pkg-price"><sup>€</sup>3,999<sub>/yr</sub></div><div class="pkg-line">Year-round presence. Best value — 33% off monthly.</div><div class="pkg-div"></div><ul class="pkg-feats"><li><span class="fi-y">✓</span>12 months homepage banner</li><li><span class="fi-y">✓</span>Category sponsorship (3 cats)</li><li><span class="fi-y">✓</span>All trade board placements</li><li><span class="fi-y">✓</span>Dedicated company landing page</li><li><span class="fi-y">✓</span>Monthly trade intelligence</li><li><span class="fi-y">✓</span>Co-branded press release</li><li><span class="fi-y">✓</span>Custom payment terms available</li></ul><button class="pkg-btn pb-g" onclick="openMo('mo-contact')">Get Annual Quote →</button><p class="pkg-note">Invoiced annually.</p></div>
+      <div class="pkg-card">
+        <div class="pkg-tier">Scale</div>
+        <div class="pkg-name">Premium</div>
+        <div class="pkg-price" data-monthly="179" data-yearly="1718"><sup>€</sup><span class="price-val">179</span><sub class="price-per">/mo</sub></div>
+        <div class="pkg-yearly-note" data-note></div>
+        <div class="pkg-line">Homepage placement + dedicated account manager.</div>
+        <div class="pkg-div"></div>
+        <ul class="pkg-feats">
+          <li><span class="fi-y">✓</span>Everything in Pro</li>
+          <li><span class="fi-y">✓</span>Homepage featured slot</li>
+          <li><span class="fi-y">✓</span>Top of category search</li>
+          <li><span class="fi-y">✓</span>Dedicated account manager</li>
+          <li><span class="fi-y">✓</span>WhatsApp broadcast to suppliers</li>
+          <li><span class="fi-y">✓</span>Quarterly trade intelligence</li>
+          <li><span class="fi-y">✓</span>Intro to top 3 matching suppliers</li>
+        </ul>
+        <button class="pkg-btn pb-t" onclick="window.location.href='register.html?plan=gcc-premium'">Choose Premium &rarr;</button>
+      </div>
+      <div class="pkg-card">
+        <div class="pkg-tier">Enterprise</div>
+        <div class="pkg-name">Corporate</div>
+        <div class="pkg-price" style="font-size:1.6rem;">Custom</div>
+        <div class="pkg-line">Trading groups, chambers of commerce, govt bodies.</div>
+        <div class="pkg-div"></div>
+        <ul class="pkg-feats">
+          <li><span class="fi-y">✓</span>Multi-user accounts (5–50)</li>
+          <li><span class="fi-y">✓</span>White-label portal page</li>
+          <li><span class="fi-y">✓</span>Custom sector landing pages</li>
+          <li><span class="fi-y">✓</span>CRM / ERP integration</li>
+          <li><span class="fi-y">✓</span>SLA-backed response tracking</li>
+          <li><span class="fi-y">✓</span>Arabic + English interface</li>
+          <li><span class="fi-y">✓</span>Annual Gulf market report</li>
+        </ul>
+        <button class="pkg-btn pb-o" onclick="openMo('mo-contact')">Contact Us</button>
       </div>
     </div>
   </div>
 
+  <!-- ═══ EU / US / ASIA SELLERS ═══ -->
+  <div class="ppanel" id="pp-seller">
+    <div class="pkg-grid">
+      <div class="pkg-card">
+        <div class="pkg-tier">Starter</div>
+        <div class="pkg-name">Free Supplier</div>
+        <div class="pkg-price">€0<sub>/mo</sub></div>
+        <div class="pkg-line">Get discovered by GCC buyers at no cost.</div>
+        <div class="pkg-div"></div>
+        <ul class="pkg-feats">
+          <li><span class="fi-y">✓</span>Profile in supplier directory</li>
+          <li><span class="fi-y">✓</span>GCC buyers can contact you</li>
+          <li><span class="fi-y">✓</span>Browse trade board (view only)</li>
+          <li><span class="fi-y">✓</span>Halal certification badge</li>
+          <li class="dim"><span class="fi-n">–</span>Respond to trade requests</li>
+          <li class="dim"><span class="fi-n">–</span>GCC demand email digest</li>
+          <li class="dim"><span class="fi-n">–</span>Verified supplier badge</li>
+        </ul>
+        <button class="pkg-btn pb-o" onclick="window.location.href='register.html'">Get Started</button>
+      </div>
+      <div class="pkg-card pop">
+        <div class="pop-tag">Most popular</div>
+        <div class="pkg-tier">Growth</div>
+        <div class="pkg-name">Pro Exporter</div>
+        <div class="pkg-price" data-monthly="89" data-yearly="854"><sup>€</sup><span class="price-val">89</span><sub class="price-per">/mo</sub></div>
+        <div class="pkg-yearly-note" data-note></div>
+        <div class="pkg-line">Respond to unlimited GCC buyer requests.</div>
+        <div class="pkg-div"></div>
+        <ul class="pkg-feats">
+          <li><span class="fi-y">✓</span>Everything in Free</li>
+          <li><span class="fi-y">✓</span>Respond to unlimited requests</li>
+          <li><span class="fi-y">✓</span>Post export offers on trade board</li>
+          <li><span class="fi-y">✓</span>Weekly GCC demand digest</li>
+          <li><span class="fi-y">✓</span>Verified EU/US/Asia badge</li>
+          <li><span class="fi-y">✓</span>AI Supplier Match visibility</li>
+          <li><span class="fi-y">✓</span>Client portal dashboard</li>
+        </ul>
+        <button class="pkg-btn pb-t" onclick="window.location.href='register.html?plan=eu-pro'">Choose Pro &rarr;</button>
+      </div>
+      <div class="pkg-card">
+        <div class="pkg-tier">Scale</div>
+        <div class="pkg-name">Market Entry</div>
+        <div class="pkg-price" data-monthly="269" data-yearly="2582"><sup>€</sup><span class="price-val">269</span><sub class="price-per">/mo</sub></div>
+        <div class="pkg-yearly-note" data-note></div>
+        <div class="pkg-line">Full Gulf market entry with dedicated support.</div>
+        <div class="pkg-div"></div>
+        <ul class="pkg-feats">
+          <li><span class="fi-y">✓</span>Everything in Pro</li>
+          <li><span class="fi-y">✓</span>Homepage featured supplier slot</li>
+          <li><span class="fi-y">✓</span>Dedicated GCC account manager</li>
+          <li><span class="fi-y">✓</span>Priority buyer matching</li>
+          <li><span class="fi-y">✓</span>Arabic profile translation</li>
+          <li><span class="fi-y">✓</span>WhatsApp broadcast inclusion</li>
+          <li><span class="fi-y">✓</span>Quarterly GCC market report</li>
+        </ul>
+        <button class="pkg-btn pb-t" onclick="window.location.href='register.html?plan=eu-market'">Choose Market Entry &rarr;</button>
+      </div>
+      <div class="pkg-card">
+        <div class="pkg-tier">Enterprise</div>
+        <div class="pkg-name">Corporate</div>
+        <div class="pkg-price" style="font-size:1.6rem;">Custom</div>
+        <div class="pkg-line">Manufacturers, trading houses, export agencies.</div>
+        <div class="pkg-div"></div>
+        <ul class="pkg-feats">
+          <li><span class="fi-y">✓</span>All Market Entry features</li>
+          <li><span class="fi-y">✓</span>Multi-user accounts</li>
+          <li><span class="fi-y">✓</span>Category sponsorship included</li>
+          <li><span class="fi-y">✓</span>Trade show support (GULFOOD etc)</li>
+          <li><span class="fi-y">✓</span>Annual Gulf market report</li>
+          <li><span class="fi-y">✓</span>SLA response tracking</li>
+          <li><span class="fi-y">✓</span>CRM / ERP integration</li>
+        </ul>
+        <button class="pkg-btn pb-o" onclick="openMo('mo-contact')">Contact Us</button>
+      </div>
+    </div>
   </div>
+
+  <!-- ═══ ADS & SPONSORSHIP ═══ -->
+  <div class="ppanel" id="pp-ads">
+    <p style="font-size:.88rem;color:var(--mid);margin-bottom:28px;max-width:600px;line-height:1.7;">Put your brand in front of every portal visitor. All ad placements are clearly labelled — no hidden promotion. Reach verified GCC importers and global exporters daily.</p>
+    <div class="ad-grid">
+      <div class="ad-card">
+        <div class="ad-badge">Visibility</div>
+        <div class="ad-name">Trade Board Ad</div>
+        <div class="ad-price">€99<sub>/mo</sub></div>
+        <div class="ad-desc">Your company card featured on the live trade board alongside active import/export requests.</div>
+        <ul class="ad-feats">
+          <li><span class="fi-y">✓</span>Featured card on trade board</li>
+          <li><span class="fi-y">✓</span>Homepage live feed inclusion</li>
+          <li><span class="fi-y">✓</span>⭐ Sponsored badge</li>
+          <li><span class="fi-y">✓</span>Direct WhatsApp / email CTA</li>
+          <li><span class="fi-y">✓</span>Monthly performance report</li>
+        </ul>
+        <button class="pkg-btn pb-o" onclick="openMo('mo-contact')">Book Ad Slot &rarr;</button>
+      </div>
+      <div class="ad-card" style="border-color:rgba(200,146,42,.3);">
+        <div class="ad-badge">Category</div>
+        <div class="ad-name">Category Sponsor</div>
+        <div class="ad-price">€249<sub>/mo</sub></div>
+        <div class="ad-desc">Sponsor a product category — FMCG, Food &amp; Bev, Construction etc. Your brand appears at the top of all category pages.</div>
+        <ul class="ad-feats">
+          <li><span class="fi-y">✓</span>Category page banner</li>
+          <li><span class="fi-y">✓</span>Directory category highlight</li>
+          <li><span class="fi-y">✓</span>Newsletter category section</li>
+          <li><span class="fi-y">✓</span>AI Match priority placement</li>
+          <li><span class="fi-y">✓</span>Monthly analytics dashboard</li>
+        </ul>
+        <button class="pkg-btn pb-g" onclick="openMo('mo-contact')">Book Category &rarr;</button>
+      </div>
+      <div class="ad-card" style="border-color:rgba(200,146,42,.5);background:var(--gold-pale);">
+        <div class="ad-badge">Premium</div>
+        <div class="ad-name">Homepage Banner</div>
+        <div class="ad-price">€499<sub>/mo</sub></div>
+        <div class="ad-desc">The most premium placement. Your brand featured in the hero section of the homepage — seen by every visitor before anything else.</div>
+        <ul class="ad-feats">
+          <li><span class="fi-y">✓</span>Hero section feature (laser design)</li>
+          <li><span class="fi-y">✓</span>Custom animated ad unit</li>
+          <li><span class="fi-y">✓</span>All Trade Board Ad features</li>
+          <li><span class="fi-y">✓</span>Priority in AI Supplier Match</li>
+          <li><span class="fi-y">✓</span>WhatsApp broadcast mention</li>
+        </ul>
+        <button class="pkg-btn pb-g" onclick="openMo('mo-contact')">Book Homepage Slot &rarr;</button>
+      </div>
+      <div class="ad-card">
+        <div class="ad-badge">Best Value</div>
+        <div class="ad-name">Annual Package</div>
+        <div class="ad-price">€3,999<sub>/yr</sub></div>
+        <div class="ad-desc">Full year of homepage banner + trade board ad + category sponsorship. Save over €3,000 vs monthly.</div>
+        <ul class="ad-feats">
+          <li><span class="fi-y">✓</span>12 months homepage banner</li>
+          <li><span class="fi-y">✓</span>12 months trade board ad</li>
+          <li><span class="fi-y">✓</span>Category sponsorship included</li>
+          <li><span class="fi-y">✓</span>Annual GCC market report</li>
+          <li><span class="fi-y">✓</span>Priority customer support</li>
+        </ul>
+        <button class="pkg-btn pb-t" onclick="openMo('mo-contact')">Book Annual Package &rarr;</button>
+      </div>
+    </div>
+    <div style="background:var(--sand);border:1.5px solid var(--mist);border-radius:8px;padding:20px 24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;">
+      <div>
+        <div style="font-family:'Cairo',sans-serif;font-size:1rem;font-weight:700;color:var(--ink);margin-bottom:4px;">B&amp;F Global Solutions — live example</div>
+        <div style="font-size:.79rem;color:var(--mid);">The homepage banner currently features B&amp;F Global Solutions B.V. — your Nespresso capsule wholesale ad is live at <a href="index.html" style="color:var(--teal);">gulftradeportal.com</a>.</div>
+      </div>
+      <a href="index.html" class="btn-nav btn-teal" style="text-decoration:none;white-space:nowrap;">See live example &rarr;</a>
+    </div>
+  </div>
+
+</div>
 </section>
 
+<!-- FOOTER -->
 <section class="cta-band">
   <p class="ey">No platform fees. No commission.</p>
   <h2>Gulf trade, simplified.</h2>
-  <p>Free to join for GCC importers, European exporters, and US suppliers. Connect directly, trade confidently.</p>
+  <p>Free to join for GCC importers, European exporters, US suppliers, and Asian manufacturers.</p>
   <div class="cta-btns">
     <a href="register.html" class="btn-hp btn-hp-g">Register Your Company Free</a>
     <a href="trade-board.html" class="btn-hp btn-hp-o">Browse Live Trade Requests</a>
   </div>
 </section>
-
 <footer>
   <div class="foot-inner">
     <div class="foot-top">
       <div class="foot-brand">
-        <span class="nav-logo">Gulf <span>Trade</span> Portal</span>
-        <p>Cross-border trade matchmaking between the GCC, Europe, and the USA. Connecting importers, exporters, and suppliers since 2025.</p>
+        <span style="font-family:'Cairo',sans-serif;color:#fff;display:block;margin-bottom:6px;font-size:1.05rem;font-weight:700;">Gulf <span style="color:#C8922A;">Trade</span> Portal</span>
+        <p style="color:#4A4A4A;font-size:.77rem;line-height:1.6;margin-top:6px;">Cross-border trade matchmaking between the GCC, Europe, USA, and Asia.</p>
       </div>
-      <div class="foot-col"><h4>For Buyers</h4><a href="#">Post Import Request</a><a href="trade-board.html">Browse Export Offers</a><a href="directory.html">Supplier Directory</a><a href="packages.html">Buyer Packages</a><a href="portal.html">Client Portal</a></div>
-      <div class="foot-col"><h4>For Sellers</h4><a href="trade-board.html">Browse Buy Requests</a><a href="#">Post Export Offer</a><a href="register.html">Register as Supplier</a><a href="packages.html">Seller Packages</a><a href="packages.html">Advertise</a></div>
-      <div class="foot-col"><h4>GCC Markets</h4><a href="#">UAE</a><a href="#">Saudi Arabia</a><a href="#" >Kuwait</a><a href="#" >Qatar</a><a href="#" >Oman</a><a href="#" >Bahrain</a></div>
-      <div class="foot-col"><h4>Supplier Regions</h4><a href="#">🇪🇺 Europe</a><a href="#">🇺🇸 United States</a><a href="#">🌏 Asia</a><a href="#">🇨🇳 China</a><a href="#">🇮🇳 India</a><a href="#">🇲🇾 Malaysia</a><a href="#" >🇸🇬 Singapore</a></div>
-      <div class="foot-col" style="grid-column:1/-1;">
-  <h4>Company</h4>
-  <div style="display:flex;flex-wrap:wrap;gap:6px 24px;">
-    <a href="#">About Us</a>
-    <a href="#">How It Works</a>
-    <a href="packages.html">Pricing</a>
-    <a href="mailto:info@gulftradeportal.com">Contact</a>
-    <a href="#">Privacy Policy</a>
-  </div>
-</div>
+      <div class="foot-col"><h4>For Buyers</h4><a href="register.html">Post Import Request</a><a href="trade-board.html">Browse Export Offers</a><a href="directory.html">Supplier Directory</a><a href="packages.html">Buyer Packages</a><a href="portal.html">Client Portal</a></div>
+      <div class="foot-col"><h4>For Sellers</h4><a href="trade-board.html">Browse Buy Requests</a><a href="register.html">Register as Supplier</a><a href="packages.html">Seller Packages</a><a href="packages.html#ads">Advertise</a><a href="features.html">AI Supplier Match</a></div>
+      <div class="foot-col"><h4>GCC Markets</h4><a href="trade-board.html?country=UAE">🇦🇪 UAE</a><a href="trade-board.html?country=Saudi+Arabia">🇸🇦 Saudi Arabia</a><a href="trade-board.html?country=Kuwait">🇰🇼 Kuwait</a><a href="trade-board.html?country=Qatar">🇶🇦 Qatar</a><a href="trade-board.html?country=Oman">🇴🇲 Oman</a><a href="trade-board.html?country=Bahrain">🇧🇭 Bahrain</a></div>
+      <div class="foot-col" style="grid-column:1/-1;"><h4>Company</h4><div style="display:flex;flex-wrap:wrap;gap:6px 24px;"><a href="#">About Us</a><a href="#">How It Works</a><a href="packages.html">Pricing</a><a href="mailto:info@gulftradeportal.com">Contact</a><a href="#">Privacy Policy</a></div></div>
     </div>
     <div class="foot-bot">
-      <p>© 2025 Gulf Trade Portal. All rights reserved. Registered in the Netherlands.</p>
-      <a class="foot-wa" href="https://wa.me/" target="_blank">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-        WhatsApp
-      </a>
+      <p style="color:#2E2E2E;font-size:.71rem;">© 2025 Gulf Trade Portal · A trading name of Excorp Distribution B.V. · KVK 96822945 · Dordrecht, Netherlands</p>
     </div>
   </div>
 </footer>
 
-<div class="mo" id="mo-auth">
-  <div class="mo-box" style="max-width:420px;">
-    <button class="mo-x" onclick="closeMo('mo-auth')">×</button>
-    <div style="display:flex;gap:0;margin-bottom:20px;border-radius:4px;overflow:hidden;border:1.5px solid var(--mist);">
-      <button id="auth-tab-login" style="flex:1;padding:9px;font-family:Inter,sans-serif;font-size:.8rem;font-weight:600;border:none;cursor:pointer;background:var(--teal);color:#fff;transition:background .15s;" onclick="switchAuth('login')">Sign In</button>
-      <button id="auth-tab-reg" style="flex:1;padding:9px;font-family:Inter,sans-serif;font-size:.8rem;font-weight:600;border:none;cursor:pointer;background:var(--white);color:var(--mid);transition:background .15s;" onclick="switchAuth('reg')">Create Account</button>
-    </div>
-    <div id="auth-login">
-      <div class="fg"><label>Email Address</label><input type="email" id="auth-email" placeholder="trade@gulftradeportal.com" autocomplete="email"></div>
-      <div class="fg"><label>Password</label><input type="password" id="auth-pass" placeholder="Your password" autocomplete="current-password"></div>
-      <button class="btn-next" style="width:100%;margin-bottom:10px;" onclick="authLogin()">Sign In to Portal →</button>
-      <p style="font-size:.75rem;text-align:center;color:var(--mid);">Forgot your password? <a href="#" style="color:var(--teal);">Reset it</a></p>
-      <div style="margin:16px 0;display:flex;align-items:center;gap:10px;"><div style="flex:1;height:1px;background:var(--mist);"></div><span style="font-size:.72rem;color:var(--mid);">or continue with</span><div style="flex:1;height:1px;background:var(--mist);"></div></div>
-      <button style="width:100%;padding:9px;font-family:Inter,sans-serif;font-size:.8rem;font-weight:500;border:1.5px solid var(--mist);border-radius:4px;background:var(--white);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;" onclick="alert('Google SSO — connect via Supabase Auth in production.')">
-        <svg width="14" height="14" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-        Continue with Google
-      </button>
-    </div>
-    <div id="auth-register" style="display:none;">
-      <div class="fr2" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-        <div class="fg"><label>First Name</label><input type="text" placeholder="Mohammed"></div>
-        <div class="fg"><label>Last Name</label><input type="text" placeholder="Al Rashid"></div>
-      </div>
-      <div class="fg"><label>Email Address</label><input type="email" placeholder="trade@gulftradeportal.com"></div>
-      <div class="fg"><label>Password</label><input type="password" placeholder="Min. 8 characters"></div>
-      <div class="fg"><label>Company Name</label><input type="text" placeholder="Your company"></div>
-      <button class="btn-next" style="width:100%;margin-bottom:10px;" onclick="authReg()">Create Account &amp; Access Portal →</button>
-      <p style="font-size:.73rem;color:var(--mid);text-align:center;line-height:1.5;">By creating an account you agree to our <a href="#" style="color:var(--teal);">Terms of Service</a> and <a href="#" style="color:var(--teal);">Privacy Policy</a>.</p>
-    </div>
-    <div id="auth-succ" class="succ"></div>
-    <div style="margin-top:16px;padding:12px 14px;background:var(--sand);border-radius:4px;font-size:.75rem;color:var(--mid);line-height:1.55;">
-      <strong style="color:var(--ink);display:block;margin-bottom:3px;">🔒 Secure client portal</strong>
-      Your account gives you access to your trade request dashboard, supplier responses, subscription management, and invoices.
-    </div>
-  </div>
-</div>
-
-<script>
-// ── AUTH ───────────────────────────────────────────────────
-function switchAuth(tab) {
-  document.getElementById('auth-login').style.display = tab==='login'?'block':'none';
-  document.getElementById('auth-register').style.display = tab==='reg'?'block':'none';
-  document.getElementById('auth-tab-login').style.background = tab==='login'?'var(--teal)':'var(--white)';
-  document.getElementById('auth-tab-login').style.color = tab==='login'?'#fff':'var(--mid)';
-  document.getElementById('auth-tab-reg').style.background = tab==='reg'?'var(--teal)':'var(--white)';
-  document.getElementById('auth-tab-reg').style.color = tab==='reg'?'#fff':'var(--mid)';
-}
-function authLogin() {
-  const e = document.getElementById('auth-email').value.trim();
-  if (!e) { alert('Please enter your email.'); return; }
-  const s = document.getElementById('auth-succ');
-  s.style.display = 'block';
-  s.textContent = '✓ Signing you in… In production this connects to Supabase Auth. Redirecting to your dashboard.';
-  setTimeout(() => closeMo('mo-auth'), 2800);
-}
-function authReg() {
-  const s = document.getElementById('auth-succ');
-  s.style.display = 'block';
-  s.textContent = '✓ Account created! Check your email to verify, then access your client portal dashboard.';
-  setTimeout(() => closeMo('mo-auth'), 2800);
-}
-
-// ── STRIPE PAYMENT LINKS ───────────────────────────────────
-// Replace these with real Stripe Payment Link URLs from your Stripe Dashboard
-// Create products at: dashboard.stripe.com/products
-const STRIPE_LINKS = {
-  'gcc-free':   null, // free — goes straight to register
-  'gcc-pro':    'https://buy.stripe.com/YOUR_GCC_PRO_LINK',
-  'gcc-premium':'https://buy.stripe.com/YOUR_GCC_PREMIUM_LINK',
-  'gcc-corp':   null, // contact sales
-  'eu-free':    null,
-  'eu-pro':     'https://buy.stripe.com/YOUR_EU_PRO_LINK',
-  'eu-premium': 'https://buy.stripe.com/YOUR_EU_PREMIUM_LINK',
-  'eu-corp':    null,
-  'ads-board':  'https://buy.stripe.com/YOUR_AD_BOARD_LINK',
-  'ads-cat':    'https://buy.stripe.com/YOUR_AD_CAT_LINK',
-  'ads-banner': 'https://buy.stripe.com/YOUR_AD_BANNER_LINK',
-  'ads-annual': 'https://buy.stripe.com/YOUR_AD_ANNUAL_LINK',
-};
-
-function stripeCheckout(planId) {
-  const link = STRIPE_LINKS[planId];
-  if (link && !link.includes('YOUR_')) {
-    window.open(link, '_blank');
-  } else if (!link) {
-    // Free plan — scroll to register
-    document.getElementById('register').scrollIntoView({ behavior: 'smooth' });
-  } else {
-    // Placeholder — show instructions
-    showStripeInfo();
-  }
-}
-
-function showStripeInfo() {
-  const info = document.getElementById('stripe-info');
-  info.style.display = info.style.display === 'none' ? 'block' : 'none';
-}
-
-// Override Sign In nav link to open auth modal
-document.addEventListener('DOMContentLoaded', () => {
-  document.querySelectorAll('a[href="portal.html"]').forEach(a => {
-    a.addEventListener('click', e => {
-      e.preventDefault();
-      openMo('mo-auth');
-    });
-  });
-});
-</script>
-
-<script>
-function tog(id,btn){
-  const p=document.getElementById(id),isOpen=p&&p.classList.contains('open');
-  document.querySelectorAll('.nav-drop').forEach(x=>x.classList.remove('open'));
-  document.querySelectorAll('.nav-trigger').forEach(x=>x.classList.remove('open'));
-  if(!isOpen&&p){p.classList.add('open');btn.classList.add('open');}
-}
-document.addEventListener('click',e=>{
-  if(!e.target.closest('.nav-item')){
-    document.querySelectorAll('.nav-drop').forEach(x=>x.classList.remove('open'));
-    document.querySelectorAll('.nav-trigger').forEach(x=>x.classList.remove('open'));
-  }
-});
-function openMo(id){const el=document.getElementById(id);if(el)el.classList.add('open');}
-function closeMo(id){const el=document.getElementById(id);if(el)el.classList.remove('open');}
-document.addEventListener('click',e=>{if(e.target.classList.contains('mo'))e.target.classList.remove('open');});
-</script>
-
-<script>
-function setPT(id, btn) {
-  // Remove active from all tabs
-  document.querySelectorAll('.ptab').forEach(b => b.classList.remove('on'));
-  // Hide all panels
-  document.querySelectorAll('.ppanel').forEach(p => p.classList.remove('on'));
-  // Activate clicked tab
-  btn.classList.add('on');
-  // Show selected panel
-  const panel = document.getElementById('pp-' + id);
-  if(panel) panel.classList.add('on');
-}
-
-const STRIPE_LINKS = {
-  'gcc-free': null,
-  'gcc-pro': 'https://buy.stripe.com/YOUR_GCC_PRO',
-  'gcc-premium': 'https://buy.stripe.com/YOUR_GCC_PREMIUM',
-  'gcc-corp': null,
-  'eu-free': null,
-  'eu-pro': 'https://buy.stripe.com/YOUR_EU_PRO',
-  'eu-market': 'https://buy.stripe.com/YOUR_EU_MARKET',
-  'eu-corp': null,
-};
-
-function stripeCheckout(id) {
-  const l = STRIPE_LINKS[id];
-  if(l && !l.includes('YOUR_')) window.open(l, '_blank');
-  else if(!l) window.location.href = 'register.html';
-  else alert('Stripe link not yet configured. Add your Stripe Payment Link to STRIPE_LINKS in packages.html.');
-}
-
-function switchAuth(tab) {
-  document.getElementById('auth-login').style.display = tab === 'login' ? 'block' : 'none';
-  document.getElementById('auth-register').style.display = tab === 'reg' ? 'block' : 'none';
-  ['login','reg'].forEach(t => {
-    document.getElementById('auth-tab-'+t).style.background = tab===t ? 'var(--teal)' : 'var(--white)';
-    document.getElementById('auth-tab-'+t).style.color = tab===t ? '#fff' : 'var(--mid)';
-  });
-}
-function authLogin() {
-  const s = document.getElementById('auth-succ');
-  s.style.display = 'block';
-  s.textContent = 'Signing you in... Redirecting to your dashboard.';
-  setTimeout(() => window.location.href = 'portal.html', 1800);
-}
-
-// Jump to ads tab if URL has #ads
-if(window.location.hash === '#ads') {
-  setPT('ads', document.getElementById('tab-ads'));
-}
-
-// Contact modal
-function openMo(id) { const el = document.getElementById(id); if(el) el.classList.add('open'); }
-function closeMo(id) { const el = document.getElementById(id); if(el) el.classList.remove('open'); }
-</script>
-
+<!-- MODALS -->
 <div class="mo" id="mo-contact"><div class="mo-box">
   <button class="mo-x" onclick="closeMo('mo-contact')">&#215;</button>
   <h3 class="mo-h">Get in Touch</h3>
-  <p class="mo-sub">For enterprise packages, ad bookings, and custom arrangements.</p>
-  <div class="fg"><label>Name &amp; Company</label><input type="text" placeholder="Your name + company"></div>
+  <p class="mo-sub">For enterprise packages, ad bookings, and custom arrangements. We reply within 1 business day.</p>
+  <div class="fg"><label>Name &amp; Company</label><input type="text" placeholder="Your name + company name"></div>
   <div class="fg"><label>Email</label><input type="email" placeholder="email@company.com"></div>
   <div class="fg"><label>Interested in</label>
     <select>
-      <option>Enterprise Buyer Package</option>
-      <option>Enterprise Seller Package</option>
-      <option>Trade Board Ad — &euro;99/mo</option>
-      <option>Category Sponsorship — &euro;249/mo</option>
-      <option>Homepage Banner — &euro;499/mo</option>
-      <option>Annual Package — &euro;3,999/yr</option>
+      <option>Trade Board Ad — €99/mo</option>
+      <option>Category Sponsorship — €249/mo</option>
+      <option>Homepage Banner — €499/mo</option>
+      <option>Annual Package — €3,999/yr</option>
+      <option>Corporate Buyer Package</option>
+      <option>Corporate Seller Package</option>
+      <option>Other</option>
     </select>
   </div>
-  <div class="fg"><label>Message</label><textarea style="font-family:Inter,sans-serif;font-size:.85rem;border:1.5px solid var(--mist);border-radius:4px;padding:9px;width:100%;outline:none;resize:vertical;min-height:72px;" placeholder="Tell us what you need..."></textarea></div>
-  <button class="btn-next" style="width:100%;" onclick="document.getElementById('ct-succ').style.display='block';setTimeout(()=>closeMo('mo-contact'),2500)">Send Enquiry &rarr;</button>
-  <div id="ct-succ" class="succ">&#10003; Thanks! We will reply within 1 business day.</div>
+  <div class="fg"><label>Message</label><textarea style="font-family:Inter,sans-serif;font-size:.85rem;border:1.5px solid var(--mist);border-radius:4px;padding:9px;width:100%;outline:none;resize:vertical;min-height:80px;background:var(--white);color:var(--ink);" placeholder="Tell us what you need..."></textarea></div>
+  <button class="btn-next" style="width:100%;" onclick="document.getElementById('ct-succ').style.display='block';this.disabled=true;this.textContent='Sent!';">Send Enquiry &rarr;</button>
+  <div id="ct-succ" class="succ">&#10003; Thanks! We will reply to you within 1 business day at info@gulftradeportal.com</div>
 </div></div>
 
+<script>
+// ── TABS ─────────────────────────────────────────────────
+function setPT(id, btn) {
+  document.querySelectorAll('.ptab').forEach(function(b){ b.classList.remove('on'); });
+  document.querySelectorAll('.ppanel').forEach(function(p){ p.classList.remove('on'); });
+  btn.classList.add('on');
+  var panel = document.getElementById('pp-' + id);
+  if(panel) panel.classList.add('on');
+}
+
+// ── NAV ──────────────────────────────────────────────────
+function tog(id, btn) {
+  var p = document.getElementById(id);
+  var isOpen = p && p.classList.contains('open');
+  document.querySelectorAll('.nav-drop').forEach(function(x){ x.classList.remove('open'); });
+  document.querySelectorAll('.nav-trigger').forEach(function(x){ x.classList.remove('open'); });
+  if(!isOpen && p){ p.classList.add('open'); btn.classList.add('open'); }
+}
+document.addEventListener('click', function(e){
+  if(!e.target.closest('.nav-item')){
+    document.querySelectorAll('.nav-drop').forEach(function(x){ x.classList.remove('open'); });
+    document.querySelectorAll('.nav-trigger').forEach(function(x){ x.classList.remove('open'); });
+  }
+});
+
+// ── MODALS ───────────────────────────────────────────────
+function openMo(id){ var el=document.getElementById(id); if(el) el.classList.add('open'); }
+function closeMo(id){ var el=document.getElementById(id); if(el) el.classList.remove('open'); }
+document.addEventListener('click', function(e){ if(e.target.classList.contains('mo')) e.target.classList.remove('open'); });
+
+
+// ── BILLING TOGGLE (Monthly / Yearly) ───────────────────
+let currentBilling = 'monthly';
+
+function toggleBilling() {
+  setBilling(currentBilling === 'monthly' ? 'yearly' : 'monthly');
+}
+
+function setBilling(mode) {
+  currentBilling = mode;
+  const sw = document.getElementById('btSwitch');
+  const mLabel = document.getElementById('bt-monthly');
+  const yLabel = document.getElementById('bt-yearly');
+
+  if(mode === 'yearly') {
+    sw.classList.add('yearly');
+    mLabel.classList.remove('active');
+    yLabel.classList.add('active');
+  } else {
+    sw.classList.remove('yearly');
+    mLabel.classList.add('active');
+    yLabel.classList.remove('active');
+  }
+
+  // Update all prices
+  document.querySelectorAll('.pkg-price[data-monthly]').forEach(function(el){
+    const monthly = parseInt(el.getAttribute('data-monthly'));
+    const yearly  = parseInt(el.getAttribute('data-yearly'));
+    const valEl   = el.querySelector('.price-val');
+    const perEl   = el.querySelector('.price-per');
+    const noteEl  = el.parentElement.querySelector('[data-note]');
+
+    if(mode === 'yearly') {
+      valEl.textContent = yearly;
+      perEl.textContent = '/yr';
+      if(noteEl) {
+        const monthlyEquiv = Math.round(yearly / 12);
+        const savings = (monthly * 12) - yearly;
+        noteEl.textContent = '≈ €' + monthlyEquiv + '/mo · save €' + savings + '/year';
+      }
+    } else {
+      valEl.textContent = monthly;
+      perEl.textContent = '/mo';
+      if(noteEl) noteEl.textContent = '';
+    }
+  });
+}
+
+// ── URL HASH: jump to ads tab ────────────────────────────
+if(window.location.hash === '#ads') {
+  setPT('ads', document.getElementById('tab-ads'));
+}
+</script>
+
+<script>
+function openMobMenu(){document.getElementById('mobDrawer').classList.add('open');document.getElementById('mobBg').classList.add('open');}
+function closeMobMenu(){document.getElementById('mobDrawer').classList.remove('open');document.getElementById('mobBg').classList.remove('open');}
+</script>
 </body>
 </html>

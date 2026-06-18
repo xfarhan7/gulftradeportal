@@ -8,6 +8,26 @@
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="shared.css">
 <style>
+.mob-toggle{display:none;background:none;border:none;cursor:pointer;padding:6px;margin-left:8px;}
+.mob-drawer{position:fixed;top:0;right:-100%;width:80%;max-width:300px;height:100vh;background:var(--ink2);z-index:9999;transition:right .3s ease;padding:20px;overflow-y:auto;box-shadow:-4px 0 20px rgba(0,0,0,.3);}
+.mob-drawer.open{right:0;}
+.mob-drawer-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9998;opacity:0;visibility:hidden;transition:opacity .3s;}
+.mob-drawer-bg.open{opacity:1;visibility:visible;}
+.mob-drawer-close{position:absolute;top:16px;right:16px;background:none;border:none;color:#fff;font-size:1.6rem;cursor:pointer;}
+.mob-drawer-logo{font-family:'Cairo',sans-serif;font-size:1.1rem;font-weight:700;color:#fff;margin-bottom:24px;}
+.mob-drawer-logo span{color:var(--gold);}
+.mob-link{display:flex;align-items:center;gap:10px;padding:13px 0;font-size:.95rem;color:rgba(255,255,255,.75);text-decoration:none;border-bottom:1px solid rgba(255,255,255,.08);transition:color .15s;}
+.mob-link:hover{color:#fff;}
+.mob-link svg{opacity:.7;}
+.mob-drawer-cta{margin-top:20px;display:flex;flex-direction:column;gap:10px;}
+.mob-drawer-cta a{padding:12px;text-align:center;border-radius:5px;font-weight:700;font-size:.85rem;text-decoration:none;}
+@media(max-width:768px){.mob-toggle{display:flex !important;}}
+</style>
+<style>
+.fdot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:7px;vertical-align:1px;}
+.fbtn{display:inline-flex;align-items:center;}
+</style>
+<style>
 /* ── MEMBERSHIP GATING ──────────────────── */
 .gated{position:relative;overflow:hidden;}
 .gated.blurred .bc-title,.gated.blurred .bc-co,.gated.blurred .bc-seek{
@@ -106,6 +126,7 @@
     <a href="trade-board.html" class="nav-trigger" style="text-decoration:none;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg> Trade Board</a>
     <a href="directory.html" class="nav-trigger" style="text-decoration:none;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Directory</a>
     <a href="packages.html" class="nav-trigger" style="text-decoration:none;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> Packages</a>
+    <button class="mob-toggle" onclick="openMobMenu()"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
     <div class="nav-right">
       <a href="portal.html" class="btn-nav btn-ghost">Sign In</a>
       <a href="register.html" class="btn-nav btn-teal">Register</a>
@@ -124,9 +145,9 @@
   <div style="max-width:1200px;margin:0 auto;display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:space-between;">
     <div class="fbar" id="bfbar" style="margin-bottom:0;">
       <button class="fbtn on" onclick="setBF('all',this)">All</button>
-      <button class="fbtn" onclick="setBF('import',this)">🔵 Import Wanted</button>
-      <button class="fbtn" onclick="setBF('export',this)">🟢 Export Available</button>
-      <button class="fbtn" onclick="setBF('urgent',this)">🔴 Urgent</button>
+      <button class="fbtn" onclick="setBF('import',this)"><span class="fdot" style="background:#1A4FB5;"></span>Import Wanted</button>
+      <button class="fbtn" onclick="setBF('export',this)"><span class="fdot" style="background:#0A7369;"></span>Export Available</button>
+      <button class="fbtn" onclick="setBF('urgent',this)"><span class="fdot" style="background:#C0392B;"></span>Urgent</button>
     </div>
     <button class="bx bx-t" style="padding:9px 18px;font-size:.8rem;" onclick="openMo('mo-rfq')">+ Post Request</button>
   </div>
@@ -155,8 +176,8 @@
       </div>
       <div class="foot-col"><h4>For Buyers</h4><a href="#">Post Import Request</a><a href="trade-board.html">Browse Export Offers</a><a href="directory.html">Supplier Directory</a><a href="packages.html">Buyer Packages</a><a href="portal.html">Client Portal</a></div>
       <div class="foot-col"><h4>For Sellers</h4><a href="trade-board.html">Browse Buy Requests</a><a href="#">Post Export Offer</a><a href="register.html">Register as Supplier</a><a href="packages.html">Seller Packages</a><a href="packages.html">Advertise</a></div>
-      <div class="foot-col"><h4>GCC Markets</h4><a href="#">UAE</a><a href="#">Saudi Arabia</a><a href="#" >Kuwait</a><a href="#" >Qatar</a><a href="#" >Oman</a><a href="#" >Bahrain</a></div>
-      <div class="foot-col"><h4>Supplier Regions</h4><a href="#">🇪🇺 Europe</a><a href="#">🇺🇸 United States</a><a href="#">🌏 Asia</a><a href="#">🇨🇳 China</a><a href="#">🇮🇳 India</a><a href="#">🇲🇾 Malaysia</a><a href="#" >🇸🇬 Singapore</a></div>
+      <div class="foot-col"><h4>GCC Markets</h4><a href="trade-board.html?country=UAE">🇦🇪 UAE</a><a href="trade-board.html?country=Saudi+Arabia">🇸🇦 Saudi Arabia</a><a href="trade-board.html?country=Kuwait">🇰🇼 Kuwait</a><a href="trade-board.html?country=Qatar">🇶🇦 Qatar</a><a href="trade-board.html?country=Oman">🇴🇲 Oman</a><a href="trade-board.html?country=Bahrain">🇧🇭 Bahrain</a></div>
+      <div class="foot-col"><h4>Supplier Regions</h4><a href="directory.html?region=EU">🇪🇺 Europe</a><a href="directory.html?region=US">🇺🇸 United States</a><a href="directory.html?region=ASIA">🌏 Asia</a><a href="directory.html?region=ASIA">🇨🇳 China</a><a href="directory.html?region=ASIA">🇮🇳 India</a><a href="directory.html?region=ASIA">🇲🇾 Malaysia</a><a href="directory.html?region=ASIA">🇸🇬 Singapore</a><a href="directory.html?region=ASIA">🇮🇩 Indonesia</a><a href="directory.html?region=ASIA">🇹🇭 Thailand</a><a href="directory.html?region=ASIA">🇰🇷 South Korea</a><a href="directory.html?region=ASIA">🇯🇵 Japan</a><a href="directory.html?region=EU">🇳🇱 Netherlands</a><a href="directory.html?region=EU">🇩🇪 Germany</a></div>
       <div class="foot-col" style="grid-column:1/-1;">
   <h4>Company</h4>
   <div style="display:flex;flex-wrap:wrap;gap:6px 24px;">
@@ -346,6 +367,10 @@ const FEED=[
   {t:'export',title:'JAKIM Halal Coconut Oil — 50MT Malaysia',c:'Malaysia',time:'5h ago'},
 ];
 const BOARD=[
+  
+  {t:'import',title:'Genuine OEM Car Parts — Brake Pads, Filters, Belts',c:'UAE',qty:'Container load monthly',sec:'Auto Parts',seek:'EU or Japanese OEM auto parts supplier',desc:'Dubai-based auto parts distributor. Genuine OEM only — Bosch, Mann, Febi, Mahle. CIF Jebel Ali. Ongoing monthly orders.',posted:'1h ago',urg:true,co:'Gulf Auto Spares LLC'},
+  {t:'export',title:'European Auto Parts — Aftermarket & OEM',c:'Germany',qty:'Flexible MOQ',sec:'Auto Parts',seek:'GCC auto parts importers & workshops',desc:'German auto parts exporter. Bosch, ATE, Sachs, LuK. Full range for European & Asian vehicles. FOB Hamburg or CIF Gulf ports.',posted:'4h ago',urg:false,co:'Auto Teile Deutschland GmbH'},
+  {t:'import',title:'Tyres — Passenger & Commercial, All Sizes',c:'Saudi Arabia',qty:'2,000 units first order',sec:'Auto Parts',seek:'Asian or European tyre manufacturer',desc:'Riyadh tyre distributor seeking direct manufacturer. Passenger, SUV, light truck. SASO certification required.',posted:'Yesterday',urg:false,co:'Saudi Tyre Trading Co.'},
   {t:'import',title:'Nespresso Original Line Capsules — All Varieties',c:'UAE',qty:'50,000 sleeves/month',sec:'FMCG',seek:'EU wholesale distributor with origin documentation',desc:'Seeking verified wholesale supplier. EU origin docs required. CIF Dubai preferred. Ongoing monthly.',posted:'2h ago',urg:true,co:'Al Noor Trading Co.'},
   {t:'ad',title:'Dutch Food Export B.V. — Premium Dairy &amp; FMCG to GCC',c:'Netherlands',qty:'Min. 1MT per SKU',sec:'Food &amp; Beverages',seek:'UAE, Saudi Arabia, Kuwait distributors',desc:'Established Dutch FMCG exporter. HALAL certified dairy, coffee, packaged goods. 15 years GCC experience. Request our full catalogue.',posted:'Sponsored',urg:false,co:'Dutch Food Export BV'},
   {t:'import',title:'Halal Frozen Chicken — IQF Whole &amp; Cuts',c:'Saudi Arabia',qty:'50MT first order',sec:'Food &amp; Beverages',seek:'EU or US SFDA-approved Halal poultry supplier',desc:'SFDA-registered importer. Ongoing monthly requirement. CIF Jeddah or Dammam preferred.',posted:'5h ago',urg:true,co:'Riyadh General Trading'},
@@ -684,4 +709,9 @@ function removePhoto(idx) {
   <a href="register.html" class="btn-next" style="display:block;width:100%;text-align:center;margin-bottom:8px;text-decoration:none;">Register Free &rarr;</a>
   <a href="packages.html" style="display:block;font-size:.81rem;color:var(--teal);font-weight:600;text-decoration:none;">View paid plans &rarr;</a>
 </div></div>
+
+<script>
+function openMobMenu(){document.getElementById('mobDrawer').classList.add('open');document.getElementById('mobBg').classList.add('open');}
+function closeMobMenu(){document.getElementById('mobDrawer').classList.remove('open');document.getElementById('mobBg').classList.remove('open');}
+</script>
 </body></html>
