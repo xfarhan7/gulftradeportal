@@ -250,6 +250,8 @@ body{font-family:'Inter',sans-serif;background:#F0EDE8;color:var(--ink);font-siz
   .inv-parties{grid-template-columns:1fr;}
 }
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
 </head>
 <body>
 
@@ -370,7 +372,7 @@ body{font-family:'Inter',sans-serif;background:#F0EDE8;color:var(--ink);font-siz
       <div class="stats-row">
         <div class="stat-card">
           <div class="sc-label">Active Requests</div>
-          <div class="sc-val">4</div>
+          <div id="pp-active-count" class="sc-val">4</div>
           <div class="sc-sub"><span class="sc-up">+2</span> this month</div>
         </div>
         <div class="stat-card">
@@ -404,7 +406,7 @@ body{font-family:'Inter',sans-serif;background:#F0EDE8;color:var(--ink);font-siz
           <div class="card-body-0">
             <table class="tbl">
               <thead><tr><th>Product</th><th>Status</th><th>Responses</th></tr></thead>
-              <tbody>
+              <tbody id="pp-recent">
                 <tr><td><strong>Nespresso OL Capsules</strong><div style="font-size:.71rem;color:var(--mid);">50,000 sleeves/mo · UAE</div></td><td><span class="bdg bdg-grn">Live</span></td><td><span style="color:var(--teal);font-weight:700;">4</span></td></tr>
                 <tr><td><strong>Halal Frozen Chicken</strong><div style="font-size:.71rem;color:var(--mid);">50MT · Saudi Arabia</div></td><td><span class="bdg bdg-grn">Live</span></td><td><span style="color:var(--teal);font-weight:700;">2</span></td></tr>
                 <tr><td><strong>Steel Rebar Grade 60</strong><div style="font-size:.71rem;color:var(--mid);">500MT/mo · UAE</div></td><td><span class="bdg bdg-gold">Pending</span></td><td><span style="color:var(--mid);">0</span></td></tr>
@@ -939,15 +941,16 @@ body{font-family:'Inter',sans-serif;background:#F0EDE8;color:var(--ink);font-siz
   <button class="mo-x" onclick="closeMo('mo-post')">×</button>
   <h3 class="mo-h">Post a Trade Request</h3>
   <p class="mo-sub">Your request goes live on the Trade Board within 24 hours and is emailed to matching EU/US suppliers.</p>
-  <div class="fg"><label>Request Type</label><select><option>Import Request — I need to buy / import</option><option>Export Offer — I have goods to sell</option></select></div>
-  <div class="fg"><label>Product / Commodity</label><input type="text" placeholder="e.g. Nespresso capsules, Steel rebar, Olive oil…"></div>
+  <div class="fg"><label>Request Type</label><select id="pp-type"><option value="import">Import Request — I need to buy / import</option><option value="export">Export Offer — I have goods to sell</option></select></div>
+  <div class="fg"><label>Product / Commodity</label><input type="text" id="pp-product" placeholder="e.g. Nespresso capsules, Steel rebar, Olive oil…"></div>
   <div class="fr2" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-    <div class="fg"><label>Quantity</label><input type="text" placeholder="e.g. 10,000 units/month"></div>
-    <div class="fg"><label>Destination Country</label><select><option>UAE</option><option>Saudi Arabia</option><option>Kuwait</option><option>Qatar</option><option>Oman</option><option>Bahrain</option></select></div>
+    <div class="fg"><label>Quantity</label><input type="text" id="pp-qty" placeholder="e.g. 10,000 units/month"></div>
+    <div class="fg"><label>Destination Country</label><select id="pp-country"><option>UAE</option><option>Saudi Arabia</option><option>Kuwait</option><option>Qatar</option><option>Oman</option><option>Bahrain</option></select></div>
   </div>
-  <div class="fg"><label>Preferred Origin</label><select><option>Europe (EU)</option><option>Netherlands</option><option>Germany</option><option>United States</option><option>Any origin</option></select></div>
-  <div class="fg"><label>Specifications &amp; Requirements</label><textarea placeholder="Product specs, certifications needed, packaging, delivery terms, urgency…" style="font-family:Inter,sans-serif;font-size:.85rem;border:1.5px solid var(--mist);border-radius:4px;padding:9px 11px;width:100%;outline:none;resize:vertical;min-height:80px;"></textarea></div>
-  <button class="tb-btn tb-btn-gold" style="width:100%;" onclick="submitPost()">Submit Request →</button>
+  <div class="fg"><label>Category</label><select id="pp-category"><option>FMCG</option><option>Food &amp; Beverages</option><option>Coffee</option><option>Dairy</option><option>Construction Materials</option><option>Auto Parts</option><option>Electronics</option><option>Machinery</option><option>Other</option></select></div>
+  <div class="fg"><label>Preferred Origin</label><select id="pp-origin"><option>Europe (EU)</option><option>Netherlands</option><option>Germany</option><option>United States</option><option>Any origin</option></select></div>
+  <div class="fg"><label>Specifications &amp; Requirements</label><textarea id="pp-desc" placeholder="Product specs, certifications needed, packaging, delivery terms, urgency…" style="font-family:Inter,sans-serif;font-size:.85rem;border:1.5px solid var(--mist);border-radius:4px;padding:9px 11px;width:100%;outline:none;resize:vertical;min-height:80px;"></textarea></div>
+  <button class="tb-btn tb-btn-gold" id="pp-btn" style="width:100%;" onclick="submitPost()">Post to Trade Board →</button>
   <div id="post-succ" class="succ">✓ Submitted! Your request will appear on the Trade Board within 24 hours.</div>
 </div></div>
 
@@ -1059,10 +1062,123 @@ function submitKYB(){
   document.getElementById('kyb-succ').style.display='block';
   document.querySelector('[onclick="submitKYB()"]').disabled=true;
 }
-function submitPost(){
-  document.getElementById('post-succ').style.display='block';
-  setTimeout(()=>closeMo('mo-post'),2600);
+async function submitPost(){
+  const btn = document.getElementById('pp-btn');
+  const succ = document.getElementById('post-succ');
+
+  if(!supabaseClient){ alert('Connection not ready — please refresh and try again.'); return; }
+
+  // Must have an active session
+  const { data: { session } } = await supabaseClient.auth.getSession();
+  if(!session || !session.user){
+    alert('Your session has expired. Please sign in again, then post.');
+    window.location.href = 'register.html';
+    return;
+  }
+  const user = session.user;
+
+  const type = document.getElementById('pp-type').value;
+  const product = (document.getElementById('pp-product').value || '').trim();
+  const qty = (document.getElementById('pp-qty').value || '').trim();
+  const country = document.getElementById('pp-country').value;
+  const category = document.getElementById('pp-category').value;
+  const origin = document.getElementById('pp-origin').value;
+  const desc = (document.getElementById('pp-desc').value || '').trim();
+
+  if(!product){ alert('Please enter a product or commodity.'); return; }
+
+  btn.disabled = true; btn.textContent = 'Posting…';
+
+  try {
+    const company = await gtpCurrentCompany();
+    const title = (type==='import' ? 'Import wanted: ' : 'Export offer: ') + product;
+    const slug = gtpSlugify(product + '-' + country) + '-' + Date.now().toString(36);
+
+    const { error } = await supabaseClient.from('listings').insert({
+      company_id: company ? company.id : null,
+      user_id: user.id,
+      type: type === 'import' ? 'import_request' : 'export_offer',
+      title: title,
+      product: product,
+      category: category,
+      quantity: qty,
+      country: country,
+      origin: origin,
+      region: company ? company.region : null,
+      description: desc,
+      status: 'active',
+      slug: slug
+    });
+    if(error) throw error;
+
+    succ.style.display = 'block';
+    succ.textContent = '✓ Posted! Your trade request is now live on the Trade Board.';
+    btn.textContent = 'Posted ✓';
+    setTimeout(()=>{ closeMo('mo-post'); location.reload(); }, 1600);
+  } catch(err){
+    btn.disabled = false; btn.textContent = 'Post to Trade Board →';
+    console.error('Portal post error (full):', err);
+    let msg = err.message || err.hint || err.details || '';
+    if(!msg){ try { msg = JSON.stringify(err); } catch(e){ msg = String(err); } }
+    if((msg||'').toLowerCase().includes('row-level') || (msg||'').toLowerCase().includes('policy') || (msg||'').toLowerCase().includes('violates')){
+      alert('Post blocked — your login session is not active. Please sign in again and retry.');
+    } else {
+      alert('Could not post: ' + (msg || 'please try again.'));
+    }
+  }
 }
 </script>
+
+<script>
+// ── PORTAL: load the logged-in user's real data ─────────────
+async function loadPortal(){
+  if(!supabaseClient) return;
+  const { data: { session } } = await supabaseClient.auth.getSession();
+  if(!session || !session.user){
+    // Not logged in — send to sign in
+    window.location.href = 'register.html';
+    return;
+  }
+  const user = session.user;
+
+  // Load the user's company
+  let company = null;
+  try {
+    const { data } = await supabaseClient.from('companies').select('*').eq('user_id', user.id).single();
+    company = data;
+  } catch(e){}
+
+  // Load the user's listings
+  let listings = [];
+  try {
+    const { data } = await supabaseClient.from('listings').select('*').eq('user_id', user.id).order('created_at',{ascending:false});
+    listings = data || [];
+  } catch(e){}
+
+  // Update active requests count
+  const activeCount = listings.filter(l => l.status === 'active').length;
+  const ac = document.getElementById('pp-active-count');
+  if(ac) ac.textContent = activeCount;
+
+  // Populate recent requests table (only if user has real listings)
+  if(listings.length){
+    const tbody = document.getElementById('pp-recent');
+    if(tbody){
+      tbody.innerHTML = listings.slice(0,6).map(l => {
+        const sub = [l.quantity, l.country].filter(Boolean).join(' · ');
+        const statusBadge = l.status === 'active'
+          ? '<span class="bdg bdg-grn">Live</span>'
+          : '<span class="bdg">'+l.status+'</span>';
+        return '<tr><td><strong>'+(l.product||l.title||'Trade Request')+'</strong>'+
+               '<div style="font-size:.71rem;color:var(--mid);">'+sub+'</div></td>'+
+               '<td>'+statusBadge+'</td>'+
+               '<td><span style="color:var(--teal);font-weight:700;">0</span></td></tr>';
+      }).join('');
+    }
+  }
+}
+document.addEventListener('DOMContentLoaded', loadPortal);
+</script>
+
 </body>
 </html>
