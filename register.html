@@ -148,6 +148,7 @@
           <div class="fg"><label>Email</label><input type="email" id="r-email" placeholder="trade@gulftradeportal.com"></div>
           <div class="fg"><label>WhatsApp / Phone</label><input type="text" id="r-phone" placeholder="+31 6 00 000 000"></div>
         </div>
+        <div class="fg"><label>Create a Password</label><input type="password" id="r-pass" placeholder="Min. 8 characters — you'll use this to sign in" autocomplete="new-password"></div>
         <button class="btn-next" id="r-btn1" onclick="regStep2()" disabled>Continue to Packages →</button>
       </div>
       <div id="rs2" style="display:none;" class="rstep">
@@ -475,7 +476,9 @@ function regStep2(){
   const name=document.getElementById('r-name').value.trim();
   const country=document.getElementById('r-country').value;
   const email=document.getElementById('r-email').value.trim();
+  const pass=document.getElementById('r-pass').value||'';
   if(!name||!country||!email){alert('Please fill in company name, country, and email.');return;}
+  if(pass.length<8){alert('Please create a password of at least 8 characters — you\'ll use it to sign in.');return;}
   const isG=GCC.includes(country);
   const pkgs=PKGS[isG?'gcc':'eu'];
   document.getElementById('r-pkg-ctx').innerHTML='<strong>'+name+'</strong> · '+country+' — choose the plan that fits. Upgrade anytime.';
@@ -519,7 +522,7 @@ function goRS(n){
     d.className='rp-dot '+(i+1<n?'done':i+1===n?'cur':'pend');
   });
 }
-function submitReg(){
+async function submitReg(){
   const c1 = document.getElementById('reg-consent-1');
   const c2 = document.getElementById('reg-consent-2');
   const c3 = document.getElementById('reg-consent-3');
@@ -527,14 +530,88 @@ function submitReg(){
     alert('Please confirm all three statements to complete your registration. You must accept the Terms of Service and acknowledge that trades are conducted at your own risk.');
     return;
   }
-  const s=document.getElementById('r-succ');
-  const email=document.getElementById('r-email').value.trim();
-  const isPaid=selPkg&&selPkg.p!=='€0';
-  s.style.display='block';
-  s.textContent=isPaid
-    ?'✓ Registration received! Payment instructions will be sent to '+email+' within the hour.'
-    :'✓ Registered! Your free listing will be live within 24 hours. We will email '+email+' when published.';
-  document.querySelector('.btn-sub').disabled=true;
+
+  const name = document.getElementById('r-name').value.trim();
+  const country = document.getElementById('r-country').value;
+  const email = document.getElementById('r-email').value.trim();
+  const pass = document.getElementById('r-pass').value || '';
+  const phone = (document.getElementById('r-phone').value || '').trim();
+  const ctype = (document.getElementById('r-type') ? document.getElementById('r-type').value : '') || '';
+  const sector = (document.getElementById('r-sector') ? document.getElementById('r-sector').value : '') || '';
+  const products = (document.getElementById('r-products') ? document.getElementById('r-products').value : '') || '';
+  const s = document.getElementById('r-succ');
+  const btn = document.querySelector('.btn-sub');
+
+  if(!email || pass.length < 8){ alert('Please go back and enter a valid email and a password of at least 8 characters.'); return; }
+
+  // Determine region from country
+  const GCC_LIST = ['UAE','Saudi Arabia','Kuwait','Qatar','Oman','Bahrain'];
+  let region = 'EU';
+  if(GCC_LIST.includes(country)) region = 'GCC';
+  else if(country === 'United States' || country === 'USA') region = 'US';
+  else if(['China','India','Malaysia','Thailand','Indonesia','Singapore','South Korea','Japan','Vietnam'].includes(country)) region = 'ASIA';
+
+  const plan = (selPkg && selPkg.p !== '€0') ? 'pending_payment' : 'free';
+  const isPaid = selPkg && selPkg.p !== '€0';
+
+  btn.disabled = true; btn.textContent = 'Creating your account…';
+
+  try {
+    // 1. Create the Supabase auth user — sends confirmation email
+    const { data, error } = await supabaseClient.auth.signUp({
+      email: email,
+      password: pass,
+      options: {
+        emailRedirectTo: window.location.origin + '/portal.html',
+        data: { company_name: name, country: country }
+      }
+    });
+    if (error) throw error;
+
+    // 2. Save the full company profile
+    if (data.user) {
+      const slug = gtpSlugify(name) + '-' + data.user.id.substring(0,6);
+      const { error: cErr } = await supabaseClient.from('companies').insert({
+        user_id: data.user.id,
+        name: name,
+        contact_name: name,
+        email: email,
+        country: country,
+        region: region,
+        sector: sector,
+        company_type: ctype,
+        description: products ? ('Products / commodities: ' + products) : null,
+        whatsapp: phone,
+        plan: plan,
+        slug: slug
+      });
+      if (cErr) console.warn('Company insert:', cErr.message);
+
+      // 3. Record terms acceptance (legal audit trail)
+      await supabaseClient.from('terms_acceptances').insert({
+        user_id: data.user.id,
+        email: email,
+        terms_version: 'v1.0',
+        accepted_terms: true,
+        accepted_risk: true,
+        accepted_authority: true
+      });
+    }
+
+    // 4. Success message
+    s.style.display = 'block';
+    s.innerHTML = isPaid
+      ? '✓ Account created! <strong>Check your email</strong> to confirm your address. Payment instructions for your ' + selPkg.n + ' plan will follow once confirmed.'
+      : '✓ Account created! <strong>Check your email</strong> (and spam folder) to confirm your address, then sign in to access your portal.';
+    btn.textContent = 'Registered ✓';
+  } catch (err) {
+    btn.disabled = false; btn.textContent = 'Complete Registration →';
+    if (err.message && err.message.toLowerCase().includes('already')) {
+      alert('An account with this email already exists. Please sign in instead.');
+    } else {
+      alert('Registration error: ' + (err.message || 'Please try again.'));
+    }
+  }
 }
 </script>
 
