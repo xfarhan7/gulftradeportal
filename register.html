@@ -586,10 +586,25 @@ async function submitReg(){
     btn.textContent = 'Registered ✓';
   } catch (err) {
     btn.disabled = false; btn.textContent = 'Complete Registration →';
-    if (err.message && err.message.toLowerCase().includes('already')) {
-      alert('An account with this email already exists. Please sign in instead.');
+    console.error('Full signup error:', err);
+    // Extract a readable message from whatever shape the error is
+    let msg = '';
+    if (err) {
+      msg = err.message || err.error_description || err.msg || err.error || err.hint || err.details || '';
+      if (!msg && typeof err === 'object') {
+        try { msg = JSON.stringify(err); } catch(e) { msg = String(err); }
+      }
+      if (!msg) msg = String(err);
+    }
+    const low = (msg || '').toLowerCase();
+    if (low.includes('already') || low.includes('registered') || low.includes('exists')) {
+      alert('An account with this email already exists. Please sign in instead, or use a different email.');
+    } else if (low.includes('email') && (low.includes('send') || low.includes('smtp') || low.includes('confirmation'))) {
+      alert('The account could not be created because the confirmation email failed to send. This is an email-server setting in Supabase. (Technical detail: ' + msg + ')');
+    } else if (low.includes('password')) {
+      alert('Password issue: ' + msg);
     } else {
-      alert('Registration error: ' + (err.message || 'Please try again.'));
+      alert('Registration error: ' + (msg || 'Unknown error — please try a different email or refresh.'));
     }
   }
 }
