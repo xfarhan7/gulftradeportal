@@ -298,15 +298,26 @@ async function authLogin() {
     });
     if (error) throw error;
 
+    // Wait until the session is actually persisted before redirecting
+    // (this fixes the "have to log in twice" issue)
+    let confirmed = null;
+    for (let i = 0; i < 10; i++) {
+      const { data: { session } } = await supabaseClient.auth.getSession();
+      if (session && session.user) { confirmed = session; break; }
+      await new Promise(r => setTimeout(r, 150));
+    }
+
     // Cache plan for fast gating checks
-    const company = await gtpCurrentCompany();
-    if (company) localStorage.setItem('gtp_plan', company.plan || 'free');
+    try {
+      const company = await gtpCurrentCompany();
+      if (company) localStorage.setItem('gtp_plan', company.plan || 'free');
+    } catch(e){}
 
     s.style.display = 'block';
     s.style.background = 'rgba(55,184,158,.15)';
     s.style.color = '#0A7369';
     s.textContent = '✓ Signed in! Redirecting to your portal…';
-    setTimeout(() => { window.location.href = 'portal.html'; }, 900);
+    setTimeout(() => { window.location.href = 'portal.html'; }, 600);
   } catch (err) {
     if (err.message && err.message.toLowerCase().includes('confirm')) {
       alert('Please confirm your email first. Check your inbox for the confirmation link.');
