@@ -109,6 +109,8 @@
 }
 </style>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
 </head>
 <body>
   <div class="tb-right"></div>
@@ -357,19 +359,17 @@ document.addEventListener('click',e=>{if(e.target.classList.contains('mo'))e.tar
   <button class="mo-x" onclick="closeMo('mo-rfq')">×</button>
   <h3 class="mo-h">Post a Trade Request</h3>
   <p class="mo-sub">Buyers: post what you need to import. Sellers: post what you have to export.</p>
-  <div class="fg"><label>Request Type</label><select><option value="import">Import Request</option><option value="export">Export Offer</option></select></div>
-  <div class="fg"><label>Product</label><input type="text" placeholder="e.g. Nespresso capsules, Steel rebar…"></div>
+  <div class="fg"><label>Request Type</label><select id="rfq-type"><option value="import">Import Request</option><option value="export">Export Offer</option></select></div>
+  <div class="fg"><label>Product</label><input type="text" id="rfq-product" placeholder="e.g. Nespresso capsules, Steel rebar…"></div>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-    <div class="fg"><label>Quantity</label><input type="text" placeholder="e.g. 10,000 units/month"></div>
-    <div class="fg"><label>Country</label><select><option>UAE</option><option>Saudi Arabia</option><option>Kuwait</option><option>Qatar</option><option>Netherlands</option><option>Germany</option><option>China</option><option>India</option><option>Malaysia</option><option>Other</option></select></div>
+    <div class="fg"><label>Quantity</label><input type="text" id="rfq-qty" placeholder="e.g. 10,000 units/month"></div>
+    <div class="fg"><label>Country</label><select id="rfq-country"><option>UAE</option><option>Saudi Arabia</option><option>Kuwait</option><option>Qatar</option><option>Netherlands</option><option>Germany</option><option>China</option><option>India</option><option>Malaysia</option><option>Other</option></select></div>
   </div>
-  <div class="fg"><label>Details</label><textarea style="font-family:Inter,sans-serif;font-size:.85rem;border:1.5px solid var(--mist);border-radius:4px;padding:9px;width:100%;outline:none;resize:vertical;min-height:70px;" placeholder="Specs, certifications, delivery terms…"></textarea></div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-    <div class="fg"><label>Your Name</label><input type="text" placeholder="Name"></div>
-    <div class="fg"><label>WhatsApp / Email</label><input type="text" placeholder="+971 50 000 0000"></div>
-  </div>
-  <button class="btn-next" style="width:100%;margin-top:4px;" onclick="document.getElementById('rfq-succ').style.display='block';setTimeout(()=>closeMo('mo-rfq'),2500)">Submit Request →</button>
-  <div id="rfq-succ" class="succ">✓ Submitted! Your request appears on the Trade Board within 24 hours.</div>
+  <div class="fg"><label>Category</label><select id="rfq-category"><option>FMCG</option><option>Food &amp; Beverages</option><option>Coffee</option><option>Dairy</option><option>Construction Materials</option><option>Auto Parts</option><option>Electronics</option><option>Machinery</option><option>Other</option></select></div>
+  <div class="fg"><label>Details</label><textarea id="rfq-desc" style="font-family:Inter,sans-serif;font-size:.85rem;border:1.5px solid var(--mist);border-radius:4px;padding:9px;width:100%;outline:none;resize:vertical;min-height:70px;" placeholder="Specs, certifications, delivery terms…"></textarea></div>
+  <label style="display:flex;align-items:center;gap:8px;font-size:.82rem;color:var(--mid);margin-bottom:6px;cursor:pointer;"><input type="checkbox" id="rfq-urgent" style="width:15px;height:15px;accent-color:var(--red);"> Mark as urgent</label>
+  <button class="btn-next" id="rfq-btn" style="width:100%;margin-top:4px;" onclick="submitRFQ()">Post to Trade Board →</button>
+  <div id="rfq-succ" class="succ">✓ Posted! Your request is now live on the Trade Board.</div>
 </div></div>
 <div class="mo" id="mo-resp"><div class="mo-box">
   <button class="mo-x" onclick="closeMo('mo-resp')">×</button>
@@ -397,7 +397,7 @@ const FEED=[
   {t:'import',title:'Basmati Rice 1121 — 200MT bulk India origin',c:'UAE',time:'4h ago'},
   {t:'export',title:'JAKIM Halal Coconut Oil — 50MT Malaysia',c:'Malaysia',time:'5h ago'},
 ];
-const BOARD=[
+let BOARD=[
   
   {t:'import',title:'Genuine OEM Car Parts — Brake Pads, Filters, Belts',c:'UAE',qty:'Container load monthly',sec:'Auto Parts',seek:'EU or Japanese OEM auto parts supplier',desc:'Dubai-based auto parts distributor. Genuine OEM only — Bosch, Mann, Febi, Mahle. CIF Jebel Ali. Ongoing monthly orders.',posted:'1h ago',urg:true,co:'Gulf Auto Spares LLC'},
   {t:'export',title:'European Auto Parts — Aftermarket & OEM',c:'Germany',qty:'Flexible MOQ',sec:'Auto Parts',seek:'GCC auto parts importers & workshops',desc:'German auto parts exporter. Bosch, ATE, Sachs, LuK. Full range for European & Asian vehicles. FOB Hamburg or CIF Gulf ports.',posted:'4h ago',urg:false,co:'Auto Teile Deutschland GmbH'},
@@ -692,7 +692,113 @@ function setBF(f,btn){
   document.querySelectorAll('#bfbar .fbtn').forEach(b=>b.classList.remove('on'));
   btn.classList.add('on');renderBoard(f);
 }
-renderBoard('all');
+// Load real listings from Supabase, then render
+async function loadRealListings(){
+  try {
+    if(!supabaseClient){ renderBoard('all'); return; }
+    const { data, error } = await supabaseClient
+      .from('listings')
+      .select('*, companies(name, country, verified)')
+      .eq('status','active')
+      .order('created_at', { ascending: false })
+      .limit(50);
+    if(error){ console.warn('Listings load:', error.message); renderBoard('all'); return; }
+    if(data && data.length){
+      // Map DB rows to the board's card format
+      const realCards = data.map(r => ({
+        t: r.type === 'export_offer' ? 'export' : 'import',
+        title: r.title || 'Trade Request',
+        c: r.country || (r.companies && r.companies.country) || '',
+        qty: r.quantity || '',
+        sec: r.category || '',
+        seek: r.destination || r.origin || '',
+        desc: r.description || '',
+        posted: timeAgo(r.created_at),
+        urg: !!r.urgent,
+        co: (r.companies && r.companies.name) || 'Verified Member',
+        real: true
+      }));
+      // Real listings go on top of the sample data
+      BOARD = realCards.concat(BOARD);
+    }
+  } catch(e){ console.warn('Listings load error:', e); }
+  renderBoard('all');
+}
+
+// Friendly relative time
+function timeAgo(ts){
+  if(!ts) return 'recently';
+  const diff = (Date.now() - new Date(ts).getTime())/1000;
+  if(diff < 60) return 'just now';
+  if(diff < 3600) return Math.floor(diff/60)+'m ago';
+  if(diff < 86400) return Math.floor(diff/3600)+'h ago';
+  if(diff < 604800) return Math.floor(diff/86400)+'d ago';
+  return new Date(ts).toLocaleDateString();
+}
+
+loadRealListings();
+
+
+// ── POST A REAL LISTING TO SUPABASE ─────────────────────────
+async function submitRFQ(){
+  const btn = document.getElementById('rfq-btn');
+  const succ = document.getElementById('rfq-succ');
+
+  if(!supabaseClient){ alert('Connection not ready — please refresh and try again.'); return; }
+
+  // Must be logged in to post
+  const user = await gtpCurrentUser();
+  if(!user){
+    alert('Please sign in or register first to post a trade request. It is free to join.');
+    window.location.href = 'register.html';
+    return;
+  }
+
+  const type = document.getElementById('rfq-type').value;
+  const product = (document.getElementById('rfq-product').value || '').trim();
+  const qty = (document.getElementById('rfq-qty').value || '').trim();
+  const country = document.getElementById('rfq-country').value;
+  const category = document.getElementById('rfq-category').value;
+  const desc = (document.getElementById('rfq-desc').value || '').trim();
+  const urgent = document.getElementById('rfq-urgent').checked;
+
+  if(!product){ alert('Please enter a product.'); return; }
+
+  btn.disabled = true; btn.textContent = 'Posting…';
+
+  try {
+    // Get the user's company
+    const company = await gtpCurrentCompany();
+    const title = (type==='import' ? 'Import wanted: ' : 'Export offer: ') + product;
+    const slug = gtpSlugify(product + '-' + country) + '-' + Date.now().toString(36);
+
+    const { error } = await supabaseClient.from('listings').insert({
+      company_id: company ? company.id : null,
+      user_id: user.id,
+      type: type === 'import' ? 'import_request' : 'export_offer',
+      title: title,
+      product: product,
+      category: category,
+      quantity: qty,
+      country: country,
+      region: company ? company.region : null,
+      description: desc,
+      urgent: urgent,
+      status: 'active',
+      slug: slug
+    });
+    if(error) throw error;
+
+    succ.style.display = 'block';
+    btn.textContent = 'Posted ✓';
+    // Reload the board to show the new listing
+    setTimeout(() => { closeMo('mo-rfq'); location.reload(); }, 1500);
+  } catch(err){
+    btn.disabled = false; btn.textContent = 'Post to Trade Board →';
+    alert('Could not post: ' + (err.message || 'please try again.'));
+    console.error('Post listing error:', err);
+  }
+}
 
 // ── PHOTO UPLOAD ────────────────────────────────────────────
 const uploadedPhotos = [];
