@@ -111,6 +111,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
+<script src="gtp-auth.js"></script>
 </head>
 <body>
   <div class="tb-right"></div>
@@ -278,19 +279,39 @@ function switchAuth(tab) {
   document.getElementById('auth-tab-reg').style.background = tab==='reg'?'var(--teal)':'var(--white)';
   document.getElementById('auth-tab-reg').style.color = tab==='reg'?'#fff':'var(--mid)';
 }
-function authLogin() {
-  const e = document.getElementById('auth-email').value.trim();
-  if (!e) { alert('Please enter your email.'); return; }
+async function authLogin() {
+  const email = (document.getElementById('auth-email').value || '').trim();
+  const pass = document.getElementById('auth-pass').value || '';
   const s = document.getElementById('auth-succ');
-  s.style.display = 'block';
-  s.textContent = '✓ Signing you in… In production this connects to Supabase Auth. Redirecting to your dashboard.';
-  setTimeout(() => closeMo('mo-auth'), 2800);
+  if (!email || !pass) { alert('Please enter your email and password.'); return; }
+  if (!supabaseClient) { alert('Connection not ready — refresh and try again.'); return; }
+  try {
+    const { error } = await supabaseClient.auth.signInWithPassword({ email, password: pass });
+    if (error) throw error;
+    // Wait for session to persist
+    for (let i=0;i<10;i++){
+      const { data:{ session } } = await supabaseClient.auth.getSession();
+      if (session && session.user) break;
+      await new Promise(r=>setTimeout(r,150));
+    }
+    const company = await gtpCurrentCompany();
+    if (company) localStorage.setItem('gtp_plan', company.plan || 'free');
+    s.style.display = 'block';
+    s.style.background = 'rgba(55,184,158,.15)';
+    s.style.color = '#0A7369';
+    s.textContent = '✓ Signed in! Reloading the board…';
+    // Reload so the board sees the logged-in state and unlocks blurred content
+    setTimeout(() => { location.reload(); }, 700);
+  } catch (err) {
+    const m = (err.message||'').toLowerCase();
+    if (m.includes('confirm')) alert('Please confirm your email first — check your inbox.');
+    else if (m.includes('invalid')) alert('Invalid email or password.');
+    else alert('Sign-in error: ' + (err.message || 'try again.'));
+  }
 }
 function authReg() {
-  const s = document.getElementById('auth-succ');
-  s.style.display = 'block';
-  s.textContent = '✓ Account created! Check your email to verify, then access your client portal dashboard.';
-  setTimeout(() => closeMo('mo-auth'), 2800);
+  // Send to the full registration page (real signup with company details)
+  window.location.href = 'register.html';
 }
 
 // ── STRIPE PAYMENT LINKS ───────────────────────────────────
@@ -463,9 +484,12 @@ function init(){
   renderBoard('all');
   renderCos(COS);
 }
+let GTP_LOGGED_IN = false;  // set by checkAuthState() on load
 function renderBoard(filter){
   const userPlan = localStorage.getItem('gtp_plan') || 'free';
   const isPro    = ['pro','premium','market_entry'].includes(userPlan);
+  // Logged-in (even free) members get to see member content; only deeper/paid stays gated
+  const isMember = GTP_LOGGED_IN;
 
   const data = filter==='all' ? BOARD :
     filter==='urgent' ? BOARD.filter(x=>x.urg) :
@@ -487,8 +511,8 @@ function renderBoard(filter){
     const isEarly   = !isAd && regularCount <= 2;
 
     // What gets blurred
-    const blurAll     = !isPro && !isAd && !isEarly;  // blur whole card
-    const blurContact = !isPro && (isAd || isUrgent);  // blur only company+contact
+    const blurAll     = !isMember && !isAd && !isEarly;  // members (free+) see all regular cards
+    const blurContact = !isMember && (isAd || isUrgent);  // contact shown once logged in
 
     return `
     <div class="bc ${isAd?'ad':''}" style="cursor:pointer;position:relative;" 
@@ -539,7 +563,7 @@ function renderBoard(filter){
 
 function setBF(f,btn){
   document.querySelectorAll('#bfbar .fbtn').forEach(b=>b.classList.remove('on'));
-  btn.classList.add('on');renderBoard(f);
+  btn.classList.add('on');currentFilter=f;renderBoard(f);
 }
 function setReg(r,el){
   document.querySelectorAll('.rflag').forEach(e=>e.classList.remove('on'));
@@ -690,8 +714,33 @@ init();
 
 function setBF(f,btn){
   document.querySelectorAll('#bfbar .fbtn').forEach(b=>b.classList.remove('on'));
-  btn.classList.add('on');renderBoard(f);
+  btn.classList.add('on');currentFilter=f;renderBoard(f);
 }
+
+// Check real Supabase session and unlock member content if logged in
+async function checkAuthState(){
+  if(!supabaseClient) return;
+  try {
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    GTP_LOGGED_IN = !!(session && session.user);
+    if(GTP_LOGGED_IN){
+      const company = await gtpCurrentCompany();
+      if(company) localStorage.setItem('gtp_plan', company.plan || 'free');
+      // Update nav to show signed-in state
+      const signInLink = document.querySelector('.nav-right a[href="portal.html"]');
+      if(signInLink){ signInLink.textContent = 'My Portal'; }
+    }
+    renderBoard(currentFilter || 'all');
+  } catch(e){ console.warn('Auth check:', e); }
+}
+let currentFilter = 'all';
+
+// When shared auth determines login state, unblur & re-render
+window.onGtpAuthReady = function(loggedIn){
+  GTP_LOGGED_IN = loggedIn;
+  renderBoard(currentFilter || 'all');
+};
+
 // Load real listings from Supabase, then render
 async function loadRealListings(){
   try {
@@ -736,7 +785,7 @@ function timeAgo(ts){
   return new Date(ts).toLocaleDateString();
 }
 
-loadRealListings();
+loadRealListings().then(checkAuthState);
 
 
 // ── POST A REAL LISTING TO SUPABASE ─────────────────────────
