@@ -314,10 +314,16 @@ body.rtl .en-text{display:none;}
     },iv);
   }
 
-  // Check if user visited before — skip intro after first time
-  // Clear any old session flags and always play intro
-  sessionStorage.removeItem('gtp_intro_seen');
-  setTimeout(()=>runStep(0), 1950);
+  // Play intro only ONCE per browser session.
+  // After the first view, clicking the logo / returning goes straight to the homepage.
+  if(sessionStorage.getItem('gtp_intro_seen')){
+    // Already seen this session — remove the intro immediately, show homepage
+    const introEl = document.getElementById('gtp-intro');
+    if(introEl) introEl.remove();
+  } else {
+    sessionStorage.setItem('gtp_intro_seen','1');
+    setTimeout(()=>runStep(0), 1950);
+  }
 
   window.giLaunch = function(){
     const intro=document.getElementById('gtp-intro');
