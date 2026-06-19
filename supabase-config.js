@@ -9,11 +9,29 @@ const SUPABASE_URL = 'https://mynalmdopecpkgzbuyua.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_lT-nl3e1ERprLF5SJaqFYg_adibJsOB';
 
 // Initialise the Supabase client (loaded from CDN in each page)
+// Explicit options ensure the login session PERSISTS across all pages
+// (stored in localStorage under one shared key) and auto-refreshes.
 let supabaseClient;
 if (window.supabase && window.supabase.createClient) {
-  supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+    auth: {
+      persistSession: true,
+      autoRefreshToken: true,
+      detectSessionInUrl: true,
+      storageKey: 'gtp-auth',
+      storage: window.localStorage
+    }
+  });
 } else {
   console.warn('Supabase library not loaded yet — check the CDN script tag is included before supabase-config.js');
+}
+
+// ---- Helper: wait for the session to be ready (restored from storage) ----
+// Use this before any "are you logged in?" redirect to avoid false logouts.
+async function gtpReady() {
+  if (!supabaseClient) return null;
+  const { data: { session } } = await supabaseClient.auth.getSession();
+  return session;
 }
 
 // ---- Helper: get current logged-in user (or null) ----

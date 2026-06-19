@@ -698,7 +698,7 @@ async function loadRealListings(){
     if(!supabaseClient){ renderBoard('all'); return; }
     const { data, error } = await supabaseClient
       .from('listings')
-      .select('*, companies(name, country, verified)')
+      .select('*')
       .eq('status','active')
       .order('created_at', { ascending: false })
       .limit(50);
@@ -708,14 +708,14 @@ async function loadRealListings(){
       const realCards = data.map(r => ({
         t: r.type === 'export_offer' ? 'export' : 'import',
         title: r.title || 'Trade Request',
-        c: r.country || (r.companies && r.companies.country) || '',
+        c: r.country || '',
         qty: r.quantity || '',
         sec: r.category || '',
         seek: r.destination || r.origin || '',
         desc: r.description || '',
         posted: timeAgo(r.created_at),
         urg: !!r.urgent,
-        co: (r.companies && r.companies.name) || 'Verified Member',
+        co: 'Verified Member',
         real: true
       }));
       // Real listings go on top of the sample data

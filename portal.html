@@ -1132,10 +1132,21 @@ async function submitPost(){
 <script>
 // ── PORTAL: load the logged-in user's real data ─────────────
 async function loadPortal(){
-  if(!supabaseClient) return;
-  const { data: { session } } = await supabaseClient.auth.getSession();
+  if(!supabaseClient){ 
+    // library not ready yet — wait and retry once
+    setTimeout(loadPortal, 600); 
+    return; 
+  }
+  // Get session (Supabase restores it from localStorage automatically)
+  let { data: { session } } = await supabaseClient.auth.getSession();
+  // If not found on first try, wait briefly and retry (storage restore can lag)
+  if(!session){
+    await new Promise(r => setTimeout(r, 700));
+    const retry = await supabaseClient.auth.getSession();
+    session = retry.data.session;
+  }
   if(!session || !session.user){
-    // Not logged in — send to sign in
+    // Genuinely not logged in — send to sign in
     window.location.href = 'register.html';
     return;
   }
