@@ -746,13 +746,14 @@ async function submitRFQ(){
 
   if(!supabaseClient){ alert('Connection not ready — please refresh and try again.'); return; }
 
-  // Must be logged in to post
-  const user = await gtpCurrentUser();
-  if(!user){
-    alert('Please sign in or register first to post a trade request. It is free to join.');
+  // Must be logged in with an ACTIVE session to post
+  const { data: { session } } = await supabaseClient.auth.getSession();
+  if(!session || !session.user){
+    alert('You need to be signed in to post. Please sign in first (and confirm your email if you have not), then come back and post.');
     window.location.href = 'register.html';
     return;
   }
+  const user = session.user;
 
   const type = document.getElementById('rfq-type').value;
   const product = (document.getElementById('rfq-product').value || '').trim();
@@ -795,8 +796,17 @@ async function submitRFQ(){
     setTimeout(() => { closeMo('mo-rfq'); location.reload(); }, 1500);
   } catch(err){
     btn.disabled = false; btn.textContent = 'Post to Trade Board →';
-    alert('Could not post: ' + (err.message || 'please try again.'));
-    console.error('Post listing error:', err);
+    console.error('Post listing error (full):', err);
+    let msg = '';
+    if(err){
+      msg = err.message || err.error_description || err.hint || err.details || '';
+      if(!msg){ try { msg = JSON.stringify(err); } catch(e){ msg = String(err); } }
+    }
+    if((msg||'').toLowerCase().includes('row-level') || (msg||'').toLowerCase().includes('policy') || (msg||'').toLowerCase().includes('violates')){
+      alert('Your post was blocked because your login session is not active. Please sign in again (and make sure your email is confirmed), then post.');
+    } else {
+      alert('Could not post: ' + (msg || 'please try again.'));
+    }
   }
 }
 
