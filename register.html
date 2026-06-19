@@ -543,65 +543,45 @@ async function submitReg(){
   const btn = document.querySelector('.btn-sub');
 
   if(!email || pass.length < 8){ alert('Please go back and enter a valid email and a password of at least 8 characters.'); return; }
+  if(!supabaseClient){ alert('Connection not ready — please refresh the page and try again.'); return; }
 
-  // Determine region from country
+  // Region from country
   const GCC_LIST = ['UAE','Saudi Arabia','Kuwait','Qatar','Oman','Bahrain'];
   let region = 'EU';
   if(GCC_LIST.includes(country)) region = 'GCC';
   else if(country === 'United States' || country === 'USA') region = 'US';
   else if(['China','India','Malaysia','Thailand','Indonesia','Singapore','South Korea','Japan','Vietnam'].includes(country)) region = 'ASIA';
 
-  const plan = (selPkg && selPkg.p !== '€0') ? 'pending_payment' : 'free';
   const isPaid = selPkg && selPkg.p !== '€0';
 
   btn.disabled = true; btn.textContent = 'Creating your account…';
 
   try {
-    // 1. Create the Supabase auth user — sends confirmation email
+    // Sign up — pass ALL company data as metadata.
+    // A server-side trigger reads this and creates the company + terms rows
+    // (avoids the RLS timing issue when email confirmation is on).
     const { data, error } = await supabaseClient.auth.signUp({
       email: email,
       password: pass,
       options: {
         emailRedirectTo: window.location.origin + '/portal.html',
-        data: { company_name: name, country: country }
+        data: {
+          company_name: name,
+          contact_name: name,
+          country: country,
+          region: region,
+          sector: sector,
+          company_type: ctype,
+          products: products,
+          phone: phone
+        }
       }
     });
     if (error) throw error;
 
-    // 2. Save the full company profile
-    if (data.user) {
-      const slug = gtpSlugify(name) + '-' + data.user.id.substring(0,6);
-      const { error: cErr } = await supabaseClient.from('companies').insert({
-        user_id: data.user.id,
-        name: name,
-        contact_name: name,
-        email: email,
-        country: country,
-        region: region,
-        sector: sector,
-        company_type: ctype,
-        description: products ? ('Products / commodities: ' + products) : null,
-        whatsapp: phone,
-        plan: plan,
-        slug: slug
-      });
-      if (cErr) console.warn('Company insert:', cErr.message);
-
-      // 3. Record terms acceptance (legal audit trail)
-      await supabaseClient.from('terms_acceptances').insert({
-        user_id: data.user.id,
-        email: email,
-        terms_version: 'v1.0',
-        accepted_terms: true,
-        accepted_risk: true,
-        accepted_authority: true
-      });
-    }
-
-    // 4. Success message
     s.style.display = 'block';
     s.innerHTML = isPaid
-      ? '✓ Account created! <strong>Check your email</strong> to confirm your address. Payment instructions for your ' + selPkg.n + ' plan will follow once confirmed.'
+      ? '✓ Account created! <strong>Check your email</strong> (and spam folder) to confirm your address. Payment instructions for your ' + selPkg.n + ' plan will follow once confirmed.'
       : '✓ Account created! <strong>Check your email</strong> (and spam folder) to confirm your address, then sign in to access your portal.';
     btn.textContent = 'Registered ✓';
   } catch (err) {
