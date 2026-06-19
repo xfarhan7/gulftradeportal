@@ -42,6 +42,8 @@
 @media(max-width:768px){.mob-toggle{display:flex !important;}}
 </style>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
 </head>
 <body>
   <div class="tb-right"></div>
@@ -254,13 +256,13 @@
     </div>
     <div id="auth-register" style="display:none;">
       <div class="fr2" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-        <div class="fg"><label>First Name</label><input type="text" placeholder="Mohammed"></div>
-        <div class="fg"><label>Last Name</label><input type="text" placeholder="Al Rashid"></div>
+        <div class="fg"><label>First Name</label><input type="text" id="ar-first" placeholder="Mohammed"></div>
+        <div class="fg"><label>Last Name</label><input type="text" id="ar-last" placeholder="Al Rashid"></div>
       </div>
-      <div class="fg"><label>Email Address</label><input type="email" placeholder="trade@gulftradeportal.com"></div>
-      <div class="fg"><label>Password</label><input type="password" placeholder="Min. 8 characters"></div>
-      <div class="fg"><label>Company Name</label><input type="text" placeholder="Your company"></div>
-      <button class="btn-next" style="width:100%;margin-bottom:10px;" onclick="authReg()">Create Account &amp; Access Portal →</button>
+      <div class="fg"><label>Email Address</label><input type="email" id="ar-email" placeholder="trade@gulftradeportal.com"></div>
+      <div class="fg"><label>Password</label><input type="password" id="ar-pass" placeholder="Min. 8 characters"></div>
+      <div class="fg"><label>Company Name</label><input type="text" id="ar-company" placeholder="Your company"></div>
+      <button class="btn-next" id="ar-btn" style="width:100%;margin-bottom:10px;" onclick="authReg()">Create Account &amp; Access Portal →</button>
       <p style="font-size:.73rem;color:var(--mid);text-align:center;line-height:1.5;">By creating an account you agree to our <a href="#" style="color:var(--teal);">Terms of Service</a> and <a href="#" style="color:var(--teal);">Privacy Policy</a>.</p>
     </div>
     <div id="auth-succ" class="succ"></div>
@@ -281,19 +283,100 @@ function switchAuth(tab) {
   document.getElementById('auth-tab-reg').style.background = tab==='reg'?'var(--teal)':'var(--white)';
   document.getElementById('auth-tab-reg').style.color = tab==='reg'?'#fff':'var(--mid)';
 }
-function authLogin() {
-  const e = document.getElementById('auth-email').value.trim();
-  if (!e) { alert('Please enter your email.'); return; }
+async function authLogin() {
+  const email = (document.getElementById('auth-email').value || '').trim();
+  const pass = document.getElementById('auth-pass').value || '';
   const s = document.getElementById('auth-succ');
-  s.style.display = 'block';
-  s.textContent = '✓ Signing you in… In production this connects to Supabase Auth. Redirecting to your dashboard.';
-  setTimeout(() => closeMo('mo-auth'), 2800);
+
+  if (!email || !pass) { alert('Please enter your email and password.'); return; }
+
+  try {
+    const { data, error } = await supabaseClient.auth.signInWithPassword({
+      email: email,
+      password: pass
+    });
+    if (error) throw error;
+
+    // Cache plan for fast gating checks
+    const company = await gtpCurrentCompany();
+    if (company) localStorage.setItem('gtp_plan', company.plan || 'free');
+
+    s.style.display = 'block';
+    s.style.background = 'rgba(55,184,158,.15)';
+    s.style.color = '#0A7369';
+    s.textContent = '✓ Signed in! Redirecting to your portal…';
+    setTimeout(() => { window.location.href = 'portal.html'; }, 900);
+  } catch (err) {
+    if (err.message && err.message.toLowerCase().includes('confirm')) {
+      alert('Please confirm your email first. Check your inbox for the confirmation link.');
+    } else if (err.message && err.message.toLowerCase().includes('invalid')) {
+      alert('Invalid email or password. Please try again.');
+    } else {
+      alert('Sign-in error: ' + (err.message || 'Please try again.'));
+    }
+  }
 }
-function authReg() {
+async function authReg() {
+  const first = (document.getElementById('ar-first').value || '').trim();
+  const last = (document.getElementById('ar-last').value || '').trim();
+  const email = (document.getElementById('ar-email').value || '').trim();
+  const pass = document.getElementById('ar-pass').value || '';
+  const company = (document.getElementById('ar-company').value || '').trim();
   const s = document.getElementById('auth-succ');
-  s.style.display = 'block';
-  s.textContent = '✓ Account created! Check your email to verify, then access your client portal dashboard.';
-  setTimeout(() => closeMo('mo-auth'), 2800);
+  const btn = document.getElementById('ar-btn');
+
+  if (!email || !pass || !company) { alert('Please fill in email, password, and company name.'); return; }
+  if (pass.length < 8) { alert('Password must be at least 8 characters.'); return; }
+
+  btn.disabled = true; btn.textContent = 'Creating account…';
+
+  try {
+    // 1. Create the auth user (Supabase sends confirmation email)
+    const { data, error } = await supabaseClient.auth.signUp({
+      email: email,
+      password: pass,
+      options: {
+        emailRedirectTo: window.location.origin + '/portal.html',
+        data: { first_name: first, last_name: last, company_name: company }
+      }
+    });
+    if (error) throw error;
+
+    // 2. Create the company profile linked to this user
+    if (data.user) {
+      const slug = gtpSlugify(company) + '-' + data.user.id.substring(0,6);
+      await supabaseClient.from('companies').insert({
+        user_id: data.user.id,
+        name: company,
+        contact_name: (first + ' ' + last).trim(),
+        email: email,
+        plan: 'free',
+        slug: slug
+      });
+      // 3. Record terms acceptance (audit trail)
+      await supabaseClient.from('terms_acceptances').insert({
+        user_id: data.user.id,
+        email: email,
+        terms_version: 'v1.0',
+        accepted_terms: true,
+        accepted_risk: true,
+        accepted_authority: true
+      });
+    }
+
+    s.style.display = 'block';
+    s.style.background = 'rgba(55,184,158,.15)';
+    s.style.color = '#0A7369';
+    s.innerHTML = '✓ Account created! <strong>Check your email</strong> to confirm your address, then sign in to access your portal.';
+    btn.textContent = 'Account Created ✓';
+  } catch (err) {
+    btn.disabled = false; btn.textContent = 'Create Account & Access Portal →';
+    if (err.message && err.message.toLowerCase().includes('already')) {
+      alert('An account with this email already exists. Try signing in instead.');
+    } else {
+      alert('Sign-up error: ' + (err.message || 'Please try again.'));
+    }
+  }
 }
 
 // ── STRIPE PAYMENT LINKS ───────────────────────────────────
