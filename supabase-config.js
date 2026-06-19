@@ -17,9 +17,7 @@ if (window.supabase && window.supabase.createClient) {
     auth: {
       persistSession: true,
       autoRefreshToken: true,
-      detectSessionInUrl: true,
-      storageKey: 'gtp-auth',
-      storage: window.localStorage
+      detectSessionInUrl: true
     }
   });
 } else {
