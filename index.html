@@ -1043,12 +1043,12 @@ async function authLogin() {
   const pass = passEl ? passEl.value : '';
   const s = document.getElementById('auth-succ');
   if (!email || !pass) { alert('Please enter your email and password.'); return; }
-  if (!window.supabaseClient) { alert('Connection not ready — refresh and try again.'); return; }
+  const _sc = await gtpClient(); if (!_sc) { alert('Still connecting — please wait a moment and try again.'); return; }
   try {
-    const { error } = await supabaseClient.auth.signInWithPassword({ email, password: pass });
+    const { error } = await _sc.auth.signInWithPassword({ email, password: pass });
     if (error) throw error;
     for (let i=0;i<10;i++){
-      const { data:{ session } } = await supabaseClient.auth.getSession();
+      const { data:{ session } } = await _sc.auth.getSession();
       if (session && session.user) break;
       await new Promise(r=>setTimeout(r,150));
     }

@@ -1067,10 +1067,10 @@ async function submitPost(){
   const btn = document.getElementById('pp-btn');
   const succ = document.getElementById('post-succ');
 
-  if(!supabaseClient){ alert('Connection not ready — please refresh and try again.'); return; }
+  const _sc = await gtpClient(); if(!_sc){ alert('Still connecting — please wait a moment and try again.'); return; }
 
   // Must have an active session
-  const { data: { session } } = await supabaseClient.auth.getSession();
+  const { data: { session } } = await _sc.auth.getSession();
   if(!session || !session.user){
     alert('Your session has expired. Please sign in again, then post.');
     window.location.href = 'register.html';
@@ -1095,7 +1095,7 @@ async function submitPost(){
     const title = (type==='import' ? 'Import wanted: ' : 'Export offer: ') + product;
     const slug = gtpSlugify(product + '-' + country) + '-' + Date.now().toString(36);
 
-    const { error } = await supabaseClient.from('listings').insert({
+    const { error } = await _sc.from('listings').insert({
       company_id: company ? company.id : null,
       user_id: user.id,
       type: type === 'import' ? 'import_request' : 'export_offer',
@@ -1133,17 +1133,18 @@ async function submitPost(){
 <script>
 // ── PORTAL: load the logged-in user's real data ─────────────
 async function loadPortal(){
+  const _sc = await gtpClient(); if(!_sc){ return; }
   if(!supabaseClient){ 
     // library not ready yet — wait and retry once
     setTimeout(loadPortal, 600); 
     return; 
   }
   // Get session (Supabase restores it from localStorage automatically)
-  let { data: { session } } = await supabaseClient.auth.getSession();
+  let { data: { session } } = await _sc.auth.getSession();
   // If not found on first try, wait briefly and retry (storage restore can lag)
   if(!session){
     await new Promise(r => setTimeout(r, 700));
-    const retry = await supabaseClient.auth.getSession();
+    const retry = await _sc.auth.getSession();
     session = retry.data.session;
   }
   if(!session || !session.user){
@@ -1156,14 +1157,14 @@ async function loadPortal(){
   // Load the user's company
   let company = null;
   try {
-    const { data } = await supabaseClient.from('companies').select('*').eq('user_id', user.id).single();
+    const { data } = await _sc.from('companies').select('*').eq('user_id', user.id).single();
     company = data;
   } catch(e){}
 
   // Load the user's listings
   let listings = [];
   try {
-    const { data } = await supabaseClient.from('listings').select('*').eq('user_id', user.id).order('created_at',{ascending:false});
+    const { data } = await _sc.from('listings').select('*').eq('user_id', user.id).order('created_at',{ascending:false});
     listings = data || [];
   } catch(e){}
 

@@ -6,20 +6,20 @@
 
 // Wait for supabaseClient (from supabase-config.js) to be ready
 async function gtpAuthInit() {
-  if (!window.supabaseClient) {
-    // config not loaded yet — retry shortly
-    setTimeout(gtpAuthInit, 250);
+  const client = (typeof gtpClient === 'function') ? await gtpClient() : window.supabaseClient;
+  if (!client) {
+    // library still not ready — retry shortly
+    setTimeout(gtpAuthInit, 400);
     return;
   }
 
   let session = null;
   try {
-    const res = await supabaseClient.auth.getSession();
+    const res = await client.auth.getSession();
     session = res.data.session;
-    // If not found immediately, give storage a moment then retry once
     if (!session) {
       await new Promise(r => setTimeout(r, 400));
-      const res2 = await supabaseClient.auth.getSession();
+      const res2 = await client.auth.getSession();
       session = res2.data.session;
     }
   } catch (e) { /* ignore */ }
@@ -43,7 +43,7 @@ async function gtpAuthInit() {
   }
 
   // React to login/logout happening on this page
-  supabaseClient.auth.onAuthStateChange((event, sess) => {
+  client.auth.onAuthStateChange((event, sess) => {
     const nowIn = !!(sess && sess.user);
     window.GTP_LOGGED_IN = nowIn;
     gtpUpdateNav(nowIn);
@@ -71,7 +71,7 @@ function gtpUpdateNav(loggedIn) {
 
 // Universal sign-out (call from any "Sign Out" button)
 async function gtpDoSignOut() {
-  try { await supabaseClient.auth.signOut(); } catch (e) {}
+  try { const c = await gtpClient(); if(c) await c.auth.signOut(); } catch (e) {}
   localStorage.removeItem('gtp_plan');
   window.location.href = 'index.html';
 }

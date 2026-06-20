@@ -1,76 +1,72 @@
 // ============================================================
-// GULF TRADE PORTAL — Supabase Configuration
-// This connects your website to your Supabase database.
-// Safe to commit publicly: the publishable key is browser-safe,
-// and Row Level Security protects all data.
+// GULF TRADE PORTAL — Supabase Configuration (robust init)
 // ============================================================
 
 const SUPABASE_URL = 'https://mynalmdopecpkgzbuyua.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_lT-nl3e1ERprLF5SJaqFYg_adibJsOB';
 
-// Initialise the Supabase client (loaded from CDN in each page)
-// Explicit options ensure the login session PERSISTS across all pages
-// (stored in localStorage under one shared key) and auto-refreshes.
-let supabaseClient;
-if (window.supabase && window.supabase.createClient) {
-  supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
-    auth: {
-      persistSession: true,
-      autoRefreshToken: true,
-      detectSessionInUrl: true
-    }
-  });
-} else {
-  console.warn('Supabase library not loaded yet — check the CDN script tag is included before supabase-config.js');
+// Create the client. If the CDN library isn't ready yet, we retry until it is,
+// so supabaseClient is reliably available even on slow connections.
+let supabaseClient = null;
+
+function gtpCreateClient() {
+  if (window.supabase && window.supabase.createClient) {
+    supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+      auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
+    });
+    window.supabaseClient = supabaseClient;
+    return true;
+  }
+  return false;
 }
 
-// ---- Helper: wait for the session to be ready (restored from storage) ----
-// Use this before any "are you logged in?" redirect to avoid false logouts.
-async function gtpReady() {
-  if (!supabaseClient) return null;
-  const { data: { session } } = await supabaseClient.auth.getSession();
-  return session;
+// Try immediately; if not ready, poll briefly until the CDN script finishes.
+if (!gtpCreateClient()) {
+  let tries = 0;
+  const iv = setInterval(() => {
+    tries++;
+    if (gtpCreateClient() || tries > 50) clearInterval(iv); // up to ~10s
+  }, 200);
 }
 
-// ---- Helper: get current logged-in user (or null) ----
+// Returns the client once it's ready (awaitable). Use this before auth calls.
+async function gtpClient() {
+  for (let i = 0; i < 50; i++) {
+    if (supabaseClient) return supabaseClient;
+    if (gtpCreateClient()) return supabaseClient;
+    await new Promise(r => setTimeout(r, 200));
+  }
+  return supabaseClient; // may still be null if CDN truly failed
+}
+
+// ---- Helpers ----
 async function gtpCurrentUser() {
-  const { data: { user } } = await supabaseClient.auth.getUser();
+  const c = await gtpClient(); if (!c) return null;
+  const { data: { user } } = await c.auth.getUser();
   return user;
 }
-
-// ---- Helper: get current user's company profile (or null) ----
 async function gtpCurrentCompany() {
+  const c = await gtpClient(); if (!c) return null;
   const user = await gtpCurrentUser();
   if (!user) return null;
-  const { data, error } = await supabaseClient
-    .from('companies')
-    .select('*')
-    .eq('user_id', user.id)
-    .single();
+  const { data, error } = await c.from('companies').select('*').eq('user_id', user.id).single();
   if (error) return null;
   return data;
 }
-
-// ---- Helper: is the user logged in? ----
 async function gtpIsLoggedIn() {
   const user = await gtpCurrentUser();
   return !!user;
 }
-
-// ---- Helper: get the user's plan ('free' if none) ----
 async function gtpUserPlan() {
   const company = await gtpCurrentCompany();
   return company ? (company.plan || 'free') : null;
 }
-
-// ---- Helper: sign out ----
 async function gtpSignOut() {
-  await supabaseClient.auth.signOut();
+  const c = await gtpClient();
+  if (c) await c.auth.signOut();
   localStorage.removeItem('gtp_plan');
   window.location.href = 'index.html';
 }
-
-// ---- Helper: make a URL-safe slug from a name ----
 function gtpSlugify(text) {
   return (text || '').toLowerCase()
     .replace(/b&f/g, 'bf')
@@ -79,4 +75,9 @@ function gtpSlugify(text) {
     .replace(/-+/g, '-')
     .replace(/^-|-$/g, '')
     .substring(0, 60);
+}
+async function gtpReady() {
+  const c = await gtpClient(); if (!c) return null;
+  const { data: { session } } = await c.auth.getSession();
+  return session;
 }
