@@ -355,6 +355,36 @@ document.addEventListener('click',e=>{
     document.querySelectorAll('.nav-trigger').forEach(x=>x.classList.remove('open'));
   }
 });
+
+// Gated respond: logged-out users must register; free users limited to 1/day
+function gtpRespond(){
+  const loggedIn = window.GTP_LOGGED_IN || Object.keys(localStorage).some(k=>k.includes('-auth-token'));
+  if(!loggedIn){
+    // Not registered — send to register
+    alert('Please register (free) to respond to trade requests.');
+    window.location.href = 'register.html';
+    return;
+  }
+  // Logged in — check free-tier daily reply limit
+  const plan = (localStorage.getItem('gtp_plan') || 'free').toLowerCase();
+  const isPaid = ['pro','premium','market_entry','pro_importer','pro_exporter','corporate'].includes(plan);
+  if(!isPaid){
+    // Free tier: 1 reply per day
+    const today = new Date().toISOString().slice(0,10);
+    const key = 'gtp_replies_' + today;
+    const used = parseInt(localStorage.getItem(key) || '0', 10);
+    if(used >= 1){
+      if(confirm('Free accounts can respond to 1 lead per day. Upgrade to Pro for unlimited responses. View packages now?')){
+        window.location.href = 'packages.html';
+      }
+      return;
+    }
+    localStorage.setItem(key, String(used + 1));
+  }
+  // Allowed — open the respond modal
+  openMo('mo-resp');
+}
+
 function openMo(id){const el=document.getElementById(id);if(el)el.classList.add('open');}
 function closeMo(id){const el=document.getElementById(id);if(el)el.classList.remove('open');}
 document.addEventListener('click',e=>{if(e.target.classList.contains('mo'))e.target.classList.remove('open');});
@@ -559,7 +589,7 @@ function setReg(r,el){
     <div class="bc ${c.t==='ad'?'ad':''}">
       <div class="bc-hd"><div class="bc-badges">${c.t==='ad'?'<span class="bdg b-a">⭐ Sponsored</span>':''}${c.t==='import'?'<span class="bdg b-i">Import Wanted</span>':''}${c.t==='export'?'<span class="bdg b-e">Export Available</span>':''}${c.urg?'<span class="bdg b-u">Urgent</span>':''}</div><span class="bc-time">${c.posted}</span></div>
       <div class="bc-body"><div class="bc-title">${c.title}</div><div class="bc-meta"><span>📍 ${c.c}</span><span>📦 ${c.qty}</span></div><div class="bc-seek"><strong>Seeking</strong>${c.seek}</div><div class="bc-desc">${c.desc}</div></div>
-      <div class="bc-ft"><span class="bc-co"><strong>${c.co}</strong></span><button class="bx bx-t" onclick="openMo('mo-resp')">Respond</button></div>
+      <div class="bc-ft"><span class="bc-co"><strong>${c.co}</strong></span><button class="bx bx-t" onclick="gtpRespond()">Respond</button></div>
     </div>`).join('');
 }
 function renderCos(data){

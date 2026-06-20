@@ -411,11 +411,17 @@ function slugify(name){
 
 function renderCos(data){
   const g=document.getElementById('coGrid'),nr=document.getElementById('noRes');
+  if(!g||!nr) return;
   if(!data.length){g.innerHTML='';nr.style.display='block';return;}
   nr.style.display='none';
   const rb={GCC:'rt-g',EU:'rt-e',US:'rt-u',ASIA:'rt-as'};
   const rl={GCC:'🌍 GCC',EU:'🇪🇺 Europe',US:'🇺🇸 USA',ASIA:'🌏 Asia'};
-  g.innerHTML=data.map(c=>`
+  // Logged-in members see company names & contact. Logged-out visitors see
+  // only the description (to entice registration) with name/contact locked.
+  const loggedIn = window.GTP_LOGGED_IN || Object.keys(localStorage).some(k=>k.includes('-auth-token'));
+  g.innerHTML=data.map(c=>{
+    if(loggedIn){
+      return `
     <div class="co-card" style="cursor:pointer;" onclick="window.location.href='company.html?id='+slugify(c.n)">
       <div class="co-hd"><div class="co-av">${c.n[0]}</div><span class="rtag ${rb[c.r]||'rt-g'}">${rl[c.r]||c.r}</span></div>
       <div class="co-name">${c.n}</div>
@@ -424,8 +430,34 @@ function renderCos(data){
       <p class="co-desc">${c.d}</p>
       <div class="co-tags">${c.tags.map(t=>`<span class="co-tag">${t}</span>`).join('')}</div>
       <div class="co-ft"><a href="company.html?id=${slugify(c.n)}" class="bx bx-t" style="text-decoration:none;text-align:center;" onclick="event.stopPropagation()">View Profile</a><button class="bx bx-o" onclick="event.stopPropagation()">Contact</button></div>
-    </div>`).join('');
+    </div>`;
+    } else {
+      // Logged OUT: blur the name, hide sector/country specifics, lock buttons
+      return `
+    <div class="co-card">
+      <div class="co-hd"><div class="co-av" style="filter:blur(5px);">${c.n[0]}</div><span class="rtag ${rb[c.r]||'rt-g'}">${rl[c.r]||c.r}</span></div>
+      <div class="co-name" style="filter:blur(6px);user-select:none;pointer-events:none;">${c.n}</div>
+      <div class="co-sub" style="filter:blur(4px);user-select:none;">${c.s} · ${c.c}</div>
+      ${c.v?'<div class="co-ver">Verified listing</div>':''}
+      <p class="co-desc">${c.d}</p>
+      <div class="co-tags">${c.tags.map(t=>`<span class="co-tag">${t}</span>`).join('')}</div>
+      <div class="co-ft" style="display:flex;gap:8px;align-items:center;">
+        <span style="font-size:.78rem;color:var(--mid,#6b6457);">🔒 Register to view company</span>
+        <a href="register.html" class="bx bx-t" style="text-decoration:none;text-align:center;margin-left:auto;">Register Free</a>
+      </div>
+    </div>`;
+    }
+  }).join('');
 }
+
+// Re-render directory when auth state is determined (locks/unlocks company names)
+window.onGtpAuthReady = function(loggedIn){
+  if(typeof renderCos === 'function' && typeof COS !== 'undefined'){
+    try { renderCos(COS); } catch(e){}
+  }
+  if(typeof filterDir === 'function'){ try { filterDir(); } catch(e){} }
+};
+
 function filterDir(){
   const q=document.getElementById('dsearch').value.toLowerCase();
   const r=document.getElementById('dreg').value;
