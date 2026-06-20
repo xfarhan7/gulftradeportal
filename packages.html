@@ -100,54 +100,15 @@
 <nav>
   <div class="nav-inner">
     <a href="index.html" class="nav-logo">Gulf <span>Trade</span> Portal</a>
-    <div class="nav-item">
-      <button class="nav-trigger" onclick="tog('db',this)">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
-        Buyers <svg width="9" height="5" fill="none" viewBox="0 0 10 6" style="margin-left:2px;"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-      </button>
-      <div class="nav-drop" id="db">
-        <div class="drop-hd">For GCC Buyers — Post what you need</div>
-        <a class="drop-link" href="trade-board.html"><span class="dl-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span><span><span class="dl-title">Trade Board</span><span class="dl-desc">128 live import requests and export offers</span></span></a>
-        <a class="drop-link" href="directory.html"><span class="dl-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></span><span><span class="dl-title">Supplier Directory</span><span class="dl-desc">428 verified EU, US & Asia suppliers</span></span></a>
-        <a class="drop-link" href="register.html"><span class="dl-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span><span class="dl-title">Register as Buyer</span><span class="dl-desc">Free GCC company listing</span></span></a>
-      </div>
-    </div>
-    <div class="nav-item">
-      <button class="nav-trigger" onclick="tog('ds',this)">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
-        Sellers <svg width="9" height="5" fill="none" viewBox="0 0 10 6" style="margin-left:2px;"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-      </button>
-      <div class="nav-drop" id="ds">
-        <div class="drop-hd">For EU / US / Asia Suppliers</div>
-        <a class="drop-link" href="trade-board.html"><span class="dl-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span><span><span class="dl-title">Browse Buy Requests</span><span class="dl-desc">Live import demand from GCC buyers</span></span></a>
-        <a class="drop-link" href="register.html"><span class="dl-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span><span class="dl-title">Register as Supplier</span><span class="dl-desc">Get listed in the GCC supplier directory</span></span></a>
-      </div>
-    </div>
-    <a href="trade-board.html" class="nav-trigger" style="text-decoration:none;">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-      Trade Board
-    </a>
-    <a href="directory.html" class="nav-trigger" style="text-decoration:none;">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
-      Directory
-    </a>
-    <a href="logistics.html" class="nav-trigger" style="text-decoration:none;">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
-      Logistics
-    </a>
-    <a href="packages.html" class="nav-trigger" style="text-decoration:none;color:#fff;border-bottom:2px solid var(--gold);margin-bottom:-2px;">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-      Packages
-    </a>
-    <a href="features.html" class="nav-trigger" style="text-decoration:none;">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-      Features
-    </a>
+    <a href="trade-board.html" class="nav-trigger" style="text-decoration:none;">Trade Board</a>
+    <a href="directory.html" class="nav-trigger" style="text-decoration:none;">Directory</a>
+    <a href="logistics.html" class="nav-trigger" style="text-decoration:none;">Logistics</a>
+    <a href="packages.html" class="nav-trigger" style="text-decoration:none;color:#fff;border-bottom:2px solid var(--gold);margin-bottom:-2px;">Packages</a>
+    <a href="features.html" class="nav-trigger" style="text-decoration:none;">Features</a>
     <button class="mob-toggle" onclick="openMobMenu()"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
     <div class="nav-right">
       <a href="portal.html" class="btn-nav btn-ghost">Sign In</a>
       <a href="register.html" class="btn-nav btn-teal">Register Free</a>
-      <a href="register.html" class="btn-nav btn-gold">+ Post Request</a>
     </div>
   </div>
 </nav>
