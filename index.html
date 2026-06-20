@@ -259,6 +259,22 @@ body.rtl .en-text{display:none;}
 </div>
 
 <script>
+// Convert hex or rgb color to rgba with given alpha (safe)
+function gtpHexToRgba(col, a){
+  if(!col) return 'rgba(200,146,42,'+a+')';
+  col = String(col).trim();
+  if(col.charAt(0)==='#'){
+    let h = col.slice(1);
+    if(h.length===3) h = h.split('').map(x=>x+x).join('');
+    const r=parseInt(h.slice(0,2),16), g=parseInt(h.slice(2,4),16), b=parseInt(h.slice(4,6),16);
+    return 'rgba('+r+','+g+','+b+','+a+')';
+  }
+  if(col.indexOf('rgb')===0){
+    return col.replace('rgb(','rgba(').replace(')',','+a+')').replace('rgba(','rgba(').replace(/,([\d.]+)\)$/, ','+a+')');
+  }
+  return col;
+}
+
 (function(){
   // Market lines
   const mc = document.getElementById('giMl');
@@ -569,7 +585,7 @@ body.rtl .en-text{display:none;}
 
         /* Glow halo */
         const glow=ctx.createRadialGradient(p2.x,p2.y,0,p2.x,p2.y,pt.r*3.5);
-        glow.addColorStop(0,pt.color.replace(')',',0.35)').replace('rgb','rgba').replace('#','rgba(').replace('C8922A)','200,146,42,0.35)').replace('4A90D9)','74,144,217,0.35)').replace('C0392B)','192,57,43,0.35)').replace('E65100)','230,81,0,0.35)'));
+        glow.addColorStop(0,gtpHexToRgba(pt.color, 0.35));
         glow.addColorStop(1,'rgba(0,0,0,0)');
         ctx.beginPath(); ctx.arc(p2.x,p2.y,pt.r*3.5,0,Math.PI*2);
         ctx.fillStyle=glow; ctx.globalAlpha=depthFade; ctx.fill(); ctx.globalAlpha=1;

@@ -449,7 +449,10 @@ const PKGS={
 let selPkg=null;
 
 function init(){
-  document.getElementById('liveFeed').innerHTML=FEED.map(f=>`
+  // Guard: liveFeed sidebar no longer exists on this page
+  const lf = document.getElementById('liveFeed');
+  if(lf){
+    lf.innerHTML=FEED.map(f=>`
     <div class="fi">
       <div class="fi-r1">
         <span class="fitag ${f.t==='import'?'ft-i':f.t==='export'?'ft-e':'ft-a'}">${f.t==='import'?'Import':f.t==='export'?'Export':'Ad'}</span>
@@ -458,8 +461,9 @@ function init(){
       <div class="fi-title">${f.title}</div>
       <div class="fi-co">📍 ${f.c}</div>
     </div>`).join('');
-  renderBoard('all');
-  renderCos(COS);
+  }
+  try { renderBoard('all'); } catch(e){ console.warn('renderBoard:', e); }
+  try { if(typeof renderCos==='function' && typeof COS!=='undefined') renderCos(COS); } catch(e){ console.warn('renderCos:', e); }
 }
 function renderBoard(filter){
   const userPlan = localStorage.getItem('gtp_plan') || 'free';

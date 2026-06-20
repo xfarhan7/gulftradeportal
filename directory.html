@@ -342,7 +342,7 @@ const PKGS={
 let selPkg=null;
 
 function init(){
-  document.getElementById('liveFeed').innerHTML=FEED.map(f=>`
+  const lf=document.getElementById('liveFeed'); if(lf) lf.innerHTML=FEED.map(f=>`
     <div class="fi">
       <div class="fi-r1">
         <span class="fitag ${f.t==='import'?'ft-i':f.t==='export'?'ft-e':'ft-a'}">${f.t==='import'?'Import':f.t==='export'?'Export':'Ad'}</span>
@@ -356,7 +356,7 @@ function init(){
 }
 function renderBoard(filter){
   const data=filter==='all'?BOARD:filter==='urgent'?BOARD.filter(c=>c.urg):BOARD.filter(c=>c.t===filter||c.t==='ad');
-  document.getElementById('boardGrid').innerHTML=data.map(c=>`
+  (document.getElementById('boardGrid')||{}).innerHTML=data.map(c=>`
     <div class="bc ${c.t==='ad'?'ad':''}" onclick="${c.t!=='ad'?"openMo('mo-resp')":''}">
       <div class="bc-hd">
         <div class="bc-badges">
@@ -387,7 +387,7 @@ function setReg(r,el){
   document.querySelectorAll('.rflag').forEach(e=>e.classList.remove('on'));
   el.classList.add('on');
   const data=r==='all'?BOARD:BOARD.filter(c=>c.c===r||c.t==='ad');
-  document.getElementById('boardGrid').innerHTML=data.map(c=>`
+  (document.getElementById('boardGrid')||{}).innerHTML=data.map(c=>`
     <div class="bc ${c.t==='ad'?'ad':''}">
       <div class="bc-hd"><div class="bc-badges">${c.t==='ad'?'<span class="bdg b-a">⭐ Sponsored</span>':''}${c.t==='import'?'<span class="bdg b-i">Import Wanted</span>':''}${c.t==='export'?'<span class="bdg b-e">Export Available</span>':''}${c.urg?'<span class="bdg b-u">Urgent</span>':''}</div><span class="bc-time">${c.posted}</span></div>
       <div class="bc-body"><div class="bc-title">${c.title}</div><div class="bc-meta"><span>📍 ${c.c}</span><span>📦 ${c.qty}</span></div><div class="bc-seek"><strong>Seeking</strong>${c.seek}</div><div class="bc-desc">${c.desc}</div></div>
@@ -480,8 +480,8 @@ function regStep2(){
   if(!name||!country||!email){alert('Please fill in company name, country, and email.');return;}
   const isG=GCC.includes(country);
   const isAsia=['China','India','Malaysia','Singapore','Indonesia','Thailand','South Korea','Japan','Pakistan','Bangladesh','Vietnam','Philippines','Sri Lanka','Australia','New Zealand'].includes(country); const pkgs=PKGS[isG?'gcc':'eu'];
-  document.getElementById('r-pkg-ctx').innerHTML='<strong>'+name+'</strong> · '+country+(isAsia?' <span style="background:rgba(230,100,0,.1);color:#E65100;font-size:.7rem;font-weight:700;padding:2px 7px;border-radius:10px;">🌏 Asia Supplier</span>':'')+' — choose the plan that fits your trade activity. Upgrade anytime.';
-  document.getElementById('r-pkg-grid').innerHTML=pkgs.map(p=>`
+  (document.getElementById('r-pkg-ctx')||{}).innerHTML='<strong>'+name+'</strong> · '+country+(isAsia?' <span style="background:rgba(230,100,0,.1);color:#E65100;font-size:.7rem;font-weight:700;padding:2px 7px;border-radius:10px;">🌏 Asia Supplier</span>':'')+' — choose the plan that fits your trade activity. Upgrade anytime.';
+  (document.getElementById('r-pkg-grid')||{}).innerHTML=pkgs.map(p=>`
     <div class="psel ${p.pop?'pop-sel':''}" id="psel-${p.id}" onclick="pickPkg('${p.id}','${isG?'gcc':'eu'}')">
       ${p.pop?'<div class="psel-pop">Popular</div>':''}
       <div class="psel-name">${p.n}</div>
@@ -501,7 +501,7 @@ function pickPkg(id,region){
   const sector=document.getElementById('r-sector').value||'—';
   const products=document.getElementById('r-products').value.trim()||'—';
   const email=document.getElementById('r-email').value.trim();
-  document.getElementById('r-conf').innerHTML=`<h4>Registration Summary</h4>
+  (document.getElementById('r-conf')||{}).innerHTML=`<h4>Registration Summary</h4>
     <div class="cr"><span class="cr-l">Company</span><span class="cr-v">${name}</span></div>
     <div class="cr"><span class="cr-l">Country</span><span class="cr-v">${country}</span></div>
     <div class="cr"><span class="cr-l">Type</span><span class="cr-v">${type}</span></div>
