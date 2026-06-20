@@ -1134,19 +1134,32 @@ async function submitPost(){
 // ── PORTAL: load the logged-in user's real data ─────────────
 async function loadPortal(){
   const _sc = await gtpClient(); if(!_sc){ setTimeout(loadPortal, 500); return; }
-  // Get session — retry several times because storage restore can lag on load.
-  // This prevents wrongly bouncing a logged-in user to the sign-in page.
+
+  // Check if an auth token exists in storage. If it does, the user IS logged in —
+  // we must NOT bounce them to sign-in just because getSession is briefly slow.
+  const hasToken = Object.keys(localStorage).some(k => k.includes('-auth-token'));
+
+  // Get session — retry; if a token exists we retry longer and never bounce.
   let session = null;
-  for(let i=0; i<8; i++){
+  const maxTries = hasToken ? 25 : 6;   // ~7.5s if a token is present
+  for(let i=0; i<maxTries; i++){
     const res = await _sc.auth.getSession();
     session = res.data.session;
     if(session && session.user) break;
     await new Promise(r => setTimeout(r, 300));
   }
+
   if(!session || !session.user){
-    // Genuinely not logged in after retries — send to sign in
-    window.location.href = 'register.html';
-    return;
+    if(hasToken){
+      // Token exists but session still not resolved — refresh once,
+      // rather than bouncing the logged-in user to sign-in.
+      try { const r = await _sc.auth.refreshSession(); session = r.data.session; } catch(e){}
+      if(!session || !session.user){ location.reload(); return; }
+    } else {
+      // No token at all — genuinely logged out
+      window.location.href = 'register.html';
+      return;
+    }
   }
   const user = session.user;
 
