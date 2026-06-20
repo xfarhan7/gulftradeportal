@@ -249,6 +249,9 @@ body{font-family:'Inter',sans-serif;background:#F0EDE8;color:var(--ink);font-siz
   .stats-row{grid-template-columns:1fr 1fr;}
   .inv-parties{grid-template-columns:1fr;}
 }
+
+.tb-btn-signout{background:transparent;border:1.5px solid #d9534f;color:#d9534f;}
+.tb-btn-signout:hover{background:#d9534f;color:#fff;}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
@@ -349,6 +352,10 @@ body{font-family:'Inter',sans-serif;background:#F0EDE8;color:var(--ink);font-siz
       <button class="tb-btn tb-btn-gold" onclick="openMo('mo-post')">
         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="margin-right:4px;vertical-align:-1px;"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
         Post Request
+      </button>
+      <button class="tb-btn tb-btn-signout" onclick="gtpDoSignOut()" title="Sign out of your account">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:5px;vertical-align:-2px;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Sign Out
       </button>
     </div>
   </header>
