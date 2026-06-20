@@ -331,6 +331,12 @@ function showStripeInfo() {
 document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('a[href="portal.html"]').forEach(a => {
     a.addEventListener('click', e => {
+      // If logged in, let the link go straight to the portal.
+      // Only show the sign-in modal when NOT logged in.
+      const hasToken = Object.keys(localStorage).some(k => k.includes('-auth-token'));
+      if (window.GTP_LOGGED_IN || hasToken) {
+        return; // allow normal navigation to portal.html
+      }
       e.preventDefault();
       openMo('mo-auth');
     });
