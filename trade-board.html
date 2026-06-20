@@ -270,6 +270,10 @@
 </div>
 
 <script>
+// Global auth + filter state (must be defined before any render)
+window.GTP_LOGGED_IN = false;
+window.currentFilter = "all";
+
 // ── AUTH ───────────────────────────────────────────────────
 function switchAuth(tab) {
   document.getElementById('auth-login').style.display = tab==='login'?'block':'none';
@@ -484,12 +488,11 @@ function init(){
   renderBoard('all');
   renderCos(COS);
 }
-let GTP_LOGGED_IN = false;  // set by checkAuthState() on load
 function renderBoard(filter){
   const userPlan = localStorage.getItem('gtp_plan') || 'free';
   const isPro    = ['pro','premium','market_entry'].includes(userPlan);
   // Logged-in (even free) members get to see member content; only deeper/paid stays gated
-  const isMember = GTP_LOGGED_IN;
+  const isMember = window.GTP_LOGGED_IN;
 
   const data = filter==='all' ? BOARD :
     filter==='urgent' ? BOARD.filter(x=>x.urg) :
@@ -563,7 +566,7 @@ function renderBoard(filter){
 
 function setBF(f,btn){
   document.querySelectorAll('#bfbar .fbtn').forEach(b=>b.classList.remove('on'));
-  btn.classList.add('on');currentFilter=f;renderBoard(f);
+  btn.classList.add('on');window.currentFilter=f;renderBoard(f);
 }
 function setReg(r,el){
   document.querySelectorAll('.rflag').forEach(e=>e.classList.remove('on'));
@@ -714,7 +717,7 @@ init();
 
 function setBF(f,btn){
   document.querySelectorAll('#bfbar .fbtn').forEach(b=>b.classList.remove('on'));
-  btn.classList.add('on');currentFilter=f;renderBoard(f);
+  btn.classList.add('on');window.currentFilter=f;renderBoard(f);
 }
 
 // Check real Supabase session and unlock member content if logged in
@@ -730,15 +733,14 @@ async function checkAuthState(){
       const signInLink = document.querySelector('.nav-right a[href="portal.html"]');
       if(signInLink){ signInLink.textContent = 'My Portal'; }
     }
-    renderBoard(currentFilter || 'all');
+    renderBoard(window.currentFilter || 'all');
   } catch(e){ console.warn('Auth check:', e); }
 }
-let currentFilter = 'all';
 
 // When shared auth determines login state, unblur & re-render
 window.onGtpAuthReady = function(loggedIn){
-  GTP_LOGGED_IN = loggedIn;
-  renderBoard(currentFilter || 'all');
+  window.GTP_LOGGED_IN = loggedIn;
+  renderBoard(window.currentFilter || 'all');
 };
 
 // Load real listings from Supabase, then render
@@ -785,7 +787,16 @@ function timeAgo(ts){
   return new Date(ts).toLocaleDateString();
 }
 
-loadRealListings().then(checkAuthState);
+// Render once DOM is ready so all elements exist; never leave board blank
+function gtpInitBoard(){
+  try { renderBoard('all'); } catch(e){ console.warn('Initial render:', e); }
+  loadRealListings().then(checkAuthState).catch(e=>{ console.warn('Listings:', e); try{renderBoard('all');}catch(_){} });
+}
+if(document.readyState === 'loading'){
+  document.addEventListener('DOMContentLoaded', gtpInitBoard);
+} else {
+  gtpInitBoard();
+}
 
 
 // ── POST A REAL LISTING TO SUPABASE ─────────────────────────
