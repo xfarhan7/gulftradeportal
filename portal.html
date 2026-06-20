@@ -1133,22 +1133,18 @@ async function submitPost(){
 <script>
 // ── PORTAL: load the logged-in user's real data ─────────────
 async function loadPortal(){
-  const _sc = await gtpClient(); if(!_sc){ return; }
-  if(!supabaseClient){ 
-    // library not ready yet — wait and retry once
-    setTimeout(loadPortal, 600); 
-    return; 
-  }
-  // Get session (Supabase restores it from localStorage automatically)
-  let { data: { session } } = await _sc.auth.getSession();
-  // If not found on first try, wait briefly and retry (storage restore can lag)
-  if(!session){
-    await new Promise(r => setTimeout(r, 700));
-    const retry = await _sc.auth.getSession();
-    session = retry.data.session;
+  const _sc = await gtpClient(); if(!_sc){ setTimeout(loadPortal, 500); return; }
+  // Get session — retry several times because storage restore can lag on load.
+  // This prevents wrongly bouncing a logged-in user to the sign-in page.
+  let session = null;
+  for(let i=0; i<8; i++){
+    const res = await _sc.auth.getSession();
+    session = res.data.session;
+    if(session && session.user) break;
+    await new Promise(r => setTimeout(r, 300));
   }
   if(!session || !session.user){
-    // Genuinely not logged in — send to sign in
+    // Genuinely not logged in after retries — send to sign in
     window.location.href = 'register.html';
     return;
   }

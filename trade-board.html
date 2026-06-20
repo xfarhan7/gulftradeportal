@@ -558,6 +558,7 @@ function setReg(r,el){
 }
 function renderCos(data){
   const g=document.getElementById('coGrid'),nr=document.getElementById('noRes');
+  if(!g||!nr) return; // these elements only exist on the directory page
   if(!data.length){g.innerHTML='';nr.style.display='block';return;}
   nr.style.display='none';
   const rb={GCC:'rt-g',EU:'rt-e',US:'rt-u',ASIA:'rt-as'};
