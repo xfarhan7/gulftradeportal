@@ -1086,20 +1086,24 @@ function sendBroadcast() {
 
 // ── AI SUPPLIER MATCH ────────────────────────────────────────
 async function runAIMatch() {
-  // PAID-ONLY FEATURE: AI Supplier Match requires a paid package
+  // PAID-ONLY FEATURE: verified against the DATABASE (cannot be bypassed
+  // by editing localStorage — the plan is read fresh from Supabase).
   const loggedIn = window.GTP_LOGGED_IN || Object.keys(localStorage).some(k=>k.includes('-auth-token'));
-  const plan = (localStorage.getItem('gtp_plan') || 'free').toLowerCase();
-  const isPaid = ['pro','premium','market_entry','pro_importer','pro_exporter','corporate'].includes(plan);
   if(!loggedIn){
     if(confirm('AI Supplier Match is a premium feature. Register and upgrade to a paid plan to use it. View packages now?')){
       window.location.href = 'packages.html';
     }
     return;
   }
+  // Server-truth check
+  const statusEl = document.getElementById('ai-status');
+  if(statusEl) statusEl.textContent = 'Checking your plan…';
+  const isPaid = await gtpVerifiedPaid();
   if(!isPaid){
     if(confirm('AI Supplier Match is available on paid plans only. Upgrade to Pro, Premium or higher to unlock instant AI matching. View packages now?')){
       window.location.href = 'packages.html';
     }
+    if(statusEl) statusEl.textContent = 'Enter requirements to begin';
     return;
   }
   const product = document.getElementById('ai-product').value.trim();

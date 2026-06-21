@@ -76,6 +76,27 @@ function gtpSlugify(text) {
     .replace(/^-|-$/g, '')
     .substring(0, 60);
 }
+
+// Get the user's plan from the DATABASE (server truth — cannot be faked
+// by editing localStorage). Use this for gating valuable features.
+async function gtpVerifiedPlan() {
+  const client = await gtpClient(); if (!client) return 'none';
+  try {
+    const { data: { user } } = await client.auth.getUser();
+    if (!user) return 'none';
+    const { data, error } = await client.from('companies')
+      .select('plan').eq('user_id', user.id).single();
+    if (error || !data) return 'free';
+    return data.plan || 'free';
+  } catch (e) { return 'none'; }
+}
+
+// Is the user verified as PAID by the database?
+async function gtpVerifiedPaid() {
+  const plan = await gtpVerifiedPlan();
+  return ['pro','premium','market_entry','pro_importer','pro_exporter','corporate'].includes(plan);
+}
+
 async function gtpReady() {
   const c = await gtpClient(); if (!c) return null;
   const { data: { session } } = await c.auth.getSession();

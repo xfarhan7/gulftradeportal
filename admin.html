@@ -171,6 +171,8 @@ body{font-family:'Inter',sans-serif;background:#ECEAE6;color:var(--ink);font-siz
 .nl-item{font-size:.78rem;color:rgba(255,255,255,.75);padding:5px 0;border-bottom:1px solid rgba(255,255,255,.07);line-height:1.45;}
 .nl-item:last-child{border-bottom:none;}
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
 </head>
 <body>
 
@@ -221,22 +223,20 @@ body{font-family:'Inter',sans-serif;background:#ECEAE6;color:var(--ink);font-siz
     return;
   }
 
-  /* ── Credentials ──────────────────────────────────────────
-     Hash = SHA-256 of "email:password" combined string.
-     To change password: update ADMIN_HASH below.
-     Current login:
-       Email:    farhan@excorpdistribution.nl
-       Password: GulfAdmin2025!
-     Generate new hash at: https://emn178.github.io/online-tools/sha256.html
-     Input: farhan@excorpdistribution.nl:GulfAdmin2025!
-  ────────────────────────────────────────────────────────── */
-  const ADMIN_HASH = 'b2d4f8e1a9c3f7b5e2d6a8c4f0b7e3d1a5c9f2b8e4d7a1c6f3b9e5d2a8c4f1';
-  /* NOTE: Replace the hash above with the real SHA-256 of your email:password
-     For now, the gate accepts the hardcoded credentials below as a fallback */
-  const ADMIN_EMAIL    = 'farhan@excorpdistribution.nl';
-  const ADMIN_PASSWORD = 'GulfAdmin2025!';
-  /* Add your backup email too */
-  const BACKUP_EMAIL   = 'farhan@bfglobalsolutions.nl';
+  
+  /* ============================================================
+   REAL ADMIN SECURITY — Supabase auth + is_admin DB role.
+   No password is stored in this file. Only the account flagged
+   is_admin=true in the database can access the panel.
+   ============================================================ */
+
+
+  // Reveal the admin panel by hiding the gate overlay
+  function unlockAdmin(){
+    const gate = document.getElementById('admin-gate');
+    if(gate) gate.style.display = 'none';
+    document.body.style.overflow = '';
+  }
 
   window.gateLogin = async function(){
     const email = document.getElementById('gate-email').value.trim().toLowerCase();
@@ -249,37 +249,58 @@ body{font-family:'Inter',sans-serif;background:#ECEAE6;color:var(--ink);font-siz
       err.style.display = 'block'; return;
     }
 
-    /* Try SHA-256 hash comparison first */
-    let hashMatch = false;
-    try {
-      const msgBuffer  = new TextEncoder().encode(email + ':' + pass);
-      const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-      const hashHex    = Array.from(new Uint8Array(hashBuffer))
-        .map(b => b.toString(16).padStart(2, '0')).join('');
-      hashMatch = (hashHex === ADMIN_HASH);
-    } catch(e) { /* crypto not available — fall through to plain check */ }
-
-    /* Fallback: direct credential check (replace with hash in production) */
-    const directMatch = (
-      (email === ADMIN_EMAIL.toLowerCase() || email === BACKUP_EMAIL.toLowerCase())
-      && pass === ADMIN_PASSWORD
-    );
-
-    if(hashMatch || directMatch){
-      sessionStorage.setItem(SESSION_KEY, 'granted');
-      sessionStorage.setItem('gtp_admin_user', email);
-      document.getElementById('admin-gate').classList.add('hidden');
-      /* Log access time */
-      console.log('[GTP Admin] Access granted to', email, 'at', new Date().toISOString());
-    } else {
-      /* Fake delay to prevent brute force */
-      await new Promise(r => setTimeout(r, 1200));
-      err.textContent = 'Incorrect email or password. Please try again.';
-      err.style.display = 'block';
-      document.getElementById('gate-pass').value = '';
-      document.getElementById('gate-pass').focus();
+    const _sc = await gtpClient();
+    if(!_sc){
+      err.textContent = 'Connection not ready — please refresh and try again.';
+      err.style.display = 'block'; return;
     }
+
+    // 1. Authenticate with real Supabase credentials
+    const { data, error } = await _sc.auth.signInWithPassword({ email, password: pass });
+    if(error){
+      err.textContent = 'Invalid credentials.';
+      err.style.display = 'block'; return;
+    }
+
+    // 2. Verify this user is actually an admin (checked in the DATABASE,
+    //    cannot be faked from the browser).
+    let isAdmin = false;
+    try {
+      const { data: adminCheck } = await _sc.rpc('is_current_user_admin');
+      isAdmin = adminCheck === true;
+    } catch(e){
+      // Fallback: read the flag directly from the companies row
+      try {
+        const { data: { user } } = await _sc.auth.getUser();
+        const { data: co } = await _sc.from('companies').select('is_admin').eq('user_id', user.id).single();
+        isAdmin = co && co.is_admin === true;
+      } catch(e2){ isAdmin = false; }
+    }
+
+    if(!isAdmin){
+      // Not an admin — sign them back out and deny access
+      await _sc.auth.signOut();
+      err.textContent = 'This account does not have admin access.';
+      err.style.display = 'block'; return;
+    }
+
+    // 3. Admin confirmed — reveal the panel
+    unlockAdmin();
   };
+
+  // On page load, if already signed in as admin, unlock automatically
+  async function checkAdminSession(){
+    const _sc = await gtpClient();
+    if(!_sc) return;
+    try {
+      const { data: { session } } = await _sc.auth.getSession();
+      if(session && session.user){
+        const { data: adminCheck } = await _sc.rpc('is_current_user_admin');
+        if(adminCheck === true){ unlockAdmin(); }
+      }
+    } catch(e){}
+  }
+  document.addEventListener('DOMContentLoaded', checkAdminSession);
 })();
 </script>
 
