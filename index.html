@@ -1037,8 +1037,15 @@ async function authLogin() {
       if (session && session.user) break;
       await new Promise(r=>setTimeout(r,150));
     }
-    if (s){ s.style.display='block'; s.style.background='rgba(55,184,158,.15)'; s.style.color='#0A7369'; s.textContent='✓ Signed in! Redirecting…'; }
-    setTimeout(() => { window.location.href = 'portal.html'; }, 700);
+    if (s){ s.style.display='block'; s.style.background='rgba(55,184,158,.15)'; s.style.color='#0A7369'; s.textContent='✓ Signed in!'; }
+    // Confirm the token is saved, then reload THIS page (stay here, logged in).
+    // No redirect to portal = no bounce-back loop. User clicks "My Portal" when ready.
+    for(let i=0;i<15;i++){
+      const tokenThere = Object.keys(localStorage).some(k => k.includes('-auth-token'));
+      if(tokenThere) break;
+      await new Promise(r=>setTimeout(r,200));
+    }
+    setTimeout(() => { window.location.reload(); }, 400);
   } catch (err) {
     const m=(err.message||'').toLowerCase();
     if(m.includes('confirm')) alert('Please confirm your email first — check your inbox.');
