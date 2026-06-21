@@ -1178,6 +1178,11 @@ async function loadPortal(){
     const res = await _sc.auth.getSession();
     session = res.data.session;
     if(session && session.user) break;
+    // Fallback: getUser validates directly with the server
+    try {
+      const u = await _sc.auth.getUser();
+      if(u && u.data && u.data.user){ session = { user: u.data.user }; break; }
+    } catch(e){}
     await new Promise(r => setTimeout(r, 300));
   }
 
