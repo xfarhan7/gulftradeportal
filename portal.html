@@ -1209,6 +1209,13 @@ async function loadPortal(){
   }
   const user = session.user;
 
+  // Session confirmed — reveal the portal and cancel the failsafe redirect.
+  // (Without this, the gate never closes and the 8s failsafe wrongly bounces
+  // a successfully-logged-in user back to register.html.)
+  const _gate = document.getElementById('gtp-auth-gate');
+  if(_gate) _gate.style.display = 'none';
+  if(window.__gtpGateFailsafe) clearTimeout(window.__gtpGateFailsafe);
+
   // Load the user's company
   let company = null;
   try {
