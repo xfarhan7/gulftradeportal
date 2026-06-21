@@ -53,17 +53,35 @@ async function gtpAuthInit() {
 
 // Update nav links to reflect logged-in state on ANY page
 function gtpUpdateNav(loggedIn) {
-  // Desktop "Sign In" link (points to portal.html)
+  // "Sign In" link (points to portal.html) → "My Portal" when logged in
   document.querySelectorAll('.nav-right a[href="portal.html"], a.btn-nav[href="portal.html"]').forEach(a => {
     a.textContent = loggedIn ? 'My Portal' : 'Sign In';
   });
-  // "Register" button → becomes "My Portal" too when logged in (optional, keep Register visible)
   // Mobile drawer portal link
   document.querySelectorAll('.mob-link[href="portal.html"]').forEach(a => {
     a.textContent = loggedIn ? 'My Portal' : 'Client Portal';
   });
 
-  // If a page has a #gtp-signout button, show it when logged in
+  // "Register Free" button → becomes "Sign Out" when logged in (so you can
+  // sign out from ANY page). Restores to Register when logged out.
+  document.querySelectorAll('.nav-right a[href="register.html"], a.btn-nav[href="register.html"]').forEach(a => {
+    if (loggedIn) {
+      a.textContent = 'Sign Out';
+      a.setAttribute('href', 'javascript:void(0)');
+      a.setAttribute('data-gtp-signout', '1');
+      a.onclick = function(e){ e.preventDefault(); gtpDoSignOut(); };
+    } else {
+      // Only reset if we previously converted it
+      if (a.getAttribute('data-gtp-signout') === '1') {
+        a.textContent = 'Register Free';
+        a.setAttribute('href', 'register.html');
+        a.removeAttribute('data-gtp-signout');
+        a.onclick = null;
+      }
+    }
+  });
+
+  // Any explicit .gtp-signout element
   document.querySelectorAll('.gtp-signout').forEach(el => {
     el.style.display = loggedIn ? '' : 'none';
   });
@@ -71,8 +89,17 @@ function gtpUpdateNav(loggedIn) {
 
 // Universal sign-out (call from any "Sign Out" button)
 async function gtpDoSignOut() {
+  // Sign out of Supabase, then GUARANTEE the session is gone by removing
+  // the auth token from storage ourselves (signOut alone can lag or fail silently).
   try { const c = await gtpClient(); if(c) await c.auth.signOut(); } catch (e) {}
-  localStorage.removeItem('gtp_plan');
+  try {
+    Object.keys(localStorage).forEach(k => {
+      if (k.includes('-auth-token') || k === 'gtp_plan' || k.startsWith('gtp_replies_')) {
+        localStorage.removeItem(k);
+      }
+    });
+  } catch(e) {}
+  window.GTP_LOGGED_IN = false;
   window.location.href = 'index.html';
 }
 
