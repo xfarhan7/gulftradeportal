@@ -1086,6 +1086,22 @@ function sendBroadcast() {
 
 // ── AI SUPPLIER MATCH ────────────────────────────────────────
 async function runAIMatch() {
+  // PAID-ONLY FEATURE: AI Supplier Match requires a paid package
+  const loggedIn = window.GTP_LOGGED_IN || Object.keys(localStorage).some(k=>k.includes('-auth-token'));
+  const plan = (localStorage.getItem('gtp_plan') || 'free').toLowerCase();
+  const isPaid = ['pro','premium','market_entry','pro_importer','pro_exporter','corporate'].includes(plan);
+  if(!loggedIn){
+    if(confirm('AI Supplier Match is a premium feature. Register and upgrade to a paid plan to use it. View packages now?')){
+      window.location.href = 'packages.html';
+    }
+    return;
+  }
+  if(!isPaid){
+    if(confirm('AI Supplier Match is available on paid plans only. Upgrade to Pro, Premium or higher to unlock instant AI matching. View packages now?')){
+      window.location.href = 'packages.html';
+    }
+    return;
+  }
   const product = document.getElementById('ai-product').value.trim();
   const qty = document.getElementById('ai-qty').value.trim();
   const country = document.getElementById('ai-country').value;
