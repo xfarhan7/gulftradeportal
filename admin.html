@@ -216,14 +216,6 @@ body{font-family:'Inter',sans-serif;background:#ECEAE6;color:var(--ink);font-siz
 
 <script>
 (function(){
-  /* ── Session check — stay logged in during browser session ── */
-  const SESSION_KEY = 'gtp_admin_auth';
-  if(sessionStorage.getItem(SESSION_KEY) === 'granted'){
-    document.getElementById('admin-gate').classList.add('hidden');
-    return;
-  }
-
-  
   /* ============================================================
    REAL ADMIN SECURITY — Supabase auth + is_admin DB role.
    No password is stored in this file. Only the account flagged
