@@ -1158,10 +1158,19 @@ async function loadPortal(){
 
   if(!session || !session.user){
     if(hasToken){
-      // Token exists but session still not resolved — refresh once,
-      // rather than bouncing the logged-in user to sign-in.
+      // A token exists but no valid session — try ONE refresh.
       try { const r = await _sc.auth.refreshSession(); session = r.data.session; } catch(e){}
-      if(!session || !session.user){ location.reload(); return; }
+      if(!session || !session.user){
+        // The token is stale/invalid (expired login). Clear it and send to
+        // sign-in. We do NOT reload (that caused an infinite loop).
+        try {
+          Object.keys(localStorage).forEach(k => {
+            if(k.includes('-auth-token') || k === 'gtp_plan') localStorage.removeItem(k);
+          });
+        } catch(e){}
+        window.location.href = 'register.html';
+        return;
+      }
     } else {
       // No token at all — genuinely logged out
       window.location.href = 'register.html';
