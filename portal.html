@@ -266,6 +266,18 @@ body{font-family:'Inter',sans-serif;background:#F0EDE8;color:var(--ink);font-siz
   </div>
 </div>
 <style>@keyframes gtpspin{to{transform:rotate(360deg)}}</style>
+<script>
+// FAILSAFE: never leave the user stuck on "Loading…". If the portal hasn't
+// resolved within 12s, send them to sign-in.
+window.__gtpGateFailsafe = setTimeout(function(){
+  var g = document.getElementById('gtp-auth-gate');
+  if(g && getComputedStyle(g).display !== 'none'){
+    // Still loading after 12s — assume not logged in / connection issue
+    window.location.href = 'register.html';
+  }
+}, 8000);
+</script>
+
 
 
 <!-- SIDEBAR -->
@@ -1096,6 +1108,7 @@ async function submitPost(){
   // Auth confirmed — reveal the portal
   const _gate = document.getElementById('gtp-auth-gate');
   if(_gate) _gate.style.display = 'none';
+  if(window.__gtpGateFailsafe) clearTimeout(window.__gtpGateFailsafe);
 
   const type = document.getElementById('pp-type').value;
   const product = (document.getElementById('pp-product').value || '').trim();
@@ -1160,7 +1173,7 @@ async function loadPortal(){
 
   // Get session — retry; if a token exists we retry longer and never bounce.
   let session = null;
-  const maxTries = hasToken ? 25 : 6;   // ~7.5s if a token is present
+  const maxTries = hasToken ? 8 : 3;   // resolve quickly (~2.4s max)
   for(let i=0; i<maxTries; i++){
     const res = await _sc.auth.getSession();
     session = res.data.session;
