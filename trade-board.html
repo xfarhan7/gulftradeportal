@@ -179,7 +179,7 @@
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:2px 16px;">
 <a href="directory.html?region=EU">🇪🇺 Europe</a><a href="directory.html?region=ASIA">🇸🇬 Singapore</a>
 <a href="directory.html?region=US">🇺🇸 United States</a><a href="directory.html?region=ASIA">🇮🇩 Indonesia</a>
-<a href="directory.html?region=ASIA">🌏 Asia</a><a href="directory.html?region=ASIA">🇹🇭 Thailand</a>
+<a href="directory.html?region=ASIA">🌏 Asia</a><a href="directory.html?region=ASIA">🇹🇷 Turkey</a>
 <a href="directory.html?region=ASIA">🇨🇳 China</a><a href="directory.html?region=ASIA">🇰🇷 South Korea</a>
 <a href="directory.html?region=ASIA">🇮🇳 India</a><a href="directory.html?region=ASIA">🇯🇵 Japan</a>
 <a href="directory.html?region=ASIA">🇲🇾 Malaysia</a><a href="directory.html?region=EU">🇳🇱 Netherlands</a>
@@ -414,14 +414,16 @@ async function submitReply(){
       contact: contact
     });
     if(error){
+      const code = error.code || '';
       const m = (error.message || '').toLowerCase();
-      // The RLS policy rejects the insert when the free daily limit is hit.
-      if(m.includes('policy') || m.includes('row-level') || m.includes('violates')){
+      // Only the genuine free-tier daily limit raises an RLS permission error (42501).
+      if(code === '42501' || m.includes('row-level security')){
         if(confirm('Free accounts can respond to 1 request per day. Upgrade to Pro for unlimited responses. View packages now?')){
           window.location.href = 'packages.html';
         }
       } else {
-        alert('Could not send: ' + (error.message || 'please try again.'));
+        // Any other failure (FK, recursion, etc.) — show the real reason, don't mislead.
+        alert('Could not send your reply: ' + (error.message || 'please try again.'));
       }
       if(btn){ btn.disabled = false; btn.textContent = 'Send Response →'; }
       return;
