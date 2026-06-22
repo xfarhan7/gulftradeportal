@@ -228,7 +228,7 @@ body{font-family:'Inter',sans-serif;background:#ECEAE6;color:var(--ink);font-siz
     const gate = document.getElementById('admin-gate');
     if(gate) gate.style.display = 'none';
     document.body.style.overflow = '';
-    try { if(window.loadMembers) loadMembers(); } catch(e){ console.warn('members', e); }
+    try { if(window.loadOverview) loadOverview(); if(window.loadMembers) loadMembers(); } catch(e){ console.warn('admin init', e); }
   }
 
   window.gateLogin = async function(){
@@ -378,21 +378,21 @@ body{font-family:'Inter',sans-serif;background:#ECEAE6;color:var(--ink);font-siz
   <!-- ═══ OVERVIEW ═══ -->
   <div class="panel active" id="p-overview">
     <div class="stats-row">
-      <div class="sc"><div class="sc-lbl">Total Members</div><div class="sc-val">428</div><div class="sc-sub"><span class="sc-up">+24</span> this month</div></div>
-      <div class="sc"><div class="sc-lbl">Active Paid</div><div class="sc-val">89</div><div class="sc-sub"><span class="sc-up">+7</span> this month</div></div>
-      <div class="sc"><div class="sc-lbl">Free Members</div><div class="sc-val">253</div><div class="sc-sub">Conversion target: 30%</div></div>
-      <div class="sc"><div class="sc-lbl">MRR</div><div class="sc-val" style="font-size:1.4rem;">€5,241</div><div class="sc-sub"><span class="sc-up">↑ 12%</span> vs last month</div></div>
-      <div class="sc"><div class="sc-lbl">KYB Pending</div><div class="sc-val" style="color:var(--gold);">7</div><div class="sc-sub">Awaiting review</div></div>
-      <div class="sc"><div class="sc-lbl">Live Requests</div><div class="sc-val">128</div><div class="sc-sub">On trade board</div></div>
-      <div class="sc"><div class="sc-lbl">Ad Revenue</div><div class="sc-val" style="font-size:1.4rem;">€1,847</div><div class="sc-sub">Jun 2025</div></div>
+      <div class="sc"><div class="sc-lbl">Total Members</div><div class="sc-val" id="ov-total">…</div><div class="sc-sub">All registered</div></div>
+      <div class="sc"><div class="sc-lbl">Active Paid</div><div class="sc-val" id="ov-paid">…</div><div class="sc-sub">On a paid plan</div></div>
+      <div class="sc"><div class="sc-lbl">Free Members</div><div class="sc-val" id="ov-free">…</div><div class="sc-sub">Free tier</div></div>
+      <div class="sc"><div class="sc-lbl">MRR</div><div class="sc-val" id="ov-mrr" style="font-size:1.4rem;">€0</div><div class="sc-sub">From paid members</div></div>
+      <div class="sc"><div class="sc-lbl">KYB Pending</div><div class="sc-val" id="ov-kyb" style="color:var(--gold);">0</div><div class="sc-sub">Awaiting review</div></div>
+      <div class="sc"><div class="sc-lbl">Live Requests</div><div class="sc-val" id="ov-requests">0</div><div class="sc-sub">On trade board</div></div>
+      <div class="sc"><div class="sc-lbl">Ad Revenue</div><div class="sc-val" id="ov-adrev" style="font-size:1.4rem;">€0</div><div class="sc-sub">Live ads</div></div>
     </div>
 
     <div class="two-col">
       <div class="card">
         <div class="card-hd"><span class="card-title">Monthly Revenue</span><span style="font-size:.71rem;color:var(--mid);">Subscriptions + Ads</span></div>
         <div class="card-body">
-          <div style="font-family:Cairo,sans-serif;font-size:1.6rem;font-weight:700;color:var(--teal);margin-bottom:4px;">€7,088</div>
-          <div style="font-size:.72rem;color:var(--mid);margin-bottom:14px;">June 2025 · <span style="color:var(--grn);font-weight:600;">↑ 18% vs May</span></div>
+          <div style="font-family:Cairo,sans-serif;font-size:1.6rem;font-weight:700;color:var(--teal);margin-bottom:4px;" id="ov-rev-total">€0</div>
+          <div style="font-size:.72rem;color:var(--mid);margin-bottom:14px;">Subscriptions + live ads (current)</div>
           <div class="chart-bars">
             <div class="bar" style="height:38%"></div>
             <div class="bar" style="height:45%"></div>
@@ -408,21 +408,15 @@ body{font-family:'Inter',sans-serif;background:#ECEAE6;color:var(--ink);font-siz
             <div class="chart-lbl" style="color:var(--gold);font-weight:700;">Jun</div>
           </div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;padding-top:12px;border-top:1px solid var(--mist);">
-            <div><div style="font-size:.63rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--mid);">Subscriptions</div><div style="font-family:Cairo,sans-serif;font-size:1.1rem;font-weight:700;color:var(--teal);">€5,241</div></div>
-            <div><div style="font-size:.63rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--mid);">Ad Revenue</div><div style="font-family:Cairo,sans-serif;font-size:1.1rem;font-weight:700;color:var(--gold);">€1,847</div></div>
+            <div><div style="font-size:.63rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--mid);">Subscriptions</div><div style="font-family:Cairo,sans-serif;font-size:1.1rem;font-weight:700;color:var(--teal);" id="ov-rev-subs">€0</div></div>
+            <div><div style="font-size:.63rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--mid);">Ad Revenue</div><div style="font-family:Cairo,sans-serif;font-size:1.1rem;font-weight:700;color:var(--gold);" id="ov-rev-ads">€0</div></div>
           </div>
         </div>
       </div>
       <div class="card">
         <div class="card-hd"><span class="card-title">Recent Activity</span><button class="btn btn-out btn-sm">View all</button></div>
-        <div class="activity-feed">
-          <div class="af-item"><div class="af-dot ad-grn"></div><div class="af-text"><strong>Nour Trading LLC</strong> registered — UAE · FMCG · Awaiting KYB</div><div class="af-time">3m ago</div></div>
-          <div class="af-item"><div class="af-dot ad-gold"></div><div class="af-text"><strong>Dutch Food Export BV</strong> upgraded to Pro Exporter · €89/mo</div><div class="af-time">18m ago</div></div>
-          <div class="af-item"><div class="af-dot ad-teal"></div><div class="af-text">New trade request posted: <strong>Halal dates 10MT KSA</strong></div><div class="af-time">41m ago</div></div>
-          <div class="af-item"><div class="af-dot ad-red"></div><div class="af-text"><strong>KYB alert:</strong> Documents uploaded by Al Bahrain Trading — needs review</div><div class="af-time">1h ago</div></div>
-          <div class="af-item"><div class="af-dot ad-gold"></div><div class="af-text">Homepage banner ad booked by <strong>Iberia Food Group</strong> · €499</div><div class="af-time">2h ago</div></div>
-          <div class="af-item"><div class="af-dot ad-grn"></div><div class="af-text"><strong>German Metals GmbH</strong> KYB approved — listing now live</div><div class="af-time">3h ago</div></div>
-          <div class="af-item"><div class="af-dot ad-teal"></div><div class="af-text">Weekly newsletter sent — <strong>847 subscribers</strong> · 42% open rate</div><div class="af-time">Yesterday</div></div>
+        <div class="activity-feed" id="ov-activity">
+          <div style="padding:14px;color:var(--mid);font-size:.8rem;">Loading…</div>
         </div>
       </div>
     </div>
@@ -430,50 +424,20 @@ body{font-family:'Inter',sans-serif;background:#ECEAE6;color:var(--ink);font-siz
     <div class="three-col">
       <div class="card">
         <div class="card-hd"><span class="card-title">Members by Plan</span></div>
-        <div class="card-body">
-          <div style="display:flex;flex-direction:column;gap:8px;">
-            <div style="display:flex;justify-content:space-between;align-items:center;font-size:.8rem;"><span>Free</span><div style="display:flex;align-items:center;gap:8px;"><div style="width:100px;height:6px;background:var(--mist);border-radius:3px;overflow:hidden;"><div style="width:74%;height:100%;background:var(--mid);border-radius:3px;"></div></div><span style="font-weight:700;width:30px;text-align:right;">297</span></div></div>
-            <div style="display:flex;justify-content:space-between;align-items:center;font-size:.8rem;"><span>Pro GCC €59</span><div style="display:flex;align-items:center;gap:8px;"><div style="width:100px;height:6px;background:var(--mist);border-radius:3px;overflow:hidden;"><div style="width:38%;height:100%;background:var(--teal);border-radius:3px;"></div></div><span style="font-weight:700;width:26px;text-align:right;">38</span></div></div>
-            <div style="display:flex;justify-content:space-between;align-items:center;font-size:.8rem;"><span>Pro EU €89</span><div style="display:flex;align-items:center;gap:8px;"><div style="width:100px;height:6px;background:var(--mist);border-radius:3px;overflow:hidden;"><div style="width:28%;height:100%;background:var(--teal-lt);border-radius:3px;"></div></div><span style="font-weight:700;width:26px;text-align:right;">27</span></div></div>
-            <div style="display:flex;justify-content:space-between;align-items:center;font-size:.8rem;"><span>Premium €179</span><div style="display:flex;align-items:center;gap:8px;"><div style="width:100px;height:6px;background:var(--mist);border-radius:3px;overflow:hidden;"><div style="width:12%;height:100%;background:var(--gold);border-radius:3px;"></div></div><span style="font-weight:700;width:26px;text-align:right;">12</span></div></div>
-            <div style="display:flex;justify-content:space-between;align-items:center;font-size:.8rem;"><span>Market Entry €269</span><div style="display:flex;align-items:center;gap:8px;"><div style="width:100px;height:6px;background:var(--mist);border-radius:3px;overflow:hidden;"><div style="width:7%;height:100%;background:var(--gold-lt);border-radius:3px;"></div></div><span style="font-weight:700;width:26px;text-align:right;">7</span></div></div>
-            <div style="display:flex;justify-content:space-between;align-items:center;font-size:.8rem;"><span style="color:var(--gold);">Free (granted)</span><div style="display:flex;align-items:center;gap:8px;"><div style="width:100px;height:6px;background:var(--mist);border-radius:3px;overflow:hidden;"><div style="width:5%;height:100%;background:var(--gold);border-radius:3px;"></div></div><span style="font-weight:700;width:26px;text-align:right;color:var(--gold);">5</span></div></div>
-          </div>
+        <div class="card-body" id="ov-byplan">
+          <div style="color:var(--mid);font-size:.8rem;">Loading…</div>
         </div>
       </div>
       <div class="card">
         <div class="card-hd"><span class="card-title">Members by Region</span></div>
-        <div class="card-body">
-          <div style="display:flex;flex-direction:column;gap:8px;">
-            <div style="display:flex;justify-content:space-between;font-size:.8rem;"><span>UAE</span><span style="font-weight:700;">94</span></div>
-            <div style="display:flex;justify-content:space-between;font-size:.8rem;"><span>Saudi Arabia</span><span style="font-weight:700;">71</span></div>
-            <div style="display:flex;justify-content:space-between;font-size:.8rem;"><span>Netherlands</span><span style="font-weight:700;">44</span></div>
-            <div style="display:flex;justify-content:space-between;font-size:.8rem;"><span>Germany</span><span style="font-weight:700;">31</span></div>
-            <div style="display:flex;justify-content:space-between;font-size:.8rem;"><span>United Kingdom</span><span style="font-weight:700;">28</span></div>
-            <div style="display:flex;justify-content:space-between;font-size:.8rem;"><span>Kuwait</span><span style="font-weight:700;">22</span></div>
-            <div style="display:flex;justify-content:space-between;font-size:.8rem;"><span>United States</span><span style="font-weight:700;">18</span></div>
-            <div style="display:flex;justify-content:space-between;font-size:.8rem;"><span>China</span><span style="font-weight:700;">38</span></div>
-            <div style="display:flex;justify-content:space-between;font-size:.8rem;"><span>India</span><span style="font-weight:700;">26</span></div>
-            <div style="display:flex;justify-content:space-between;font-size:.8rem;"><span>Malaysia</span><span style="font-weight:700;">19</span></div>
-            <div style="display:flex;justify-content:space-between;font-size:.8rem;"><span>Singapore</span><span style="font-weight:700;">14</span></div>
-            <div style="display:flex;justify-content:space-between;font-size:.8rem;"><span>South Korea / Japan</span><span style="font-weight:700;">12</span></div>
-            <div style="display:flex;justify-content:space-between;font-size:.8rem;"><span>Indonesia / Thailand</span><span style="font-weight:700;">9</span></div>
-            <div style="display:flex;justify-content:space-between;font-size:.8rem;"><span style="color:var(--mid);">Other Asia</span><span style="font-weight:700;color:var(--mid);">8</span></div>
-          </div>
+        <div class="card-body" id="ov-byregion">
+          <div style="color:var(--mid);font-size:.8rem;">Loading…</div>
         </div>
       </div>
       <div class="card">
         <div class="card-hd"><span class="card-title">Top Sectors</span></div>
-        <div class="card-body">
-          <div style="display:flex;flex-direction:column;gap:8px;">
-            <div style="display:flex;justify-content:space-between;font-size:.8rem;"><span>Food &amp; Beverages</span><span style="font-weight:700;">98</span></div>
-            <div style="display:flex;justify-content:space-between;font-size:.8rem;"><span>FMCG</span><span style="font-weight:700;">84</span></div>
-            <div style="display:flex;justify-content:space-between;font-size:.8rem;"><span>Construction</span><span style="font-weight:700;">52</span></div>
-            <div style="display:flex;justify-content:space-between;font-size:.8rem;"><span>Electronics</span><span style="font-weight:700;">41</span></div>
-            <div style="display:flex;justify-content:space-between;font-size:.8rem;"><span>Chemicals</span><span style="font-weight:700;">33</span></div>
-            <div style="display:flex;justify-content:space-between;font-size:.8rem;"><span>Machinery</span><span style="font-weight:700;">21</span></div>
-            <div style="display:flex;justify-content:space-between;font-size:.8rem;"><span>Healthcare</span><span style="font-weight:700;">13</span></div>
-          </div>
+        <div class="card-body" id="ov-bysector">
+          <div style="color:var(--mid);font-size:.8rem;">Loading…</div>
         </div>
       </div>
     </div>
@@ -483,68 +447,15 @@ body{font-family:'Inter',sans-serif;background:#ECEAE6;color:var(--ink);font-siz
   <div class="panel" id="p-kyb">
     <div style="margin-bottom:16px;">
       <div style="font-size:.65rem;letter-spacing:.16em;text-transform:uppercase;color:var(--teal);font-weight:700;margin-bottom:4px;">Verification queue</div>
-      <h2 style="font-family:Cairo,sans-serif;font-size:1.2rem;font-weight:700;">KYB Reviews — 7 Pending</h2>
+      <h2 style="font-family:Cairo,sans-serif;font-size:1.2rem;font-weight:700;">KYB Reviews — <span id="adm-kyb-count">…</span> Pending</h2>
     </div>
     <div class="alert alert-gold">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#8B6200" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
       <div><strong>Review process</strong>Check company registration via KVK/trade registry API (EU), validate VAT via EU VIES, or verify via MyCO Singapore / MCA India / SSM Malaysia for Asian companies. Review uploaded documents, then Approve or Request More Info. Approved listings go live immediately.</div>
     </div>
-    <div class="kyb-card">
-      <div class="kyb-card-hd">
-        <div><div class="kyb-co-name">Nour Trading LLC</div><div class="kyb-co-sub">UAE · FMCG · Importer · Registered 2h ago</div></div>
-        <span class="bdg bdg-gold">Pending</span>
-      </div>
-      <div class="kyb-checklist">
-        <span class="kyb-check kc-ok"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Company details complete</span>
-        <span class="kyb-check kc-ok"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Trade license uploaded</span>
-        <span class="kyb-check kc-ok"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Director ID uploaded</span>
-        <span class="kyb-check kc-pend"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>Registry auto-check pending</span>
-        <span class="kyb-check kc-miss"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Address proof missing</span>
-      </div>
-      <div class="kyb-actions">
-        <button class="btn btn-grn btn-sm" onclick="approveKYB(this,'Nour Trading LLC')">Approve & Go Live</button>
-        <button class="btn btn-out btn-sm" onclick="openMo('mo-kyb-info')">Request More Info</button>
-        <button class="btn btn-t btn-sm" onclick="alert('Opening uploaded documents…')">View Documents</button>
-        <button class="btn btn-red btn-sm" onclick="if(confirm('Reject this application?'))this.closest('.kyb-card').style.opacity='.4'">Reject</button>
-      </div>
+    <div id="adm-kyb">
+      <div style="padding:16px;color:var(--mid);font-size:.82rem;">Loading verification queue…</div>
     </div>
-    <div class="kyb-card">
-      <div class="kyb-card-hd">
-        <div><div class="kyb-co-name">Al Bahrain Trading Co.</div><div class="kyb-co-sub">Bahrain · Food &amp; Beverages · Importer · Registered 1h ago</div></div>
-        <span class="bdg bdg-gold">Pending</span>
-      </div>
-      <div class="kyb-checklist">
-        <span class="kyb-check kc-ok"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Company details complete</span>
-        <span class="kyb-check kc-ok"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>All documents uploaded</span>
-        <span class="kyb-check kc-ok"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Registry check passed</span>
-        <span class="kyb-check kc-ok"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Sanctions screening clear</span>
-      </div>
-      <div class="kyb-actions">
-        <button class="btn btn-grn btn-sm" onclick="approveKYB(this,'Al Bahrain Trading Co.')">Approve & Go Live</button>
-        <button class="btn btn-out btn-sm">Request More Info</button>
-        <button class="btn btn-t btn-sm">View Documents</button>
-        <button class="btn btn-red btn-sm">Reject</button>
-      </div>
-    </div>
-    <div class="kyb-card">
-      <div class="kyb-card-hd">
-        <div><div class="kyb-co-name">Crete Organics Ltd</div><div class="kyb-co-sub">Greece · Food &amp; Beverages · Exporter · EU Supplier</div></div>
-        <span class="bdg bdg-gold">Pending</span>
-      </div>
-      <div class="kyb-checklist">
-        <span class="kyb-check kc-ok"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Company details complete</span>
-        <span class="kyb-check kc-ok"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>EU VAT validated (VIES)</span>
-        <span class="kyb-check kc-ok"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>All documents uploaded</span>
-        <span class="kyb-check kc-ok"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Organic certifications provided</span>
-      </div>
-      <div class="kyb-actions">
-        <button class="btn btn-grn btn-sm" onclick="approveKYB(this,'Crete Organics Ltd')">Approve & Go Live</button>
-        <button class="btn btn-out btn-sm">Request More Info</button>
-        <button class="btn btn-t btn-sm">View Documents</button>
-        <button class="btn btn-red btn-sm">Reject</button>
-      </div>
-    </div>
-    <div style="text-align:center;padding:16px;font-size:.79rem;color:var(--mid);">+ 4 more pending reviews <button class="btn btn-out btn-sm" style="margin-left:8px;">Load more</button></div>
   </div>
 
   <!-- ═══ GRANT MEMBERSHIPS ═══ -->
@@ -619,17 +530,14 @@ body{font-family:'Inter',sans-serif;background:#ECEAE6;color:var(--ink);font-siz
   <div class="panel" id="p-requests">
     <div style="margin-bottom:16px;">
       <div style="font-size:.65rem;letter-spacing:.16em;text-transform:uppercase;color:var(--teal);font-weight:700;margin-bottom:4px;">Platform content</div>
-      <h2 style="font-family:Cairo,sans-serif;font-size:1.2rem;font-weight:700;">All Trade Requests — 128 Live</h2>
+      <h2 style="font-family:Cairo,sans-serif;font-size:1.2rem;font-weight:700;">All Trade Requests — <span id="adm-req-count">…</span></h2>
     </div>
     <div class="card">
       <div class="tbl-wrap">
         <table class="tbl">
           <thead><tr><th>Product</th><th>Type</th><th>Country</th><th>Company</th><th>Status</th><th>Responses</th><th>Actions</th></tr></thead>
-          <tbody>
-            <tr><td><strong>Nespresso OL Capsules</strong><div style="font-size:.68rem;color:var(--mid);">50K sleeves/mo</div></td><td><span class="bdg bdg-blue">Import</span></td><td>UAE</td><td>Al Noor Trading</td><td><span class="bdg bdg-grn">Live</span></td><td>4</td><td><button class="btn btn-out btn-sm" style="margin-right:3px;">View</button><button class="btn btn-red btn-sm">Remove</button></td></tr>
-            <tr><td><strong>Halal Frozen Chicken</strong><div style="font-size:.68rem;color:var(--mid);">50MT first order</div></td><td><span class="bdg bdg-blue">Import</span></td><td>Saudi Arabia</td><td>Riyadh General</td><td><span class="bdg bdg-grn">Live</span></td><td>2</td><td><button class="btn btn-out btn-sm" style="margin-right:3px;">View</button><button class="btn btn-red btn-sm">Remove</button></td></tr>
-            <tr><td><strong>Steel Rebar Grade 60</strong><div style="font-size:.68rem;color:var(--mid);">500MT/mo</div></td><td><span class="bdg bdg-blue">Import</span></td><td>UAE</td><td>Gulf Construction</td><td><span class="bdg bdg-gold">Under Review</span></td><td>0</td><td><button class="btn btn-grn btn-sm" style="margin-right:3px;" onclick="this.closest('tr').querySelector('.bdg-gold').className='bdg bdg-grn';this.closest('tr').querySelector('.bdg-gold');this.textContent='Approved'">Approve</button><button class="btn btn-red btn-sm">Remove</button></td></tr>
-            <tr><td><strong>Premium Medjool Dates</strong><div style="font-size:.68rem;color:var(--mid);">10MT/mo export</div></td><td><span class="bdg bdg-teal">Export</span></td><td>Saudi Arabia</td><td>Arabian Dates</td><td><span class="bdg bdg-grn">Live</span></td><td>5</td><td><button class="btn btn-out btn-sm" style="margin-right:3px;">View</button><button class="btn btn-red btn-sm">Remove</button></td></tr>
+          <tbody id="adm-requests">
+            <tr><td colspan="7" style="padding:16px;color:var(--mid);">Loading…</td></tr>
           </tbody>
         </table>
       </div>
@@ -643,19 +551,16 @@ body{font-family:'Inter',sans-serif;background:#ECEAE6;color:var(--ink);font-siz
       <h2 style="font-family:Cairo,sans-serif;font-size:1.2rem;font-weight:700;">Ad Slots</h2>
     </div>
     <div class="three-col" style="margin-bottom:16px;">
-      <div class="sc"><div class="sc-lbl">Homepage Banner</div><div class="sc-val" style="font-size:1.2rem;color:var(--grn);">Booked</div><div class="sc-sub">Iberia Food Group · Jun 2025 · €499</div></div>
-      <div class="sc"><div class="sc-lbl">Category Sponsor</div><div class="sc-val" style="font-size:1.2rem;color:var(--grn);">2 / 8</div><div class="sc-sub">Food &amp; FMCG booked · 6 slots open</div></div>
-      <div class="sc"><div class="sc-lbl">Trade Board Ads</div><div class="sc-val" style="font-size:1.2rem;color:var(--grn);">3 Live</div><div class="sc-sub">Dutch Food, GermanMetals, UKChem</div></div>
+      <div class="sc"><div class="sc-lbl">Live Ads</div><div class="sc-val" id="adm-ads-live" style="font-size:1.2rem;color:var(--grn);">0</div><div class="sc-sub">Currently running</div></div>
+      <div class="sc"><div class="sc-lbl">Total Ads</div><div class="sc-val" id="adm-ads-total" style="font-size:1.2rem;">0</div><div class="sc-sub">All placements</div></div>
+      <div class="sc"><div class="sc-lbl">Ad Revenue</div><div class="sc-val" id="adm-ads-rev" style="font-size:1.2rem;color:var(--teal);">€0</div><div class="sc-sub">From live ads</div></div>
     </div>
     <div class="card">
       <div class="card-hd"><span class="card-title">Active Ad Placements</span><button class="btn btn-g btn-sm" onclick="openMo('mo-ad')">+ Add Ad Slot</button></div>
       <div class="tbl-wrap"><table class="tbl">
         <thead><tr><th>Advertiser</th><th>Type</th><th>Period</th><th>Amount</th><th>Status</th><th>Actions</th></tr></thead>
-        <tbody>
-          <tr><td><strong>Iberia Food Group</strong></td><td>Homepage Banner</td><td>Jun 2025</td><td>€499</td><td><span class="bdg bdg-grn">Live</span></td><td><button class="btn btn-out btn-sm">Edit</button></td></tr>
-          <tr><td><strong>Dutch Food Export BV</strong></td><td>Trade Board Ad</td><td>Jun 2025</td><td>€99</td><td><span class="bdg bdg-grn">Live</span></td><td><button class="btn btn-out btn-sm">Edit</button></td></tr>
-          <tr><td><strong>UK Chemicals Ltd</strong></td><td>Category — Chemicals</td><td>Jun 2025</td><td>€249</td><td><span class="bdg bdg-grn">Live</span></td><td><button class="btn btn-out btn-sm">Edit</button></td></tr>
-          <tr><td><strong>German Metals GmbH</strong></td><td>Trade Board Ad</td><td>Jun–Jul 2025</td><td>€198</td><td><span class="bdg bdg-grn">Live</span></td><td><button class="btn btn-out btn-sm">Edit</button></td></tr>
+        <tbody id="adm-ads">
+          <tr><td colspan="6" style="padding:16px;color:var(--mid);">Loading…</td></tr>
         </tbody>
       </table></div>
     </div>
@@ -668,21 +573,17 @@ body{font-family:'Inter',sans-serif;background:#ECEAE6;color:var(--ink);font-siz
       <h2 style="font-family:Cairo,sans-serif;font-size:1.2rem;font-weight:700;">Revenue & Invoices</h2>
     </div>
     <div class="stats-row" style="margin-bottom:16px;">
-      <div class="sc"><div class="sc-lbl">Jun MRR</div><div class="sc-val" style="font-size:1.35rem;">€6,890</div></div>
-      <div class="sc"><div class="sc-lbl">Jun Ad Rev</div><div class="sc-val" style="font-size:1.35rem;">€1,847</div></div>
-      <div class="sc"><div class="sc-lbl">Jun Total</div><div class="sc-val" style="font-size:1.35rem;color:var(--teal);">€7,088</div></div>
-      <div class="sc"><div class="sc-lbl">Churn Rate</div><div class="sc-val" style="font-size:1.35rem;">3.2%</div><div class="sc-sub"><span class="sc-up">Healthy</span></div></div>
+      <div class="sc"><div class="sc-lbl">Subscription MRR</div><div class="sc-val" id="adm-mrr" style="font-size:1.35rem;">€0</div><div class="sc-sub">From paid members</div></div>
+      <div class="sc"><div class="sc-lbl">Ad Revenue</div><div class="sc-val" id="adm-adrev" style="font-size:1.35rem;">€0</div><div class="sc-sub">Live ads</div></div>
+      <div class="sc"><div class="sc-lbl">Invoices Paid</div><div class="sc-val" id="adm-paid" style="font-size:1.35rem;color:var(--teal);">€0</div><div class="sc-sub">Total collected</div></div>
+      <div class="sc"><div class="sc-lbl">Outstanding</div><div class="sc-val" id="adm-outstanding" style="font-size:1.35rem;">€0</div><div class="sc-sub">Pending invoices</div></div>
     </div>
     <div class="card">
-      <div class="card-hd"><span class="card-title">Invoice Ledger</span><button class="btn btn-out btn-sm">Export all</button></div>
+      <div class="card-hd"><span class="card-title">Invoice Ledger</span><button class="btn btn-g btn-sm" onclick="addInvoice()">+ Add Invoice</button></div>
       <div class="tbl-wrap"><table class="tbl">
-        <thead><tr><th>Invoice</th><th>Company</th><th>Plan / Product</th><th>Amount</th><th>Date</th><th>Status</th></tr></thead>
-        <tbody>
-          <tr><td>INV-2025-089</td><td>Iberia Food Group</td><td>Homepage Banner Jun 2025</td><td>€499</td><td>1 Jun 2025</td><td><span class="bdg bdg-grn">Paid</span></td></tr>
-          <tr><td>INV-2025-088</td><td>Dutch Food Export BV</td><td>Pro Exporter May 2025</td><td>€89</td><td>1 Jun 2025</td><td><span class="bdg bdg-grn">Paid</span></td></tr>
-          <tr><td>INV-2025-087</td><td>UK Chemicals Ltd</td><td>Category Sponsor — Chemicals</td><td>€249</td><td>1 Jun 2025</td><td><span class="bdg bdg-grn">Paid</span></td></tr>
-          <tr><td>INV-2025-086</td><td>Excorp Distribution BV</td><td>Pro Importer Jun 2025</td><td>€59</td><td>1 Jun 2025</td><td><span class="bdg bdg-grn">Paid</span></td></tr>
-          <tr><td>INV-2025-085</td><td>Gulf Construction Supply</td><td>Premium Jun 2025</td><td>€179</td><td>1 Jun 2025</td><td><span class="bdg bdg-gold">Pending</span></td></tr>
+        <thead><tr><th>Invoice</th><th>Company</th><th>Description</th><th>Amount</th><th>Date</th><th>Status</th></tr></thead>
+        <tbody id="adm-invoices">
+          <tr><td colspan="6" style="padding:16px;color:var(--mid);">Loading…</td></tr>
         </tbody>
       </table></div>
     </div>
@@ -835,13 +736,10 @@ body{font-family:'Inter',sans-serif;background:#ECEAE6;color:var(--ink);font-siz
   <button class="mo-x" onclick="closeMo('mo-ad')">×</button>
   <h3 class="mo-h">Add Ad Slot</h3>
   <p class="mo-sub">Manually add a confirmed ad placement and generate an invoice.</p>
-  <div class="fg"><label>Advertiser Company</label><input type="text" placeholder="Company name"></div>
-  <div class="fg"><label>Ad Type</label><select><option>Trade Board Ad — €99/mo</option><option>Category Sponsor — €249/mo</option><option>Homepage Banner — €499/mo</option><option>Annual Package — €3,999/yr</option></select></div>
-  <div class="fr2" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-    <div class="fg"><label>Start Date</label><input type="date"></div>
-    <div class="fg"><label>End Date</label><input type="date"></div>
-  </div>
-  <button class="btn btn-t" style="width:100%;" onclick="alert('Ad slot created and invoice generated.');closeMo('mo-ad')">Create Ad Slot & Invoice →</button>
+  <div class="fg"><label>Advertiser Company</label><input type="text" id="ad-advertiser" placeholder="Company name"></div>
+  <div class="fg"><label>Ad Type</label><select id="ad-type"><option value="Trade Board Ad|99">Trade Board Ad — €99/mo</option><option value="Category Sponsor|249">Category Sponsor — €249/mo</option><option value="Homepage Banner|499">Homepage Banner — €499/mo</option><option value="Annual Package|3999">Annual Package — €3,999/yr</option></select></div>
+  <div class="fg"><label>Period</label><input type="text" id="ad-period" placeholder="e.g. Jun 2025 or Jun–Jul 2025"></div>
+  <button class="btn btn-t" style="width:100%;" onclick="createAd()">Create Ad Slot & Invoice →</button>
 </div></div>
 
 <script>
@@ -857,7 +755,12 @@ function go(id,btn){
   if(btn)btn.classList.add('active');
   document.getElementById('page-title').textContent=TITLES[id]||id;
   window.scrollTo(0,0);
+  if(id==='overview'){ try{ loadOverview(); }catch(e){ console.warn('overview', e); } }
   if(id==='members' || id==='memberships'){ try{ loadMembers(); }catch(e){ console.warn('members', e); } }
+  if(id==='kyb'){ try{ loadKYB(); }catch(e){ console.warn('kyb', e); } }
+  if(id==='requests'){ try{ loadRequests(); }catch(e){ console.warn('requests', e); } }
+  if(id==='ads'){ try{ loadAds(); }catch(e){ console.warn('ads', e); } }
+  if(id==='revenue'){ try{ loadInvoices(); }catch(e){ console.warn('revenue', e); } }
 }
 
 // ── LIVE MEMBER MANAGEMENT ──────────────────────────────────
@@ -958,21 +861,239 @@ function openMo(id){document.getElementById(id).classList.add('open');}
 function closeMo(id){document.getElementById(id).classList.remove('open');}
 document.addEventListener('click',e=>{if(e.target.classList.contains('mo'))e.target.classList.remove('open');});
 
-function approveKYB(btn,name){
-  const card=btn.closest('.kyb-card');
-  card.querySelector('.bdg').textContent='Approved';
-  card.querySelector('.bdg').className='bdg bdg-grn';
-  card.style.opacity='.6';
-  card.style.pointerEvents='none';
-  showToast(name+' approved — listing is now live.');
-}
-function grantMembership(){
-  document.getElementById('grant-succ').style.display='block';
-  document.getElementById('grant-search').value='';
-  document.getElementById('grant-reason').value='';
-}
 function sendNL(){
   document.getElementById('nl-succ').style.display='block';
+}
+
+// ── BACK-OFFICE: KYB / REQUESTS / ADS / INVOICES ────────────
+const PLAN_PRICE = { pro:59, premium:179, market_entry:269 };
+function eur(n){ return '€' + (Math.round(Number(n)||0)).toLocaleString(); }
+function setTxt(id,v){ const el=document.getElementById(id); if(el) el.textContent=v; }
+function nextInvNo(){ return 'INV-'+new Date().getFullYear()+'-'+Date.now().toString().slice(-5); }
+function setHTML(id,h){ const el=document.getElementById(id); if(el) el.innerHTML=h; }
+function tAgo(ts){
+  if(!ts) return '';
+  const d=(Date.now()-new Date(ts).getTime())/1000;
+  if(d<60) return 'just now';
+  if(d<3600) return Math.floor(d/60)+'m ago';
+  if(d<86400) return Math.floor(d/3600)+'h ago';
+  if(d<604800) return Math.floor(d/86400)+'d ago';
+  return new Date(ts).toLocaleDateString();
+}
+function topCounts(arr){
+  const m={}; arr.filter(Boolean).forEach(v=>{ m[v]=(m[v]||0)+1; });
+  const sorted=Object.entries(m).sort((a,b)=>b[1]-a[1]).slice(0,12);
+  if(!sorted.length) return '<div style="color:var(--mid);font-size:.8rem;">No data yet.</div>';
+  return '<div style="display:flex;flex-direction:column;gap:8px;">'+sorted.map(([k,v])=>
+    `<div style="display:flex;justify-content:space-between;font-size:.8rem;"><span>${esc(k)}</span><span style="font-weight:700;">${v}</span></div>`).join('')+'</div>';
+}
+
+// OVERVIEW — live platform stats
+async function loadOverview(){
+  const _sc=await gtpClient(); if(!_sc) return;
+  const { data:cos } = await _sc.from('companies').select('plan,country,sector,verified,kyb_status');
+  const companies=cos||[];
+  const total=companies.length;
+  const paid=companies.filter(c=>(c.plan||'free')!=='free');
+  const mrr=companies.reduce((s,c)=>s+(PLAN_PRICE[c.plan]||0),0);
+  const kyb=companies.filter(c=>!c.verified && (!c.kyb_status||c.kyb_status==='pending')).length;
+  setTxt('ov-total',total); setTxt('ov-paid',paid.length); setTxt('ov-free',total-paid.length);
+  setTxt('ov-mrr',eur(mrr)); setTxt('ov-kyb',kyb); setTxt('ov-rev-subs',eur(mrr));
+
+  const { data:lst } = await _sc.from('listings').select('status');
+  setTxt('ov-requests',(lst||[]).filter(l=>(l.status||'active')==='active').length);
+
+  const { data:ads } = await _sc.from('ads').select('amount,status');
+  const adrev=(ads||[]).filter(a=>a.status==='live').reduce((s,a)=>s+(Number(a.amount)||0),0);
+  setTxt('ov-adrev',eur(adrev)); setTxt('ov-rev-ads',eur(adrev)); setTxt('ov-rev-total',eur(mrr+adrev));
+
+  // Members by plan (with proportional bars)
+  const pc={free:0,pro:0,premium:0,market_entry:0};
+  companies.forEach(c=>{ const p=c.plan||'free'; pc[p]=(pc[p]||0)+1; });
+  const mx=Math.max(1,pc.free,pc.pro,pc.premium,pc.market_entry);
+  const bar=(label,val,color)=>`<div style="display:flex;justify-content:space-between;align-items:center;font-size:.8rem;"><span>${label}</span><div style="display:flex;align-items:center;gap:8px;"><div style="width:100px;height:6px;background:var(--mist);border-radius:3px;overflow:hidden;"><div style="width:${Math.round(val/mx*100)}%;height:100%;background:${color};border-radius:3px;"></div></div><span style="font-weight:700;width:30px;text-align:right;">${val}</span></div></div>`;
+  setHTML('ov-byplan','<div style="display:flex;flex-direction:column;gap:8px;">'+
+    bar('Free',pc.free,'var(--mid)')+bar('Pro €59',pc.pro,'var(--teal)')+
+    bar('Premium €179',pc.premium,'var(--gold)')+bar('Market Entry €269',pc.market_entry,'var(--gold-lt)')+'</div>');
+
+  setHTML('ov-byregion', topCounts(companies.map(c=>c.country)));
+  setHTML('ov-bysector', topCounts(companies.map(c=>c.sector)));
+
+  // Recent activity from real registrations + listings
+  const box=document.getElementById('ov-activity');
+  if(box){
+    const { data:rc } = await _sc.from('companies').select('name,country,sector,created_at').order('created_at',{ascending:false}).limit(6);
+    const { data:rl } = await _sc.from('listings').select('title,product,country,created_at').order('created_at',{ascending:false}).limit(6);
+    const items=[];
+    (rc||[]).forEach(c=>items.push({ts:c.created_at,dot:'ad-grn',html:`<strong>${esc(c.name||'A company')}</strong> registered — ${esc(c.country||'')}${c.sector?(' · '+esc(c.sector)):''}`}));
+    (rl||[]).forEach(l=>items.push({ts:l.created_at,dot:'ad-teal',html:`New trade request: <strong>${esc(l.title||l.product||'')}</strong>${l.country?(' · '+esc(l.country)):''}`}));
+    items.sort((a,b)=>new Date(b.ts)-new Date(a.ts));
+    box.innerHTML = items.length
+      ? items.slice(0,8).map(i=>`<div class="af-item"><div class="af-dot ${i.dot}"></div><div class="af-text">${i.html}</div><div class="af-time">${tAgo(i.ts)}</div></div>`).join('')
+      : '<div style="padding:14px;color:var(--mid);font-size:.8rem;">No recent activity yet.</div>';
+  }
+}
+
+// KYB REVIEWS — pending companies awaiting verification
+async function loadKYB(){
+  const box=document.getElementById('adm-kyb'); if(!box) return;
+  const _sc=await gtpClient(); if(!_sc) return;
+  const { data, error } = await _sc.from('companies')
+    .select('id,name,email,country,sector,company_type,verified,kyb_status,created_at')
+    .or('kyb_status.eq.pending,kyb_status.is.null')
+    .order('created_at',{ascending:true});
+  if(error){ box.innerHTML='<div style="padding:16px;color:#c0392b;">'+esc(error.message)+'</div>'; return; }
+  const rows=(data||[]).filter(c=>!c.verified);
+  setTxt('adm-kyb-count', rows.length);
+  if(!rows.length){ box.innerHTML='<div style="padding:18px;color:var(--mid);font-size:.85rem;">No pending verifications — queue is clear.</div>'; return; }
+  box.innerHTML=rows.map(c=>`
+    <div class="kyb-card" id="kyb-${c.id}">
+      <div class="kyb-card-hd">
+        <div><div class="kyb-co-name">${esc(c.name||'—')}</div><div class="kyb-co-sub">${esc(c.country||'')} · ${esc(c.sector||'')} · ${esc(c.company_type||'')} · ${esc(c.email||'')}</div></div>
+        <span class="bdg bdg-gold">Pending</span>
+      </div>
+      <div class="kyb-actions">
+        <button class="btn btn-grn btn-sm" onclick="approveKYB('${c.id}')">Approve &amp; Verify</button>
+        <button class="btn btn-red btn-sm" onclick="rejectKYB('${c.id}')">Reject</button>
+      </div>
+    </div>`).join('');
+}
+async function approveKYB(id){
+  const _sc=await gtpClient(); if(!_sc) return;
+  const { error } = await _sc.from('companies').update({verified:true,kyb_status:'approved'}).eq('id',id);
+  if(error){ alert('Could not approve: '+error.message); return; }
+  const el=document.getElementById('kyb-'+id); if(el) el.remove();
+  loadKYB(); if(window.loadMembers && ADM_MEMBERS.length) loadMembers();
+}
+async function rejectKYB(id){
+  if(!confirm('Reject this application?')) return;
+  const _sc=await gtpClient(); if(!_sc) return;
+  const { error } = await _sc.from('companies').update({kyb_status:'rejected'}).eq('id',id);
+  if(error){ alert('Could not reject: '+error.message); return; }
+  const el=document.getElementById('kyb-'+id); if(el) el.remove(); loadKYB();
+}
+
+// TRADE REQUESTS — all listings, moderate/remove
+async function loadRequests(){
+  const tb=document.getElementById('adm-requests'); if(!tb) return;
+  const _sc=await gtpClient(); if(!_sc) return;
+  const { data, error } = await _sc.from('listings')
+    .select('id,title,product,type,country,quantity,status,created_at,companies(name)')
+    .order('created_at',{ascending:false});
+  if(error){ tb.innerHTML='<tr><td colspan="7" style="padding:16px;color:#c0392b;">'+esc(error.message)+'</td></tr>'; return; }
+  const rows=data||[];
+  setTxt('adm-req-count', rows.length);
+  if(!rows.length){ tb.innerHTML='<tr><td colspan="7" style="padding:16px;color:var(--mid);">No trade requests yet.</td></tr>'; return; }
+  let repCounts={};
+  const { data:reps } = await _sc.from('trade_replies').select('listing_id').in('listing_id', rows.map(r=>r.id));
+  (reps||[]).forEach(r=>{ repCounts[r.listing_id]=(repCounts[r.listing_id]||0)+1; });
+  tb.innerHTML=rows.map(r=>{
+    const isExport=(r.type==='export_offer'||r.type==='export');
+    const st=r.status||'active';
+    const stBadge = st==='active'?'<span class="bdg bdg-grn">Live</span>':(st==='pending'?'<span class="bdg bdg-gold">Pending</span>':'<span class="bdg bdg-mid">'+esc(st)+'</span>');
+    const co=(r.companies&&r.companies.name)||'—';
+    return `<tr id="req-${r.id}">
+      <td><strong>${esc(r.title||r.product||'Request')}</strong><div style="font-size:.68rem;color:var(--mid);">${esc(r.quantity||'')}</div></td>
+      <td><span class="bdg ${isExport?'bdg-teal':'bdg-blue'}">${isExport?'Export':'Import'}</span></td>
+      <td>${esc(r.country||'')}</td><td>${esc(co)}</td><td>${stBadge}</td><td>${repCounts[r.id]||0}</td>
+      <td>${st!=='active'?`<button class="btn btn-grn btn-sm" style="margin-right:3px;" onclick="setListingStatus('${r.id}','active')">Approve</button>`:''}<button class="btn btn-red btn-sm" onclick="removeListing('${r.id}')">Remove</button></td>
+    </tr>`;
+  }).join('');
+}
+async function setListingStatus(id,status){
+  const _sc=await gtpClient(); if(!_sc) return;
+  const { error } = await _sc.from('listings').update({status}).eq('id',id);
+  if(error){ alert('Could not update: '+error.message); return; } loadRequests();
+}
+async function removeListing(id){
+  if(!confirm('Remove this listing? This permanently deletes it.')) return;
+  const _sc=await gtpClient(); if(!_sc) return;
+  const { error } = await _sc.from('listings').delete().eq('id',id);
+  if(error){ alert('Could not remove: '+error.message); return; }
+  const el=document.getElementById('req-'+id); if(el) el.remove(); loadRequests();
+}
+
+// ADS
+async function loadAds(){
+  const tb=document.getElementById('adm-ads'); if(!tb) return;
+  const _sc=await gtpClient(); if(!_sc) return;
+  const { data, error } = await _sc.from('ads').select('*').order('created_at',{ascending:false});
+  if(error){ tb.innerHTML='<tr><td colspan="6" style="padding:16px;color:#c0392b;">'+esc(error.message)+'</td></tr>'; return; }
+  const rows=data||[]; const live=rows.filter(a=>a.status==='live');
+  setTxt('adm-ads-live', live.length); setTxt('adm-ads-total', rows.length);
+  setTxt('adm-ads-rev', eur(live.reduce((s,a)=>s+(Number(a.amount)||0),0)));
+  if(!rows.length){ tb.innerHTML='<tr><td colspan="6" style="padding:16px;color:var(--mid);">No ads yet — click “+ Add Ad Slot”.</td></tr>'; return; }
+  tb.innerHTML=rows.map(a=>`
+    <tr id="ad-${a.id}">
+      <td><strong>${esc(a.advertiser||'—')}</strong></td><td>${esc(a.type||'')}</td><td>${esc(a.period||'')}</td>
+      <td>${eur(a.amount)}</td>
+      <td>${a.status==='live'?'<span class="bdg bdg-grn">Live</span>':'<span class="bdg bdg-mid">'+esc(a.status||'')+'</span>'}</td>
+      <td>${a.status==='live'?`<button class="btn btn-out btn-sm" style="margin-right:3px;" onclick="setAdStatus('${a.id}','ended')">End</button>`:`<button class="btn btn-grn btn-sm" style="margin-right:3px;" onclick="setAdStatus('${a.id}','live')">Set Live</button>`}<button class="btn btn-red btn-sm" onclick="deleteAd('${a.id}')">Delete</button></td>
+    </tr>`).join('');
+}
+async function createAd(){
+  const adv=(document.getElementById('ad-advertiser').value||'').trim();
+  const parts=(document.getElementById('ad-type').value||'|0').split('|');
+  const type=parts[0], amount=Number(parts[1])||0;
+  const period=(document.getElementById('ad-period').value||'').trim();
+  if(!adv){ alert('Enter the advertiser company name.'); return; }
+  const _sc=await gtpClient(); if(!_sc) return;
+  const { error } = await _sc.from('ads').insert({advertiser:adv,type,amount,period,status:'live'});
+  if(error){ alert('Could not create ad: '+error.message); return; }
+  await _sc.from('invoices').insert({invoice_no:nextInvNo(),company_name:adv,description:(type+' '+period).trim(),amount,status:'pending'});
+  document.getElementById('ad-advertiser').value=''; document.getElementById('ad-period').value='';
+  closeMo('mo-ad'); loadAds(); if(document.getElementById('adm-invoices')) loadInvoices();
+}
+async function setAdStatus(id,status){
+  const _sc=await gtpClient(); if(!_sc) return;
+  const { error } = await _sc.from('ads').update({status}).eq('id',id);
+  if(error){ alert(error.message); return; } loadAds();
+}
+async function deleteAd(id){
+  if(!confirm('Delete this ad?')) return;
+  const _sc=await gtpClient(); if(!_sc) return;
+  const { error } = await _sc.from('ads').delete().eq('id',id);
+  if(error){ alert(error.message); return; }
+  const el=document.getElementById('ad-'+id); if(el) el.remove(); loadAds();
+}
+
+// INVOICES + REVENUE (manual ledger)
+async function loadInvoices(){
+  const tb=document.getElementById('adm-invoices'); if(!tb) return;
+  const _sc=await gtpClient(); if(!_sc) return;
+  const { data, error } = await _sc.from('invoices').select('*').order('issued_on',{ascending:false});
+  if(error){ tb.innerHTML='<tr><td colspan="6" style="padding:16px;color:#c0392b;">'+esc(error.message)+'</td></tr>'; return; }
+  const rows=data||[];
+  if(!rows.length){ tb.innerHTML='<tr><td colspan="6" style="padding:16px;color:var(--mid);">No invoices yet — add one or create an ad.</td></tr>'; }
+  else tb.innerHTML=rows.map(v=>`
+    <tr>
+      <td>${esc(v.invoice_no||'—')}</td><td>${esc(v.company_name||'—')}</td><td>${esc(v.description||'')}</td>
+      <td>${eur(v.amount)}</td><td style="color:var(--mid);">${v.issued_on||''}</td>
+      <td>${v.status==='paid'?'<span class="bdg bdg-grn">Paid</span>':`<button class="btn btn-g btn-sm" onclick="markPaid('${v.id}')">Mark Paid</button>`}</td>
+    </tr>`).join('');
+  const paid=rows.filter(v=>v.status==='paid').reduce((s,v)=>s+(Number(v.amount)||0),0);
+  const out=rows.filter(v=>v.status!=='paid').reduce((s,v)=>s+(Number(v.amount)||0),0);
+  setTxt('adm-paid', eur(paid)); setTxt('adm-outstanding', eur(out));
+  // MRR from members' plans
+  let members=ADM_MEMBERS;
+  if(!members.length){ const {data:cos}=await _sc.from('companies').select('plan'); members=cos||[]; }
+  setTxt('adm-mrr', eur(members.reduce((s,m)=>s+(PLAN_PRICE[m.plan]||0),0)));
+  // live ad revenue
+  const {data:ads}=await _sc.from('ads').select('amount,status');
+  setTxt('adm-adrev', eur((ads||[]).filter(a=>a.status==='live').reduce((s,a)=>s+(Number(a.amount)||0),0)));
+}
+async function markPaid(id){
+  const _sc=await gtpClient(); if(!_sc) return;
+  const { error } = await _sc.from('invoices').update({status:'paid'}).eq('id',id);
+  if(error){ alert(error.message); return; } loadInvoices();
+}
+async function addInvoice(){
+  const company=prompt('Company name for this invoice:'); if(!company) return;
+  const desc=prompt('Description (e.g. Premium — Jun 2025):')||'';
+  const amount=parseFloat(prompt('Amount in €:')||'0')||0;
+  const _sc=await gtpClient(); if(!_sc) return;
+  const { error } = await _sc.from('invoices').insert({invoice_no:nextInvNo(),company_name:company,description:desc,amount,status:'pending'});
+  if(error){ alert('Could not add: '+error.message); return; } loadInvoices();
 }
 
 function adminLogout(){
