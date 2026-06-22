@@ -1,4 +1,3 @@
-
 :root{
   --teal:#0A7369;--teal-dk:#065550;--teal-lt:#0E9B8F;
   --gold:#C8922A;--gold-lt:#E8B84B;
@@ -85,10 +84,11 @@ nav{position:sticky;top:0;z-index:200;background:var(--ink2);border-bottom:2px s
 .sl{font-size:.67rem;letter-spacing:.07em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-top:3px;}
 
 .rstrip{background:var(--sand-dk);border-bottom:1px solid var(--mist);padding:11px 32px;}
-.rstrip-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
-.rstrip-lbl{font-size:.67rem;letter-spacing:.12em;text-transform:uppercase;font-weight:700;color:var(--mid);}
-.rflags{display:flex;gap:6px;flex-wrap:wrap;}
-.rflag{display:flex;align-items:center;gap:5px;font-size:.75rem;color:var(--ink2);font-weight:500;padding:4px 10px;background:var(--white);border:1.5px solid var(--mist);border-radius:20px;cursor:pointer;transition:border-color .15s,color .15s;}
+.rstrip-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:16px;flex-wrap:nowrap;}
+.rstrip-lbl{font-size:.67rem;letter-spacing:.12em;text-transform:uppercase;font-weight:700;color:var(--mid);flex-shrink:0;}
+.rflags{display:flex;gap:6px;flex-wrap:nowrap;overflow-x:auto;flex:1 1 auto;min-width:0;scrollbar-width:none;-ms-overflow-style:none;}
+.rflags::-webkit-scrollbar{display:none;}
+.rflag{display:flex;align-items:center;gap:5px;font-size:.75rem;color:var(--ink2);font-weight:500;padding:4px 10px;background:var(--white);border:1.5px solid var(--mist);border-radius:20px;cursor:pointer;transition:border-color .15s,color .15s;flex-shrink:0;white-space:nowrap;}
 .rflag:hover,.rflag.on{border-color:var(--teal);color:var(--teal);}
 .fd2{width:7px;height:7px;border-radius:50%;}
 .d-uae{background:#009A44;}.d-ksa{background:#006C35;}.d-kwt{background:#007A3D;}.d-qat{background:#8D1B3D;}.d-omn{background:#DB161B;}.d-bhr{background:#CE1126;}
@@ -267,7 +267,7 @@ footer{background:#0D0D0D;padding:46px 32px 24px;}
 .mo-ta:focus{border-color:var(--teal);}
 
 @media(max-width:900px){
-  .topbar,.rstrip{display:none;}
+  .topbar{display:none;}
   nav{top:0;}
   .nav-inner{padding:0 16px;}
   .hero-inner{grid-template-columns:1fr;}
