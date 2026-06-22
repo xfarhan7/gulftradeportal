@@ -1156,15 +1156,41 @@ const BOARD_HOME=[
   {t:'export',title:'Grade 60 Steel Rebar &mdash; 12mm to 25mm',c:'Germany',qty:'500MT available',sec:'Construction',seek:'UAE or GCC construction importer',desc:'German manufacturer surplus stock. CE certified. FOB Hamburg or CIF Jebel Ali.',posted:'Yesterday',urg:false,co:'German Metals GmbH'},
   {t:'import',title:'Organic Extra Virgin Olive Oil',c:'Kuwait',qty:'20,000 litres/month',sec:'Food &amp; Beverages',seek:'Spanish, Italian, or Greek EVOO producer',desc:'Certified organic EVOO. Private label welcome.',posted:'Yesterday',urg:false,co:'Gulf Premium Foods'},
 ];
-(function(){
+function isLoggedInHome(){
+  return !!(window.GTP_LOGGED_IN || Object.keys(localStorage).some(k=>k.includes('-auth-token')));
+}
+function tAgoHome(ts){
+  if(!ts) return 'New';
+  const d=(Date.now()-new Date(ts).getTime())/1000;
+  if(d<3600) return Math.max(1,Math.floor(d/60))+'m ago';
+  if(d<86400) return Math.floor(d/3600)+'h ago';
+  if(d<172800) return 'Yesterday';
+  return Math.floor(d/86400)+'d ago';
+}
+function mapHomeListing(r){
+  const isExport=(r.type==='export_offer'||r.type==='export');
+  return {
+    t: isExport?'export':'import',
+    title: r.title || r.product || 'Trade Request',
+    c: r.country || '',
+    qty: r.quantity || '',
+    seek: isExport ? 'GCC buyers & distributors' : ('Verified '+(r.category||'supplier')),
+    desc: r.description || '',
+    posted: tAgoHome(r.created_at),
+    urg: !!r.urgent,
+    co: 'Verified Member'
+  };
+}
+function renderHomeBoard(items, loggedIn){
   const g=document.getElementById('homeBoard');
   if(!g)return;
-  // Free users: cards 0,1 visible; card 1 (ad/sponsored) company blurred; cards 2+ blurred
-  g.innerHTML=BOARD_HOME.map((item,idx)=>{
+  // Logged-out visitors see a teaser: cards 3+ blurred behind a "Members only"
+  // overlay. Logged-in members see every card in full.
+  g.innerHTML=items.map((item,idx)=>{
     const isAd      = item.t==='ad';
     const isUrgent  = item.urg;
-    const blurAll   = idx > 1 && !isAd;   // full blur on cards 3+
-    const blurCo    = isAd || isUrgent;    // only company blurred on sponsored/urgent
+    const blurAll   = idx > 1 && !isAd && !loggedIn;
+    const blurCo    = (isAd || isUrgent) && !loggedIn;
 
     return `
     <div class="bc ${isAd?'ad':''}" style="cursor:pointer;position:relative;overflow:hidden;" onclick="window.location.href='trade-board.html'">
@@ -1200,7 +1226,31 @@ const BOARD_HOME=[
       </div>
     </div>`;
   }).join('');
-})();
+}
+async function loadHomeBoard(){
+  const loggedIn=isLoggedInHome();
+  try {
+    if(typeof gtpClient==='function'){
+      const _sc=await gtpClient();
+      if(_sc){
+        const { data } = await _sc.from('listings')
+          .select('type,title,product,country,quantity,category,description,urgent,status,created_at')
+          .eq('status','active')
+          .order('created_at',{ascending:false})
+          .limit(6);
+        if(data && data.length){
+          renderHomeBoard(data.map(mapHomeListing), loggedIn);
+          return;
+        }
+      }
+    }
+  } catch(e){ /* fall through to demo teaser */ }
+  // No real listings yet (or offline) — show the demo teaser so the section isn't empty.
+  renderHomeBoard(BOARD_HOME, loggedIn);
+}
+loadHomeBoard();
+// Re-render once auth state is confirmed, so members get the unblurred view.
+window.onGtpAuthReady = function(){ try{ loadHomeBoard(); }catch(e){} };
 </script>
 
 
