@@ -382,7 +382,8 @@ img, svg, canvas { max-width: 100%; height: auto; }
   .btn-nav { padding: 6px 10px; font-size: .68rem; }
   .hero h1, .hero-title { font-size: 1.45rem !important; }
   .stat-item, .stat { flex: 0 0 45% !important; }
-  .foot-top { grid-template-columns: 1fr !important; }
+  .foot-top { grid-template-columns: 1fr 1fr !important; }
+  .foot-col div[style*="grid-template-columns:1fr 1fr"] { grid-template-columns: 1fr !important; }
   .sech { font-size: 1.3rem !important; }
   .pkg-tabs { width: 100%; }
   .ptab { flex: 1; justify-content: center; padding: 9px 6px; font-size: .7rem; }

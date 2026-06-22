@@ -365,24 +365,75 @@ function gtpRespond(){
     window.location.href = 'register.html';
     return;
   }
-  // Logged in — check free-tier daily reply limit
-  const plan = (localStorage.getItem('gtp_plan') || 'free').toLowerCase();
-  const isPaid = ['pro','premium','market_entry','pro_importer','pro_exporter','corporate'].includes(plan);
-  if(!isPaid){
-    // Free tier: 1 reply per day
-    const today = new Date().toISOString().slice(0,10);
-    const key = 'gtp_replies_' + today;
-    const used = parseInt(localStorage.getItem(key) || '0', 10);
-    if(used >= 1){
-      if(confirm('Free accounts can respond to 1 lead per day. Upgrade to Pro for unlimited responses. View packages now?')){
-        window.location.href = 'packages.html';
+  // Logged in — open the reply modal (no listing context: sample card)
+  gtpReplyClick(null, null);
+}
+
+// Open the reply modal for a specific REAL listing (carries listing + owner).
+function gtpReplyClick(listingId, ownerId){
+  const loggedIn = window.GTP_LOGGED_IN || Object.keys(localStorage).some(k=>k.includes('-auth-token'));
+  if(!loggedIn){
+    alert('Please register (free) to respond to trade requests.');
+    window.location.href = 'register.html';
+    return;
+  }
+  window.gtpActiveReply = { listingId: listingId || null, ownerId: ownerId || null };
+  if(!listingId){
+    // Sample/demo card — there is no real request to attach a reply to.
+    alert('This is a sample listing. Real member requests appear at the top of the board — respond to one of those and the buyer will get your message by email.');
+    return;
+  }
+  openMo('mo-resp');
+}
+
+// Store the reply in Supabase. The DB policy (reply_limit_enforced) is what
+// actually enforces the 1/day free limit + unlimited-for-paid rule, server-side.
+async function submitReply(){
+  const a = window.gtpActiveReply || {};
+  if(!a.listingId){ alert('Please pick a request to respond to.'); return; }
+  const co      = (document.getElementById('resp-co').value || '').trim();
+  const country = (document.getElementById('resp-country').value || '').trim();
+  const message = (document.getElementById('resp-msg').value || '').trim();
+  const contact = (document.getElementById('resp-contact').value || '').trim();
+  if(!co || !message){ alert('Please add your company name and a message.'); return; }
+
+  const _sc = await gtpClient(); if(!_sc){ alert('Still connecting — please try again in a moment.'); return; }
+  const { data:{ session } } = await _sc.auth.getSession();
+  if(!session || !session.user){ alert('Your session expired — please sign in again.'); window.location.href='register.html'; return; }
+
+  const btn = document.getElementById('resp-btn');
+  if(btn){ btn.disabled = true; btn.textContent = 'Sending…'; }
+
+  try {
+    const { error } = await _sc.from('trade_replies').insert({
+      listing_id: a.listingId,
+      user_id: session.user.id,
+      company_name: co,
+      country: country,
+      message: message,
+      contact: contact
+    });
+    if(error){
+      const m = (error.message || '').toLowerCase();
+      // The RLS policy rejects the insert when the free daily limit is hit.
+      if(m.includes('policy') || m.includes('row-level') || m.includes('violates')){
+        if(confirm('Free accounts can respond to 1 request per day. Upgrade to Pro for unlimited responses. View packages now?')){
+          window.location.href = 'packages.html';
+        }
+      } else {
+        alert('Could not send: ' + (error.message || 'please try again.'));
       }
+      if(btn){ btn.disabled = false; btn.textContent = 'Send Response →'; }
       return;
     }
-    localStorage.setItem(key, String(used + 1));
+    document.getElementById('resp-succ').style.display = 'block';
+    ['resp-co','resp-country','resp-msg','resp-contact'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+    setTimeout(()=>closeMo('mo-resp'), 2500);
+  } catch(e){
+    alert('Could not send: ' + (e.message || 'please try again.'));
+  } finally {
+    if(btn){ btn.disabled = false; btn.textContent = 'Send Response →'; }
   }
-  // Allowed — open the respond modal
-  openMo('mo-resp');
 }
 
 function openMo(id){const el=document.getElementById(id);if(el)el.classList.add('open');}
@@ -409,11 +460,11 @@ document.addEventListener('click',e=>{if(e.target.classList.contains('mo'))e.tar
   <button class="mo-x" onclick="closeMo('mo-resp')">×</button>
   <h3 class="mo-h">Respond to This Request</h3>
   <p class="mo-sub">The GCC buyer will receive your company details directly.</p>
-  <div class="fg"><label>Your Company</label><input type="text" placeholder="Company name"></div>
-  <div class="fg"><label>Country</label><input type="text" placeholder="Netherlands, Germany, Malaysia…"></div>
-  <div class="fg"><label>Your Message</label><textarea style="font-family:Inter,sans-serif;font-size:.85rem;border:1.5px solid var(--mist);border-radius:4px;padding:9px;width:100%;outline:none;resize:vertical;min-height:76px;" placeholder="Describe your offer, pricing, certifications…"></textarea></div>
-  <div class="fg"><label>WhatsApp / Email</label><input type="text" placeholder="+31 6 00 000 000"></div>
-  <button class="btn-next" style="width:100%;margin-top:4px;" onclick="document.getElementById('resp-succ').style.display='block';setTimeout(()=>closeMo('mo-resp'),2500)">Send Response →</button>
+  <div class="fg"><label>Your Company</label><input type="text" id="resp-co" placeholder="Company name"></div>
+  <div class="fg"><label>Country</label><input type="text" id="resp-country" placeholder="Netherlands, Germany, Malaysia…"></div>
+  <div class="fg"><label>Your Message</label><textarea id="resp-msg" style="font-family:Inter,sans-serif;font-size:.85rem;border:1.5px solid var(--mist);border-radius:4px;padding:9px;width:100%;outline:none;resize:vertical;min-height:76px;" placeholder="Describe your offer, pricing, certifications…"></textarea></div>
+  <div class="fg"><label>WhatsApp / Email</label><input type="text" id="resp-contact" placeholder="+31 6 00 000 000"></div>
+  <button class="btn-next" id="resp-btn" style="width:100%;margin-top:4px;" onclick="submitReply()">Send Response →</button>
   <div id="resp-succ" class="succ">✓ Sent! The buyer will receive your details within 24 hours.</div>
 </div></div>
 <script>
@@ -532,7 +583,7 @@ function renderBoard(filter){
 
     return `
     <div class="bc ${isAd?'ad':''}" style="cursor:pointer;position:relative;" 
-         onclick="${!blurAll && x.t!=='ad' ? "openMo('mo-resp')" : ''}">
+         onclick="${!blurAll && x.t!=='ad' ? `gtpReplyClick(${x.real?`'${x.id}','${x.ownerId}'`:'null,null'})` : ''}">
       <div class="bc-hd">
         <div class="bc-badges">
           ${isAd?'<span class="bdg b-a">&#11088; Sponsored</span>':''}
@@ -569,7 +620,7 @@ function renderBoard(filter){
           <strong style="${blurContact||blurAll?'filter:blur(4px);user-select:none;':''}">${blurContact||blurAll?'████████ ████':x.co}</strong>
         </span>
         ${!blurAll ? `
-          <button class="bx bx-t" onclick="event.stopPropagation();${blurContact?'openMo(\'mo-register\')':'openMo(\'mo-resp\')'}">${isAd?'Contact &rarr;':'Respond'}</button>
+          <button class="bx bx-t" onclick="event.stopPropagation();${blurContact?'openMo(\'mo-register\')':`gtpReplyClick(${x.real?`'${x.id}','${x.ownerId}'`:'null,null'})`}">${isAd?'Contact &rarr;':'Respond'}</button>
         ` : ''}
       </div>
     </div>`;
@@ -772,6 +823,8 @@ async function loadRealListings(){
     if(data && data.length){
       // Map DB rows to the board's card format
       const realCards = data.map(r => ({
+        id: r.id,
+        ownerId: r.user_id,
         t: r.type === 'export_offer' ? 'export' : 'import',
         title: r.title || 'Trade Request',
         c: r.country || '',

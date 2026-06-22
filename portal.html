@@ -287,10 +287,10 @@ window.__gtpGateFailsafe = setTimeout(function(){
     <div class="sb-logo-sub">Client Portal</div>
   </div>
   <div class="sb-user">
-    <div class="sb-avatar">FA</div>
+    <div class="sb-avatar" id="sb-avatar">FA</div>
     <div class="sb-user-info">
-      <div class="sb-user-name">Farhan A.</div>
-      <div class="sb-user-co">Excorp Distribution B.V.</div>
+      <div class="sb-user-name" id="sb-user-name">Loading…</div>
+      <div class="sb-user-co" id="sb-user-co"></div>
       <span class="sb-status status-verified">
         <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
         Verified
@@ -391,8 +391,8 @@ window.__gtpGateFailsafe = setTimeout(function(){
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
           </div>
           <div class="vb-text">
-            <strong>Company Verified — Excorp Distribution B.V.</strong>
-            <p>KVK 12345678 · BTW NL123456789B01 · Verified 14 Jun 2025 · Pro Importer plan · EU + USA + Asia suppliers</p>
+            <strong id="vb-company">Your Company</strong>
+            <p id="vb-sub">Welcome to your Gulf Trade Portal.</p>
           </div>
         </div>
         <button class="tb-btn tb-btn-teal" onclick="showPanel('kyb',document.querySelector('[onclick*=kyb]'))">View Verification</button>
@@ -401,28 +401,28 @@ window.__gtpGateFailsafe = setTimeout(function(){
       <div class="stats-row">
         <div class="stat-card">
           <div class="sc-label">Active Requests</div>
-          <div id="pp-active-count" class="sc-val">4</div>
-          <div class="sc-sub"><span class="sc-up">+2</span> this month</div>
+          <div id="pp-active-count" class="sc-val">0</div>
+          <div class="sc-sub">Your live listings</div>
         </div>
         <div class="stat-card">
           <div class="sc-label">Supplier Responses</div>
-          <div class="sc-val">11</div>
-          <div class="sc-sub"><span class="sc-up">6 new</span> unread</div>
+          <div id="pp-responses-count" class="sc-val">0</div>
+          <div class="sc-sub"><span class="sc-up" id="pp-responses-unread">0 new</span> unread</div>
         </div>
         <div class="stat-card">
           <div class="sc-label">Profile Views</div>
-          <div class="sc-val">284</div>
-          <div class="sc-sub"><span class="sc-up">↑ 34%</span> vs last month</div>
+          <div class="sc-val">—</div>
+          <div class="sc-sub">Not tracked yet</div>
         </div>
         <div class="stat-card">
-          <div class="sc-label">Matched Suppliers</div>
-          <div class="sc-val">8</div>
-          <div class="sc-sub">Via email alerts</div>
+          <div class="sc-label">Conversations</div>
+          <div id="pp-threads-count" class="sc-val">0</div>
+          <div class="sc-sub">Active threads</div>
         </div>
         <div class="stat-card">
           <div class="sc-label">Next Invoice</div>
-          <div class="sc-val" style="font-size:1.3rem;">€59</div>
-          <div class="sc-sub">Due 1 Jul 2025</div>
+          <div class="sc-val" style="font-size:1.3rem;">—</div>
+          <div class="sc-sub">No invoice due</div>
         </div>
       </div>
 
@@ -436,10 +436,7 @@ window.__gtpGateFailsafe = setTimeout(function(){
             <table class="tbl">
               <thead><tr><th>Product</th><th>Status</th><th>Responses</th></tr></thead>
               <tbody id="pp-recent">
-                <tr><td><strong>Nespresso OL Capsules</strong><div style="font-size:.71rem;color:var(--mid);">50,000 sleeves/mo · UAE</div></td><td><span class="bdg bdg-grn">Live</span></td><td><span style="color:var(--teal);font-weight:700;">4</span></td></tr>
-                <tr><td><strong>Halal Frozen Chicken</strong><div style="font-size:.71rem;color:var(--mid);">50MT · Saudi Arabia</div></td><td><span class="bdg bdg-grn">Live</span></td><td><span style="color:var(--teal);font-weight:700;">2</span></td></tr>
-                <tr><td><strong>Steel Rebar Grade 60</strong><div style="font-size:.71rem;color:var(--mid);">500MT/mo · UAE</div></td><td><span class="bdg bdg-gold">Pending</span></td><td><span style="color:var(--mid);">0</span></td></tr>
-                <tr><td><strong>Organic Olive Oil</strong><div style="font-size:.71rem;color:var(--mid);">20,000L/mo · Kuwait</div></td><td><span class="bdg bdg-grn">Live</span></td><td><span style="color:var(--teal);font-weight:700;">5</span></td></tr>
+                <tr><td colspan="3" style="color:var(--mid);font-size:.8rem;padding:14px;">Loading…</td></tr>
               </tbody>
             </table>
           </div>
@@ -449,31 +446,8 @@ window.__gtpGateFailsafe = setTimeout(function(){
             <span class="card-title">Latest Supplier Responses</span>
             <button class="ibtn ibtn-o" onclick="showPanel('responses',document.querySelectorAll('.sb-link')[2])">View all</button>
           </div>
-          <div class="notif-list">
-            <div class="notif-item unread" onclick="showPanel('responses',document.querySelectorAll('.sb-link')[2])">
-              <div class="notif-dot nd-teal"></div>
-              <div class="notif-body">
-                <div class="notif-title">Dutch Food Export BV responded</div>
-                <div class="notif-sub">Re: Nespresso OL Capsules — "We can supply 60,000+ sleeves/month, all varieties, EU origin. CIF Dubai available."</div>
-              </div>
-              <div class="notif-time">2h ago</div>
-            </div>
-            <div class="notif-item unread" onclick="showPanel('responses',document.querySelectorAll('.sb-link')[2])">
-              <div class="notif-dot nd-teal"></div>
-              <div class="notif-body">
-                <div class="notif-title">Iberia Food Group responded</div>
-                <div class="notif-sub">Re: Organic Olive Oil — "Certified organic EVOO, PDO Spain origin. Private label available. Send specs."</div>
-              </div>
-              <div class="notif-time">5h ago</div>
-            </div>
-            <div class="notif-item" onclick="showPanel('responses',document.querySelectorAll('.sb-link')[2])">
-              <div class="notif-dot nd-gold"></div>
-              <div class="notif-body">
-                <div class="notif-title">Halal Poultry EU responded</div>
-                <div class="notif-sub">Re: Halal Frozen Chicken — "SFDA registered, Brazil Halal, CIF Jeddah. MOQ 20MT. Quote attached."</div>
-              </div>
-              <div class="notif-time">Yesterday</div>
-            </div>
+          <div class="notif-list" id="pp-latest">
+            <div style="padding:14px 18px;color:var(--mid);font-size:.8rem;">Loading…</div>
           </div>
         </div>
       </div>
@@ -545,62 +519,11 @@ window.__gtpGateFailsafe = setTimeout(function(){
     <div class="panel" id="panel-responses">
       <div style="margin-bottom:18px;">
         <div style="font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--teal);font-weight:700;margin-bottom:4px;">Inbound</div>
-        <h2 style="font-family:Cairo,sans-serif;font-size:1.25rem;font-weight:700;">Supplier Responses</h2>
+        <h2 style="font-family:Cairo,sans-serif;font-size:1.25rem;font-weight:700;">Conversations</h2>
+        <p style="font-size:.78rem;color:var(--mid);margin-top:4px;">Replies to your requests and your replies to others — all in one place. Messages stay on-platform.</p>
       </div>
-      <div class="card" style="margin-bottom:16px;">
-        <div class="card-head">
-          <div>
-            <div class="card-title">Dutch Food Export BV · Netherlands</div>
-            <div style="font-size:.72rem;color:var(--mid);margin-top:2px;">Re: Nespresso Original Line Capsules · <span class="bdg bdg-teal" style="font-size:.6rem;">Verified EU Supplier</span></div>
-          </div>
-          <div style="display:flex;gap:8px;align-items:center;">
-            <span style="font-size:.7rem;color:#AAA;">2h ago</span>
-            <button class="ibtn ibtn-t">Reply via WhatsApp</button>
-            <button class="ibtn ibtn-o">Send Email</button>
-          </div>
-        </div>
-        <div class="card-body">
-          <div class="thread">
-            <div class="thread-msg tm-buyer">
-              <div class="tm-head"><span class="tm-sender">You — Excorp Distribution B.V.</span><span class="tm-time">2 Jun 2025</span></div>
-              <div class="tm-body">Seeking wholesale supplier of Nespresso Original Line capsules, all varieties, minimum 50,000 sleeves per month. EU origin documentation required. CIF Dubai preferred. Please provide pricing and lead times.</div>
-            </div>
-            <div class="thread-msg tm-supplier">
-              <div class="tm-head"><span class="tm-sender">Dutch Food Export BV · Netherlands</span><span class="tm-time">Today, 09:42</span></div>
-              <div class="tm-body">Hello, we can supply all Nespresso OL varieties at 60,000+ sleeves/month from our Netherlands warehouse. We hold valid EU origin documents and can arrange CIF Dubai on 14-day lead time. Our MOQ is 10,000 sleeves per variety. Please share your full SKU list and we can provide a formal quote within 24 hours. WhatsApp: +31 6 XX XXX XXX</div>
-            </div>
-          </div>
-          <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap;">
-            <button class="tb-btn tb-btn-teal" onclick="openMo('mo-reply')">Reply to Supplier</button>
-            <button class="ibtn ibtn-o">Mark as Interested</button>
-            <button class="ibtn ibtn-r">Archive</button>
-          </div>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-head">
-          <div>
-            <div class="card-title">Iberia Food Group · Spain</div>
-            <div style="font-size:.72rem;color:var(--mid);margin-top:2px;">Re: Organic Olive Oil · <span class="bdg bdg-mid" style="font-size:.6rem;">Pending Verification</span></div>
-          </div>
-          <div style="display:flex;gap:8px;align-items:center;">
-            <span style="font-size:.7rem;color:#AAA;">5h ago</span>
-            <button class="ibtn ibtn-t">Reply via WhatsApp</button>
-          </div>
-        </div>
-        <div class="card-body">
-          <div class="thread">
-            <div class="thread-msg tm-supplier">
-              <div class="tm-head"><span class="tm-sender">Iberia Food Group · Spain</span><span class="tm-time">Today, 07:15</span></div>
-              <div class="tm-body">We produce certified organic EVOO from Andalusia, PDO Spain origin. Private label capability for minimum 5,000L. We can supply 25,000L/month initially scaling to 50,000L. HALAL certified. Please send us your packaging specs and target retail price.</div>
-            </div>
-          </div>
-          <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap;">
-            <button class="tb-btn tb-btn-teal" onclick="openMo('mo-reply')">Reply to Supplier</button>
-            <button class="ibtn ibtn-o">Mark as Interested</button>
-            <button class="ibtn ibtn-r">Archive</button>
-          </div>
-        </div>
+      <div id="inbox-list">
+        <div style="font-size:.82rem;color:var(--mid);padding:14px 0;">Loading conversations…</div>
       </div>
     </div>
 
@@ -867,12 +790,8 @@ window.__gtpGateFailsafe = setTimeout(function(){
         <h2 style="font-family:Cairo,sans-serif;font-size:1.25rem;font-weight:700;">Notifications</h2>
       </div>
       <div class="card card-body-0">
-        <div class="notif-list">
-          <div class="notif-item unread"><div class="notif-dot nd-teal"></div><div class="notif-body"><div class="notif-title">Dutch Food Export BV responded to your Nespresso request</div><div class="notif-sub">They can supply 60,000+ sleeves/month with EU origin docs. CIF Dubai available.</div></div><div class="notif-time">2h ago</div></div>
-          <div class="notif-item unread"><div class="notif-dot nd-gold"></div><div class="notif-body"><div class="notif-title">Your trade request "Steel Rebar Grade 60" is under review</div><div class="notif-sub">Our team is verifying your request. Estimated 24h to go live.</div></div><div class="notif-time">6h ago</div></div>
-          <div class="notif-item unread"><div class="notif-dot nd-grn"></div><div class="notif-body"><div class="notif-title">5 new EU suppliers match your Olive Oil request</div><div class="notif-sub">We sent your request to Iberia Food Group, Crete Organics, and 3 more suppliers by email.</div></div><div class="notif-time">Yesterday</div></div>
-          <div class="notif-item"><div class="notif-dot nd-mid" style="background:var(--mid);"></div><div class="notif-body"><div class="notif-title">Invoice INV-2025-003 paid successfully</div><div class="notif-sub">€59.00 charged to Mastercard ending 4242. Pro Importer renewed for June 2025.</div></div><div class="notif-time">1 Jun</div></div>
-          <div class="notif-item"><div class="notif-dot nd-grn"></div><div class="notif-body"><div class="notif-title">Your company verification is complete</div><div class="notif-sub">Excorp Distribution B.V. is now verified. Your listing is live on Gulf Trade Portal.</div></div><div class="notif-time">14 Jun</div></div>
+        <div class="notif-list" id="pp-notifs">
+          <div style="padding:14px 18px;color:var(--mid);font-size:.8rem;">Loading…</div>
         </div>
       </div>
     </div>
@@ -1062,6 +981,8 @@ function showPanel(id, btn) {
   if (btn) btn.classList.add('active');
   document.getElementById('page-title').textContent = TITLES[id] || id;
   window.scrollTo(0, 0);
+  if (id === 'responses') { try { loadInbox(true); } catch(e){ console.warn('inbox', e); } }
+  if (id === 'notifications') { try { loadNotifications(); } catch(e){ console.warn('notifs', e); } }
 }
 
 function openMo(id){document.getElementById(id).classList.add('open');}
@@ -1215,6 +1136,7 @@ async function loadPortal(){
   const _gate = document.getElementById('gtp-auth-gate');
   if(_gate) _gate.style.display = 'none';
   if(window.__gtpGateFailsafe) clearTimeout(window.__gtpGateFailsafe);
+  try { loadDashboard(); } catch(e){ console.warn('dashboard', e); }
 
   // Load the user's company
   let company = null;
@@ -1253,6 +1175,284 @@ async function loadPortal(){
   }
 }
 document.addEventListener('DOMContentLoaded', loadPortal);
+
+// ── THREADED INBOX (on-platform conversations) ──────────────
+let GTP_ME = null;          // my auth uid
+let INBOX_LOADED = false;
+
+function esc(s){ return (s||'').replace(/[<>&]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[c])); }
+function tAgo(ts){
+  if(!ts) return '';
+  const d=(Date.now()-new Date(ts).getTime())/1000;
+  if(d<60) return 'just now';
+  if(d<3600) return Math.floor(d/60)+'m ago';
+  if(d<86400) return Math.floor(d/3600)+'h ago';
+  if(d<604800) return Math.floor(d/86400)+'d ago';
+  return new Date(ts).toLocaleDateString();
+}
+
+async function loadInbox(doMarkRead){
+  const box = document.getElementById('inbox-list');
+  if(!box) return;
+  const _sc = await gtpClient();
+  if(!_sc){ box.innerHTML = '<div style="font-size:.82rem;color:var(--mid);">Still connecting…</div>'; return; }
+  const { data:{ session } } = await _sc.auth.getSession();
+  if(!session || !session.user){ box.innerHTML = '<div style="font-size:.82rem;color:var(--mid);">Please sign in.</div>'; return; }
+  GTP_ME = session.user.id;
+
+  // RLS returns only threads where I'm the buyer (listing owner) or the
+  // supplier (replier). Each row is a thread root.
+  const { data: threads, error } = await _sc
+    .from('trade_replies')
+    .select('id, listing_id, user_id, company_name, country, message, contact, created_at, listings(title, product, user_id)')
+    .order('created_at', { ascending: false });
+
+  if(error){ box.innerHTML = '<div style="font-size:.82rem;color:var(--red,#c0392b);">Could not load conversations: '+esc(error.message)+'</div>'; return; }
+  if(!threads || !threads.length){
+    box.innerHTML = '<div class="card"><div class="card-body" style="text-align:center;color:var(--mid);font-size:.85rem;padding:26px;">No conversations yet. When someone replies to a trade request — or you reply to one — it appears here.</div></div>';
+    updateInboxBadge(0);
+    return;
+  }
+
+  // Load all messages for these threads in one query.
+  const ids = threads.map(t=>t.id);
+  const { data: msgs } = await _sc
+    .from('messages')
+    .select('id, thread_id, sender_id, body, created_at, read_at')
+    .in('thread_id', ids)
+    .order('created_at', { ascending: true });
+  const byThread = {};
+  (msgs||[]).forEach(m=>{ (byThread[m.thread_id]=byThread[m.thread_id]||[]).push(m); });
+
+  let unread = 0;
+  const unreadIds = [];
+  box.innerHTML = threads.map(t=>{
+    const iAmOwner = t.listings && t.listings.user_id === GTP_ME;
+    const other = iAmOwner ? (t.company_name || 'Supplier') + (t.country?(' · '+t.country):'')
+                           : 'Buyer request';
+    const reTitle = (t.listings && (t.listings.title || t.listings.product)) || 'Trade request';
+
+    // First bubble = the original reply (always from the supplier/replier).
+    const replyMine = t.user_id === GTP_ME;
+    let bubbles = `
+      <div class="thread-msg ${replyMine?'tm-buyer':'tm-supplier'}">
+        <div class="tm-head"><span class="tm-sender">${replyMine?'You':esc(t.company_name||'Supplier')}</span><span class="tm-time">${tAgo(t.created_at)}</span></div>
+        <div class="tm-body">${esc(t.message)}</div>
+      </div>`;
+    (byThread[t.id]||[]).forEach(m=>{
+      const mine = m.sender_id === GTP_ME;
+      if(!mine && !m.read_at){ unread++; unreadIds.push(m.id); }
+      bubbles += `
+      <div class="thread-msg ${mine?'tm-buyer':'tm-supplier'}">
+        <div class="tm-head"><span class="tm-sender">${mine?'You':esc(other)}</span><span class="tm-time">${tAgo(m.created_at)}</span></div>
+        <div class="tm-body">${esc(m.body)}</div>
+      </div>`;
+    });
+
+    return `
+    <div class="card" style="margin-bottom:16px;">
+      <div class="card-head">
+        <div>
+          <div class="card-title">${esc(other)}</div>
+          <div style="font-size:.72rem;color:var(--mid);margin-top:2px;">Re: ${esc(reTitle)}</div>
+        </div>
+        <span style="font-size:.7rem;color:#AAA;">${tAgo(t.created_at)}</span>
+      </div>
+      <div class="card-body">
+        <div class="thread">${bubbles}</div>
+        <div style="margin-top:14px;display:flex;gap:8px;">
+          <input type="text" id="mi-${t.id}" placeholder="Write a message…" style="flex:1;font-family:Inter,sans-serif;font-size:.85rem;border:1.5px solid var(--mist);border-radius:5px;padding:9px 11px;outline:none;">
+          <button class="tb-btn tb-btn-teal" onclick="sendMessage('${t.id}')">Send</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  updateInboxBadge(unread);
+  if(doMarkRead && unreadIds.length) markRead(unreadIds);   // only when the inbox is actually open
+}
+
+async function sendMessage(threadId){
+  const input = document.getElementById('mi-'+threadId);
+  if(!input) return;
+  const body = (input.value||'').trim();
+  if(!body) return;
+  const _sc = await gtpClient(); if(!_sc) return;
+  const { data:{ session } } = await _sc.auth.getSession();
+  if(!session || !session.user){ alert('Your session expired — please sign in again.'); return; }
+  input.disabled = true;
+  const { error } = await _sc.from('messages').insert({
+    thread_id: threadId, sender_id: session.user.id, body: body
+  });
+  input.disabled = false;
+  if(error){ alert('Could not send: ' + (error.message||'try again.')); return; }
+  input.value = '';
+  loadInbox(true);   // refresh to show the new message
+}
+
+async function markRead(ids){
+  try {
+    const _sc = await gtpClient(); if(!_sc) return;
+    await _sc.from('messages').update({ read_at: new Date().toISOString() }).in('id', ids);
+  } catch(e){ /* non-critical */ }
+}
+
+function updateInboxBadge(n){
+  // Update the "Supplier Responses / Conversations" sidebar badge.
+  const btn = Array.from(document.querySelectorAll('.sb-link'))
+    .find(b => /responses/i.test(b.getAttribute('onclick')||''));
+  if(!btn) return;
+  let badge = btn.querySelector('.sb-badge');
+  if(n>0){
+    if(!badge){ badge=document.createElement('span'); badge.className='sb-badge'; btn.appendChild(badge); }
+    badge.textContent = n;
+  } else if(badge){ badge.remove(); }
+}
+
+// ── DASHBOARD (live data) ───────────────────────────────────
+function ppSetText(id, v){ const el=document.getElementById(id); if(el) el.textContent = v; }
+function ppSetBadge(linkIndex, n){
+  const btn = document.querySelectorAll('.sb-link')[linkIndex];
+  if(!btn) return;
+  let b = btn.querySelector('.sb-badge');
+  if(n>0){ if(!b){ b=document.createElement('span'); b.className='sb-badge'; btn.appendChild(b);} b.textContent=n; }
+  else if(b){ b.remove(); }
+}
+
+async function loadDashboard(){
+  const _sc = await gtpClient(); if(!_sc) return;
+  const { data:{ session } } = await _sc.auth.getSession();
+  if(!session || !session.user) return;
+  GTP_ME = session.user.id;
+
+  // Identity (sidebar + verification banner)
+  let company = null;
+  try { company = await gtpCurrentCompany(); } catch(e){}
+  const coName = (company && company.name) || session.user.email || 'Your account';
+  ppSetText('sb-user-name', coName);
+  ppSetText('sb-user-co', company ? (company.country || '') : '');
+  const av = document.getElementById('sb-avatar');
+  if(av) av.textContent = (coName||'?').trim().slice(0,2).toUpperCase();
+  ppSetText('vb-company', coName);
+  const vbs = document.getElementById('vb-sub');
+  if(vbs){
+    const bits = [];
+    if(company && company.verified) bits.push('Verified');
+    if(company && company.plan) bits.push(company.plan + ' plan');
+    if(company && company.country) bits.push(company.country);
+    vbs.textContent = bits.length ? bits.join(' · ') : 'Welcome to your Gulf Trade Portal.';
+  }
+
+  // My listings
+  const { data: mine } = await _sc.from('listings')
+    .select('id, title, product, quantity, country, status, created_at')
+    .eq('user_id', GTP_ME).order('created_at', { ascending: false });
+  const listings = mine || [];
+  const active = listings.filter(l => (l.status||'active') === 'active');
+  ppSetText('pp-active-count', active.length);
+  ppSetBadge(1, active.length);   // "My Trade Requests" badge
+
+  // All my threads (RLS-scoped); owner threads = responses to MY requests
+  const { data: threads } = await _sc.from('trade_replies')
+    .select('id, listing_id, company_name, message, created_at, user_id, listings(title, product, user_id)')
+    .order('created_at', { ascending: false });
+  const all = threads || [];
+  const ownerThreads = all.filter(t => t.listings && t.listings.user_id === GTP_ME);
+  ppSetText('pp-responses-count', ownerThreads.length);
+  ppSetText('pp-threads-count', all.length);
+
+  // Unread incoming messages across my threads
+  let unread = 0;
+  if(all.length){
+    const ids = all.map(t=>t.id);
+    const { data: msgs } = await _sc.from('messages').select('sender_id, read_at, thread_id').in('thread_id', ids);
+    (msgs||[]).forEach(m=>{ if(m.sender_id !== GTP_ME && !m.read_at) unread++; });
+  }
+  ppSetText('pp-responses-unread', unread + ' new');
+  ppSetBadge(8, 0);   // clear the old hardcoded "3" notifications badge
+
+  // Recent requests table (with response counts)
+  const tb = document.getElementById('pp-recent');
+  if(tb){
+    if(!listings.length){
+      tb.innerHTML = '<tr><td colspan="3" style="color:var(--mid);font-size:.8rem;padding:14px;">No trade requests yet — post one from the Trade Board.</td></tr>';
+    } else {
+      const cnt = {}; ownerThreads.forEach(t=>{ cnt[t.listing_id]=(cnt[t.listing_id]||0)+1; });
+      tb.innerHTML = listings.slice(0,6).map(l=>{
+        const live = (l.status||'active')==='active'; const n = cnt[l.id]||0;
+        return `<tr><td><strong>${esc(l.title||l.product||'Request')}</strong><div style="font-size:.71rem;color:var(--mid);">${esc(l.quantity||'')}${l.country?(' · '+esc(l.country)):''}</div></td><td><span class="bdg ${live?'bdg-grn':'bdg-gold'}">${live?'Live':'Pending'}</span></td><td><span style="color:${n?'var(--teal)':'var(--mid)'};font-weight:700;">${n}</span></td></tr>`;
+      }).join('');
+    }
+  }
+
+  // Latest supplier responses feed (real replies on my listings)
+  const feed = document.getElementById('pp-latest');
+  if(feed){
+    if(!ownerThreads.length){
+      feed.innerHTML = '<div style="padding:14px 18px;color:var(--mid);font-size:.8rem;">No supplier responses yet.</div>';
+    } else {
+      feed.innerHTML = ownerThreads.slice(0,5).map(t=>{
+        const re = (t.listings && (t.listings.title||t.listings.product)) || 'your request';
+        const snip = (t.message||'').slice(0,90);
+        return `<div class="notif-item" onclick="showPanel('responses',document.querySelectorAll('.sb-link')[2])">
+          <div class="notif-dot nd-teal"></div>
+          <div class="notif-body">
+            <div class="notif-title">${esc(t.company_name||'A supplier')} responded</div>
+            <div class="notif-sub">Re: ${esc(re)} — "${esc(snip)}${(t.message||'').length>90?'…':''}"</div>
+          </div>
+          <div class="notif-time">${tAgo(t.created_at)}</div>
+        </div>`;
+      }).join('');
+    }
+  }
+}
+
+// Prime the unread badge once the portal has confirmed a session.
+setTimeout(()=>{ if(!INBOX_LOADED){ INBOX_LOADED=true; loadInbox(false); } }, 2500);
+
+// ── NOTIFICATIONS (derived from real events) ────────────────
+async function loadNotifications(){
+  const box = document.getElementById('pp-notifs'); if(!box) return;
+  const _sc = await gtpClient(); if(!_sc) return;
+  const { data:{ session } } = await _sc.auth.getSession();
+  if(!session || !session.user){ box.innerHTML='<div style="padding:14px 18px;color:var(--mid);font-size:.8rem;">Please sign in.</div>'; return; }
+  GTP_ME = session.user.id;
+
+  const { data: threads } = await _sc.from('trade_replies')
+    .select('id, company_name, message, created_at, user_id, listings(title, product, user_id)')
+    .order('created_at', { ascending: false });
+  const all = threads || [];
+  const items = [];
+
+  // Replies left on MY listings
+  all.filter(t => t.listings && t.listings.user_id === GTP_ME).forEach(t=>{
+    const re = (t.listings && (t.listings.title||t.listings.product)) || 'your request';
+    items.push({ ts:t.created_at, dot:'nd-teal',
+      title:`${esc(t.company_name||'A supplier')} responded to ${esc(re)}`,
+      sub:(t.message||'').slice(0,110) });
+  });
+
+  // New messages in my threads (from the other party)
+  if(all.length){
+    const ids = all.map(t=>t.id);
+    const { data: msgs } = await _sc.from('messages')
+      .select('body, created_at, sender_id, thread_id').in('thread_id', ids)
+      .order('created_at', { ascending:false }).limit(20);
+    (msgs||[]).filter(m=>m.sender_id!==GTP_ME).forEach(m=>{
+      items.push({ ts:m.created_at, dot:'nd-gold', title:'New message in a conversation', sub:(m.body||'').slice(0,110) });
+    });
+  }
+
+  items.sort((a,b)=> new Date(b.ts) - new Date(a.ts));
+  if(!items.length){
+    box.innerHTML = '<div style="padding:18px;color:var(--mid);font-size:.82rem;text-align:center;">No notifications yet.</div>';
+    return;
+  }
+  box.innerHTML = items.slice(0,30).map(i=>`
+    <div class="notif-item"><div class="notif-dot ${i.dot}"></div>
+      <div class="notif-body"><div class="notif-title">${i.title}</div><div class="notif-sub">${esc(i.sub)}</div></div>
+      <div class="notif-time">${tAgo(i.ts)}</div></div>`).join('');
+}
 </script>
 
 </body>
