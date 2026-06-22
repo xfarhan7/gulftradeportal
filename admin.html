@@ -228,6 +228,7 @@ body{font-family:'Inter',sans-serif;background:#ECEAE6;color:var(--ink);font-siz
     const gate = document.getElementById('admin-gate');
     if(gate) gate.style.display = 'none';
     document.body.style.overflow = '';
+    try { if(window.loadMembers) loadMembers(); } catch(e){ console.warn('members', e); }
   }
 
   window.gateLogin = async function(){
@@ -563,10 +564,9 @@ body{font-family:'Inter',sans-serif;background:#ECEAE6;color:var(--ink);font-siz
           <div class="fg"><label>Find Member</label><input type="text" id="grant-search" placeholder="Search by company name or email…"></div>
           <div class="fg"><label>Grant Plan</label>
             <select id="grant-plan">
-              <option value="pro-gcc">Pro Importer (GCC) — €59/mo value</option>
-              <option value="pro-eu">Pro Exporter (EU/US) — €89/mo value</option>
-              <option value="premium">Premium — €179/mo value</option>
-              <option value="market-entry">Market Entry — €269/mo value</option>
+              <option value="pro">Pro</option>
+              <option value="premium">Premium</option>
+              <option value="market_entry">Market Entry</option>
             </select>
           </div>
           <div class="fg"><label>Duration</label>
@@ -581,33 +581,9 @@ body{font-family:'Inter',sans-serif;background:#ECEAE6;color:var(--ink);font-siz
         </div>
       </div>
       <div class="card">
-        <div class="card-hd"><span class="card-title">Currently Granted (Free)</span><span class="bdg bdg-gold">5 active</span></div>
-        <div>
-          <div class="member-row">
-            <div class="member-info"><div class="member-name">Dubai Chamber of Commerce</div><div class="member-detail">Partner · Granted 1 Jan 2025 · 12 months</div></div>
-            <div class="member-plan">Premium</div>
-            <button class="btn btn-out btn-sm" onclick="if(confirm('Revoke this membership?'))this.closest('.member-row').style.opacity='.4'">Revoke</button>
-          </div>
-          <div class="member-row">
-            <div class="member-info"><div class="member-name">Netherlands Food Partners</div><div class="member-detail">Early adopter · Granted 15 Feb 2025 · 6 months</div></div>
-            <div class="member-plan">Pro Exporter</div>
-            <button class="btn btn-out btn-sm">Revoke</button>
-          </div>
-          <div class="member-row">
-            <div class="member-info"><div class="member-name">Farhan A. (Test Account)</div><div class="member-detail">Owner test · Indefinite</div></div>
-            <div class="member-plan" style="color:var(--gold);">Premium</div>
-            <button class="btn btn-out btn-sm">—</button>
-          </div>
-          <div class="member-row">
-            <div class="member-info"><div class="member-name">Gulf Food Magazine</div><div class="member-detail">Press partner · Granted 1 Mar 2025 · 12 months</div></div>
-            <div class="member-plan">Pro GCC</div>
-            <button class="btn btn-out btn-sm">Revoke</button>
-          </div>
-          <div class="member-row">
-            <div class="member-info"><div class="member-name">KSA Trade Council</div><div class="member-detail">Gov. partner · Granted 10 Apr 2025 · 12 months</div></div>
-            <div class="member-plan">Premium</div>
-            <button class="btn btn-out btn-sm">Revoke</button>
-          </div>
+        <div class="card-hd"><span class="card-title">Paid Memberships</span><span class="bdg bdg-gold" id="adm-granted-count">0 active</span></div>
+        <div id="adm-granted">
+          <div style="padding:14px;color:var(--mid);font-size:.8rem;">Loading…</div>
         </div>
       </div>
     </div>
@@ -618,10 +594,10 @@ body{font-family:'Inter',sans-serif;background:#ECEAE6;color:var(--ink);font-siz
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px;">
       <div>
         <div style="font-size:.65rem;letter-spacing:.16em;text-transform:uppercase;color:var(--teal);font-weight:700;margin-bottom:4px;">Member database</div>
-        <h2 style="font-family:Cairo,sans-serif;font-size:1.2rem;font-weight:700;">All Members — 342</h2>
+        <h2 style="font-family:Cairo,sans-serif;font-size:1.2rem;font-weight:700;">All Members — <span id="adm-count">…</span></h2>
       </div>
       <div style="display:flex;gap:7px;flex-wrap:wrap;">
-        <input type="text" placeholder="Search members…" style="font-family:Inter,sans-serif;font-size:.8rem;border:1.5px solid var(--mist);border-radius:4px;padding:7px 10px;outline:none;min-width:180px;">
+        <input type="text" id="adm-search" onkeyup="renderMembers(this.value)" placeholder="Search members…" style="font-family:Inter,sans-serif;font-size:.8rem;border:1.5px solid var(--mist);border-radius:4px;padding:7px 10px;outline:none;min-width:180px;">
         <select style="font-family:Inter,sans-serif;font-size:.8rem;border:1.5px solid var(--mist);border-radius:4px;padding:7px 10px;outline:none;cursor:pointer;"><option>All plans</option><option>Free</option><option>Pro GCC</option><option>Pro EU</option><option>Premium</option></select>
         <button class="btn btn-out btn-sm">Export CSV</button>
       </div>
@@ -629,19 +605,14 @@ body{font-family:'Inter',sans-serif;background:#ECEAE6;color:var(--ink);font-siz
     <div class="card" style="margin-bottom:0;">
       <div class="tbl-wrap">
         <table class="tbl">
-          <thead><tr><th>Company</th><th>Country</th><th>Type</th><th>Sector</th><th>Plan</th><th>Status</th><th>Joined</th><th>Actions</th></tr></thead>
-          <tbody>
-            <tr><td><strong>Excorp Distribution BV</strong><div style="font-size:.68rem;color:var(--mid);">farhan@excorp.com</div></td><td>Netherlands</td><td>Wholesaler</td><td>FMCG</td><td><span class="bdg bdg-teal">Pro GCC</span></td><td><span class="bdg bdg-grn">Verified</span></td><td style="color:var(--mid);">1 Apr</td><td><button class="btn btn-t btn-sm" style="margin-right:3px;" onclick="openMo('mo-member')">View</button><button class="btn btn-out btn-sm">Grant Plan</button></td></tr>
-            <tr><td><strong>Dutch Food Export BV</strong><div style="font-size:.68rem;color:var(--mid);">export@dutchfood.nl</div></td><td>Netherlands</td><td>Exporter</td><td>Food &amp; Bev</td><td><span class="bdg bdg-teal">Pro EU</span></td><td><span class="bdg bdg-grn">Verified</span></td><td style="color:var(--mid);">3 Apr</td><td><button class="btn btn-t btn-sm" style="margin-right:3px;" onclick="openMo('mo-member')">View</button><button class="btn btn-out btn-sm">Grant Plan</button></td></tr>
-            <tr><td><strong>Al Noor Trading Co.</strong><div style="font-size:.68rem;color:var(--mid);">trade@alnoor.ae</div></td><td>UAE</td><td>Importer</td><td>FMCG</td><td><span class="bdg bdg-teal">Pro GCC</span></td><td><span class="bdg bdg-grn">Verified</span></td><td style="color:var(--mid);">8 Apr</td><td><button class="btn btn-t btn-sm" style="margin-right:3px;" onclick="openMo('mo-member')">View</button><button class="btn btn-out btn-sm">Grant Plan</button></td></tr>
-            <tr><td><strong>Riyadh General Trading</strong><div style="font-size:.68rem;color:var(--mid);">info@rgt.sa</div></td><td>Saudi Arabia</td><td>Importer</td><td>Food &amp; Bev</td><td><span class="bdg bdg-mid">Free</span></td><td><span class="bdg bdg-grn">Verified</span></td><td style="color:var(--mid);">12 Apr</td><td><button class="btn btn-t btn-sm" style="margin-right:3px;" onclick="openMo('mo-member')">View</button><button class="btn btn-out btn-sm">Grant Plan</button></td></tr>
-            <tr><td><strong>Nour Trading LLC</strong><div style="font-size:.68rem;color:var(--mid);">info@nour.ae</div></td><td>UAE</td><td>Importer</td><td>FMCG</td><td><span class="bdg bdg-mid">Free</span></td><td><span class="bdg bdg-gold">KYB Pending</span></td><td style="color:var(--mid);">Today</td><td><button class="btn btn-t btn-sm" style="margin-right:3px;" onclick="go('kyb',document.querySelectorAll('.sb-link')[2])">KYB Review</button></td></tr>
-            <tr><td><strong>German Metals GmbH</strong><div style="font-size:.68rem;color:var(--mid);">export@germanmetals.de</div></td><td>Germany</td><td>Manufacturer</td><td>Construction</td><td><span class="bdg bdg-teal">Pro EU</span></td><td><span class="bdg bdg-grn">Verified</span></td><td style="color:var(--mid);">15 Apr</td><td><button class="btn btn-t btn-sm" style="margin-right:3px;" onclick="openMo('mo-member')">View</button><button class="btn btn-out btn-sm">Grant Plan</button></td></tr>
+          <thead><tr><th>Company</th><th>Country</th><th>Type</th><th>Sector</th><th>Plan</th><th>Status</th><th>Joined</th><th></th></tr></thead>
+          <tbody id="adm-members">
+            <tr><td colspan="8" style="padding:16px;color:var(--mid);">Loading members…</td></tr>
           </tbody>
         </table>
       </div>
     </div>
-    <div style="padding:10px 16px;font-size:.75rem;color:var(--mid);background:var(--white);border:1.5px solid var(--mist);border-top:none;border-radius:0 0 7px 7px;">Showing 6 of 342 members · <a href="#" style="color:var(--teal);">Load more</a></div>
+    <div id="adm-members-foot" style="padding:10px 16px;font-size:.75rem;color:var(--mid);background:var(--white);border:1.5px solid var(--mist);border-top:none;border-radius:0 0 7px 7px;"></div>
   </div>
 
   <!-- ═══ TRADE REQUESTS ═══ -->
@@ -886,6 +857,102 @@ function go(id,btn){
   if(btn)btn.classList.add('active');
   document.getElementById('page-title').textContent=TITLES[id]||id;
   window.scrollTo(0,0);
+  if(id==='members' || id==='memberships'){ try{ loadMembers(); }catch(e){ console.warn('members', e); } }
+}
+
+// ── LIVE MEMBER MANAGEMENT ──────────────────────────────────
+let ADM_MEMBERS = [];
+function esc(s){ return (s||'').replace(/[<>&]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[c])); }
+function planLabel(p){ return ({free:'Free',pro:'Pro',premium:'Premium',market_entry:'Market Entry'})[p] || (p||'Free'); }
+
+async function loadMembers(){
+  const _sc = await gtpClient(); if(!_sc) return;
+  const { data, error } = await _sc.from('companies')
+    .select('id, user_id, name, email, country, company_type, sector, plan, verified, created_at, is_admin')
+    .order('created_at', { ascending:false });
+  const tb = document.getElementById('adm-members');
+  if(error){ if(tb) tb.innerHTML = '<tr><td colspan="8" style="padding:16px;color:#c0392b;">Could not load: '+esc(error.message)+'</td></tr>'; return; }
+  ADM_MEMBERS = data || [];
+  const cnt = document.getElementById('adm-count'); if(cnt) cnt.textContent = ADM_MEMBERS.length;
+  renderMembers(document.getElementById('adm-search') ? document.getElementById('adm-search').value : '');
+  renderGranted();
+}
+
+function renderMembers(filter){
+  const tb = document.getElementById('adm-members'); if(!tb) return;
+  const q = (filter||'').toLowerCase();
+  const rows = ADM_MEMBERS.filter(m => !q || (m.name||'').toLowerCase().includes(q) || (m.email||'').toLowerCase().includes(q));
+  const foot = document.getElementById('adm-members-foot');
+  if(!rows.length){
+    tb.innerHTML = '<tr><td colspan="8" style="padding:16px;color:var(--mid);">'+(ADM_MEMBERS.length?'No members match your search.':'No members have registered yet.')+'</td></tr>';
+    if(foot) foot.textContent = '';
+    return;
+  }
+  tb.innerHTML = rows.map(m=>{
+    const cur = m.plan || 'free';
+    const opts = ['free','pro','premium','market_entry'].map(p=>`<option value="${p}"${cur===p?' selected':''}>${planLabel(p)}</option>`).join('');
+    const joined = m.created_at ? new Date(m.created_at).toLocaleDateString() : '';
+    const verBtn = m.verified
+      ? `<button class="btn btn-out btn-sm" onclick="toggleVerified('${m.id}',false)">Verified ✓</button>`
+      : `<button class="btn btn-g btn-sm" onclick="toggleVerified('${m.id}',true)">Verify</button>`;
+    return `<tr>
+      <td><strong>${esc(m.name||'—')}</strong>${m.is_admin?' <span class="bdg bdg-gold" style="font-size:.55rem;">ADMIN</span>':''}<div style="font-size:.68rem;color:var(--mid);">${esc(m.email||'')}</div></td>
+      <td>${esc(m.country||'')}</td>
+      <td>${esc(m.company_type||'')}</td>
+      <td>${esc(m.sector||'')}</td>
+      <td><select onchange="setPlan('${m.id}',this.value)" style="font-family:Inter,sans-serif;font-size:.72rem;padding:4px 6px;border:1.5px solid var(--mist);border-radius:4px;cursor:pointer;">${opts}</select></td>
+      <td>${verBtn}</td>
+      <td style="color:var(--mid);white-space:nowrap;">${joined}</td>
+      <td><span id="save-${m.id}" style="font-size:.66rem;color:var(--teal);"></span></td>
+    </tr>`;
+  }).join('');
+  if(foot) foot.textContent = 'Showing ' + rows.length + ' of ' + ADM_MEMBERS.length + ' members';
+}
+
+async function setPlan(id, plan){
+  const note = document.getElementById('save-'+id);
+  if(note){ note.style.color='var(--mid)'; note.textContent='saving…'; }
+  const _sc = await gtpClient(); if(!_sc) return;
+  const { error } = await _sc.from('companies').update({ plan }).eq('id', id);
+  if(error){ if(note){ note.style.color='#c0392b'; note.textContent='✗ '+(error.message||'failed'); } return; }
+  const m = ADM_MEMBERS.find(x=>x.id===id); if(m) m.plan = plan;
+  if(note){ note.style.color='var(--teal)'; note.textContent='✓ saved'; setTimeout(()=>{ note.textContent=''; }, 2200); }
+  renderGranted();
+}
+
+async function toggleVerified(id, val){
+  const _sc = await gtpClient(); if(!_sc) return;
+  const { error } = await _sc.from('companies').update({ verified: !!val }).eq('id', id);
+  if(error){ alert('Could not update verification: ' + (error.message||'')); return; }
+  const m = ADM_MEMBERS.find(x=>x.id===id); if(m) m.verified = !!val;
+  renderMembers(document.getElementById('adm-search') ? document.getElementById('adm-search').value : '');
+}
+
+function renderGranted(){
+  const box = document.getElementById('adm-granted'); if(!box) return;
+  const paid = ADM_MEMBERS.filter(m => (m.plan||'free') !== 'free');
+  const cnt = document.getElementById('adm-granted-count'); if(cnt) cnt.textContent = paid.length + ' active';
+  if(!paid.length){ box.innerHTML = '<div style="padding:14px;color:var(--mid);font-size:.8rem;">No paid memberships yet.</div>'; return; }
+  box.innerHTML = paid.map(m=>`
+    <div class="member-row">
+      <div class="member-info"><div class="member-name">${esc(m.name||'—')}</div><div class="member-detail">${esc(m.email||'')} · ${esc(m.country||'')}</div></div>
+      <div class="member-plan">${planLabel(m.plan)}</div>
+      <button class="btn btn-out btn-sm" onclick="if(confirm('Revoke this membership (set to Free)?'))setPlan('${m.id}','free')">Revoke</button>
+    </div>`).join('');
+}
+
+async function grantMembership(){
+  const q = (document.getElementById('grant-search').value||'').trim().toLowerCase();
+  const plan = document.getElementById('grant-plan').value;
+  if(!q){ alert('Enter a company name or email to find the member.'); return; }
+  if(!ADM_MEMBERS.length){ await loadMembers(); }
+  const m = ADM_MEMBERS.find(x => (x.email||'').toLowerCase()===q)
+        || ADM_MEMBERS.find(x => (x.name||'').toLowerCase().includes(q))
+        || ADM_MEMBERS.find(x => (x.email||'').toLowerCase().includes(q));
+  if(!m){ alert('No member found matching "'+q+'". Open the Members tab to see exact names/emails.'); return; }
+  await setPlan(m.id, plan);
+  const s = document.getElementById('grant-succ');
+  if(s){ s.textContent = '✓ ' + esc(m.name||m.email) + ' is now ' + planLabel(plan) + '.'; s.style.display='block'; setTimeout(()=>{ s.style.display='none'; }, 4000); }
 }
 function openMo(id){document.getElementById(id).classList.add('open');}
 function closeMo(id){document.getElementById(id).classList.remove('open');}
