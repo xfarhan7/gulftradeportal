@@ -889,7 +889,7 @@ window.__gtpGateFailsafe = setTimeout(function(){
   <button class="mo-x" onclick="closeMo('mo-post')">×</button>
   <h3 class="mo-h">Post a Trade Request</h3>
   <p class="mo-sub">Your request goes live on the Trade Board within 24 hours and is emailed to matching EU/US suppliers.</p>
-  <div class="fg"><label>Request Type</label><select id="pp-type"><option value="import">Import Request — I need to buy / import</option><option value="export">Export Offer — I have goods to sell</option></select></div>
+  <div class="fg"><label>Request Type</label><select id="pp-type" onchange="gtpToggleImgReq()"><option value="import">Import Request — I need to buy / import</option><option value="export">Export Offer — I have goods to sell</option></select></div>
   <div class="fg"><label>Product / Commodity</label><input type="text" id="pp-product" placeholder="e.g. Nespresso capsules, Steel rebar, Olive oil…"></div>
   <div class="fr2" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
     <div class="fg"><label>Quantity</label><input type="text" id="pp-qty" placeholder="e.g. 10,000 units/month"></div>
@@ -898,6 +898,7 @@ window.__gtpGateFailsafe = setTimeout(function(){
   <div class="fg"><label>Category</label><select id="pp-category"><option>FMCG</option><option>Food &amp; Beverages</option><option>Coffee</option><option>Dairy</option><option>Construction Materials</option><option>Auto Parts</option><option>Electronics</option><option>Machinery</option><option>Other</option></select></div>
   <div class="fg"><label>Preferred Origin</label><select id="pp-origin"><option>Europe (EU)</option><option>Netherlands</option><option>Germany</option><option>United States</option><option>Any origin</option></select></div>
   <div class="fg"><label>Specifications &amp; Requirements</label><textarea id="pp-desc" placeholder="Product specs, certifications needed, packaging, delivery terms, urgency…" style="font-family:Inter,sans-serif;font-size:.85rem;border:1.5px solid var(--mist);border-radius:4px;padding:9px 11px;width:100%;outline:none;resize:vertical;min-height:80px;"></textarea></div>
+  <div class="fg"><label>Product Photo <span id="pp-img-req" style="color:#C0392B;font-weight:700;display:none;">*</span></label><input type="file" id="pp-image" accept="image/jpeg,image/png,image/webp,image/gif" style="font-size:.82rem;width:100%;"><div id="pp-img-note" style="font-size:.72rem;color:var(--mid);margin-top:3px;">Optional · JPG, PNG, WebP or GIF, max 5MB.</div></div>
   <button class="tb-btn tb-btn-gold" id="pp-btn" style="width:100%;" onclick="submitPost()">Post to Trade Board →</button>
   <div id="post-succ" class="succ">✓ Submitted! Your request will appear on the Trade Board within 24 hours.</div>
 </div></div>
@@ -986,8 +987,16 @@ function showPanel(id, btn) {
   if (id === 'notifications') { try { loadNotifications(); } catch(e){ console.warn('notifs', e); } }
 }
 
-function openMo(id){document.getElementById(id).classList.add('open');}
+function openMo(id){document.getElementById(id).classList.add('open');if(id==='mo-post'&&typeof gtpToggleImgReq==='function')gtpToggleImgReq();}
 function closeMo(id){document.getElementById(id).classList.remove('open');}
+function gtpToggleImgReq(){
+  const sel=document.getElementById('pp-type'); if(!sel) return;
+  const isExport = sel.value === 'export';
+  const req=document.getElementById('pp-img-req');
+  const note=document.getElementById('pp-img-note');
+  if(req) req.style.display = isExport ? '' : 'none';
+  if(note) note.textContent = (isExport ? 'Required for supplier offers · ' : 'Optional · ') + 'JPG, PNG, WebP or GIF, max 5MB.';
+}
 document.addEventListener('click',e=>{if(e.target.classList.contains('mo'))e.target.classList.remove('open');});
 
 function runAutoCheck(){
@@ -1023,10 +1032,10 @@ function resetPostModal(){
   window.gtpEditId = null;
   const h = document.querySelector('#mo-post .mo-h'); if(h) h.textContent = 'Post a Trade Request';
   const b = document.getElementById('pp-btn'); if(b){ b.textContent = 'Post to Trade Board →'; b.disabled = false; }
-  ['pp-product','pp-qty','pp-desc'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+  ['pp-product','pp-qty','pp-desc','pp-image'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
   const succ = document.getElementById('post-succ'); if(succ) succ.style.display='none';
 }
-function newPost(){ resetPostModal(); newPost(); }
+function newPost(){ resetPostModal(); openMo('mo-post'); if(typeof gtpToggleImgReq==='function') gtpToggleImgReq(); }
 
 async function loadMyRequests(){
   const tb = document.getElementById('pp-requests-body');
@@ -1081,7 +1090,7 @@ async function editRequest(id){
   const h = document.querySelector('#mo-post .mo-h'); if(h) h.textContent = 'Edit Trade Request';
   const b = document.getElementById('pp-btn'); if(b){ b.textContent = 'Save Changes'; b.disabled=false; }
   const succ = document.getElementById('post-succ'); if(succ) succ.style.display='none';
-  newPost();
+  openMo('mo-post');
 }
 
 async function closeRequest(id){
@@ -1148,12 +1157,34 @@ async function submitPost(){
     return;
   }
 
+  // Photo: required for supplier offers (export), optional for buying requests.
+  const ppImgInput = document.getElementById('pp-image');
+  const ppImgFile = ppImgInput && ppImgInput.files && ppImgInput.files[0];
+  if(type === 'export' && !ppImgFile){ alert('Please add a product photo — a photo is required for supplier offers.'); return; }
+  if(ppImgFile){
+    const ppOk = ['image/jpeg','image/png','image/webp','image/gif'];
+    if(!ppOk.includes(ppImgFile.type)){ alert('Please choose a JPG, PNG, WebP, or GIF image.'); return; }
+    if(ppImgFile.size > 5 * 1024 * 1024){ alert('That image is too large — please use one under 5MB.'); return; }
+  }
+
   btn.disabled = true; btn.textContent = 'Posting…';
 
   try {
     const company = await gtpCurrentCompany();
     const title = (type==='import' ? 'Import wanted: ' : 'Export offer: ') + product;
     const slug = gtpSlugify(product + '-' + country) + '-' + Date.now().toString(36);
+
+    // Upload photo if one was provided
+    let ppImageUrl = null;
+    if(ppImgFile){
+      btn.textContent = 'Uploading photo…';
+      const ppExt = ((ppImgFile.name.split('.').pop()||'jpg').toLowerCase().replace(/[^a-z0-9]+/g,'')) || 'jpg';
+      const ppPath = user.id + '/' + Date.now() + '.' + ppExt;
+      const { error: ppUpErr } = await _sc.storage.from('listing-images').upload(ppPath, ppImgFile, { cacheControl:'3600', upsert:false, contentType: ppImgFile.type });
+      if(ppUpErr) throw ppUpErr;
+      ppImageUrl = _sc.storage.from('listing-images').getPublicUrl(ppPath).data.publicUrl;
+      btn.textContent = 'Posting…';
+    }
 
     const { error } = await _sc.from('listings').insert({
       company_id: company ? company.id : null,
@@ -1168,7 +1199,8 @@ async function submitPost(){
       region: company ? company.region : null,
       description: desc,
       status: 'active',
-      slug: slug
+      slug: slug,
+      image_url: ppImageUrl
     });
     if(error) throw error;
 

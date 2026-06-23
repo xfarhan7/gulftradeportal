@@ -460,7 +460,7 @@ document.addEventListener('click',e=>{if(e.target.classList.contains('mo'))e.tar
   <button class="mo-x" onclick="closeMo('mo-rfq')">×</button>
   <h3 class="mo-h">Post a Trade Request</h3>
   <p class="mo-sub">Buyers: post what you need to import. Sellers: post what you have to export.</p>
-  <div class="fg"><label>Request Type</label><select id="rfq-type"><option value="import">Import Request</option><option value="export">Export Offer</option></select></div>
+  <div class="fg"><label>Request Type</label><select id="rfq-type" onchange="gtpToggleImgReq()"><option value="import">Import Request</option><option value="export">Export Offer</option></select></div>
   <div class="fg"><label>Product</label><input type="text" id="rfq-product" placeholder="e.g. Nespresso capsules, Steel rebar…"></div>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
     <div class="fg"><label>Quantity</label><input type="text" id="rfq-qty" placeholder="e.g. 10,000 units/month"></div>
@@ -468,7 +468,7 @@ document.addEventListener('click',e=>{if(e.target.classList.contains('mo'))e.tar
   </div>
   <div class="fg"><label>Category</label><select id="rfq-category"><option>FMCG</option><option>Food &amp; Beverages</option><option>Coffee</option><option>Dairy</option><option>Construction Materials</option><option>Auto Parts</option><option>Electronics</option><option>Machinery</option><option>Other</option></select></div>
   <div class="fg"><label>Details</label><textarea id="rfq-desc" style="font-family:Inter,sans-serif;font-size:.85rem;border:1.5px solid var(--mist);border-radius:4px;padding:9px;width:100%;outline:none;resize:vertical;min-height:70px;" placeholder="Specs, certifications, delivery terms…"></textarea></div>
-  <div class="fg"><label>Product Photo <span style="color:var(--mid);font-weight:400;">(optional)</span></label><input type="file" id="rfq-image" accept="image/jpeg,image/png,image/webp,image/gif" style="font-size:.82rem;width:100%;"><div style="font-size:.72rem;color:var(--mid);margin-top:3px;">JPG or PNG, max 5MB — a clear photo gets more responses.</div></div>
+  <div class="fg"><label>Product Photo <span id="rfq-img-req" style="color:#C0392B;font-weight:700;display:none;">*</span></label><input type="file" id="rfq-image" accept="image/jpeg,image/png,image/webp,image/gif" style="font-size:.82rem;width:100%;"><div id="rfq-img-note" style="font-size:.72rem;color:var(--mid);margin-top:3px;">Optional · JPG, PNG, WebP or GIF, max 5MB.</div></div>
   <label style="display:flex;align-items:center;gap:8px;font-size:.82rem;color:var(--mid);margin-bottom:6px;cursor:pointer;"><input type="checkbox" id="rfq-urgent" style="width:15px;height:15px;accent-color:var(--red);"> Mark as urgent</label>
   <button class="btn-next" id="rfq-btn" style="width:100%;margin-top:4px;" onclick="submitRFQ()">Post to Trade Board →</button>
   <div id="rfq-succ" class="succ">✓ Posted! Your request is now live on the Trade Board.</div>
@@ -829,8 +829,16 @@ function submitReg(){
     :'✓ Registered! Your free listing will be live within 24 hours. We will email you at '+email+' when it is published.';
   document.querySelector('.btn-sub').disabled=true;
 }
-function openMo(id){document.getElementById(id).classList.add('open');}
+function openMo(id){document.getElementById(id).classList.add('open');if(id==='mo-rfq'&&typeof gtpToggleImgReq==='function')gtpToggleImgReq();}
 function closeMo(id){document.getElementById(id).classList.remove('open');}
+function gtpToggleImgReq(){
+  const sel=document.getElementById('rfq-type'); if(!sel) return;
+  const isExport = sel.value === 'export';
+  const req=document.getElementById('rfq-img-req');
+  const note=document.getElementById('rfq-img-note');
+  if(req) req.style.display = isExport ? '' : 'none';
+  if(note) note.textContent = (isExport ? 'Required for supplier offers · ' : 'Optional · ') + 'JPG, PNG, WebP or GIF, max 5MB.';
+}
 document.addEventListener('click',e=>{if(e.target.classList.contains('mo'))e.target.classList.remove('open');});
 function subRfq(){if(!document.getElementById('rfq-prod').value.trim()){alert('Enter a product name.');return;}document.getElementById('rfq-succ').style.display='block';setTimeout(()=>closeMo('mo-rfq'),2600);}
 function subResp(){if(!document.getElementById('resp-co').value.trim()){alert('Enter your company name.');return;}document.getElementById('resp-succ').style.display='block';setTimeout(()=>closeMo('mo-resp'),2600);}
@@ -951,9 +959,10 @@ async function submitRFQ(){
 
   if(!product){ alert('Please enter a product.'); return; }
 
-  // Optional product photo — validate before we start.
+  // Product photo: REQUIRED for supplier offers (export), optional for buying requests.
   const imgInput = document.getElementById('rfq-image');
   const imgFile = imgInput && imgInput.files && imgInput.files[0];
+  if(type === 'export' && !imgFile){ alert('Please add a product photo — a photo is required for supplier offers.'); return; }
   if(imgFile){
     const okTypes = ['image/jpeg','image/png','image/webp','image/gif'];
     if(!okTypes.includes(imgFile.type)){ alert('Please choose a JPG, PNG, WebP, or GIF image.'); return; }
