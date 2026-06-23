@@ -1345,7 +1345,7 @@ async function loadDashboard(){
 
   // My listings
   const { data: mine } = await _sc.from('listings')
-    .select('id, title, product, quantity, country, status, created_at')
+    .select('id, title, product, quantity, country, status, created_at, image_url')
     .eq('user_id', GTP_ME).order('created_at', { ascending: false });
   const listings = mine || [];
   const active = listings.filter(l => (l.status||'active') === 'active');
@@ -1380,7 +1380,7 @@ async function loadDashboard(){
       const cnt = {}; ownerThreads.forEach(t=>{ cnt[t.listing_id]=(cnt[t.listing_id]||0)+1; });
       tb.innerHTML = listings.slice(0,6).map(l=>{
         const live = (l.status||'active')==='active'; const n = cnt[l.id]||0;
-        return `<tr><td><strong>${esc(l.title||l.product||'Request')}</strong><div style="font-size:.71rem;color:var(--mid);">${esc(l.quantity||'')}${l.country?(' · '+esc(l.country)):''}</div></td><td><span class="bdg ${live?'bdg-grn':'bdg-gold'}">${live?'Live':'Pending'}</span></td><td><span style="color:${n?'var(--teal)':'var(--mid)'};font-weight:700;">${n}</span></td></tr>`;
+        return `<tr><td><div style="display:flex;align-items:center;gap:9px;">${l.image_url?`<img src="${esc(l.image_url)}" alt="" loading="lazy" style="width:40px;height:40px;border-radius:6px;object-fit:cover;flex-shrink:0;">`:''}<div><strong>${esc(l.title||l.product||'Request')}</strong><div style="font-size:.71rem;color:var(--mid);">${esc(l.quantity||'')}${l.country?(' · '+esc(l.country)):''}</div></div></div></td><td><span class="bdg ${live?'bdg-grn':'bdg-gold'}">${live?'Live':'Pending'}</span></td><td><span style="color:${n?'var(--teal)':'var(--mid)'};font-weight:700;">${n}</span></td></tr>`;
       }).join('');
     }
   }
@@ -1455,5 +1455,6 @@ async function loadNotifications(){
 }
 </script>
 
+  <script src="cookie-consent.js" defer></script>
 </body>
 </html>
