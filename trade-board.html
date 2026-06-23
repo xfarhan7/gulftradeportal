@@ -141,11 +141,25 @@
 </div>
 <div style="background:var(--sand-dk);border-bottom:1px solid var(--mist);padding:14px 32px;">
   <div style="max-width:1200px;margin:0 auto;display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:space-between;">
-    <div class="fbar" id="bfbar" style="margin-bottom:0;">
-      <button class="fbtn on" onclick="setBF('all',this)">All</button>
-      <button class="fbtn" onclick="setBF('import',this)"><span class="fdot" style="background:#1A4FB5;"></span>Find Buyers</button>
-      <button class="fbtn" onclick="setBF('export',this)"><span class="fdot" style="background:#0A7369;"></span>Find Suppliers</button>
-      <button class="fbtn" onclick="setBF('urgent',this)"><span class="fdot" style="background:#C0392B;"></span>Urgent</button>
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+      <div class="fbar" id="bfbar" style="margin-bottom:0;">
+        <button class="fbtn on" onclick="setBF('all',this)">All</button>
+        <button class="fbtn" onclick="setBF('import',this)"><span class="fdot" style="background:#1A4FB5;"></span>Find Buyers</button>
+        <button class="fbtn" onclick="setBF('export',this)"><span class="fdot" style="background:#0A7369;"></span>Find Suppliers</button>
+        <button class="fbtn" onclick="setBF('urgent',this)"><span class="fdot" style="background:#C0392B;"></span>Urgent</button>
+      </div>
+      <select id="catFilter" onchange="setCat(this.value)" aria-label="Filter by sector" style="font-family:Inter,sans-serif;font-size:.8rem;font-weight:500;padding:8px 30px 8px 13px;border:1.5px solid var(--mist);border-radius:20px;background:var(--white);color:var(--ink2);cursor:pointer;outline:none;appearance:none;-webkit-appearance:none;background-image:url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2212%22 height=%2212%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23607066%22 stroke-width=%223%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polyline points=%226 9 12 15 18 9%22/></svg>');background-repeat:no-repeat;background-position:right 11px center;">
+        <option value="all">All Sectors</option>
+        <option value="FMCG">FMCG</option>
+        <option value="Food &amp; Beverages">Food &amp; Beverages</option>
+        <option value="Coffee">Coffee</option>
+        <option value="Dairy">Dairy</option>
+        <option value="Construction Materials">Construction Materials</option>
+        <option value="Auto Parts">Auto Parts</option>
+        <option value="Electronics">Electronics</option>
+        <option value="Machinery">Machinery</option>
+        <option value="Other">Other</option>
+      </select>
     </div>
     <button class="bx bx-t" style="padding:9px 18px;font-size:.8rem;" onclick="openMo('mo-rfq')">+ Post Request</button>
   </div>
@@ -580,19 +594,32 @@ function gtpCloseImage(){
 }
 document.addEventListener('keydown', function(e){ if(e.key === 'Escape') gtpCloseImage(); });
 
+window.currentCat = "all";
+function setCat(v){ window.currentCat = v || 'all'; renderBoard(window.currentFilter || 'all'); }
 function renderBoard(filter){
   const userPlan = localStorage.getItem('gtp_plan') || 'free';
   const isPro    = ['pro','premium','market_entry'].includes(userPlan);
   // Logged-in (even free) members get to see member content; only deeper/paid stays gated
   const isMember = window.GTP_LOGGED_IN;
 
-  const data = filter==='all' ? BOARD :
+  let data = filter==='all' ? BOARD :
     filter==='urgent' ? BOARD.filter(x=>x.urg) :
     BOARD.filter(x=>x.t===filter||x.t==='ad');
 
+  // Sector filter (applies on top of the type filter)
+  const cat = window.currentCat || 'all';
+  if(cat !== 'all'){
+    data = data.filter(x => (x.sec||'').toLowerCase() === cat.toLowerCase());
+  }
+
   let regularCount = 0;
 
-  document.getElementById('boardGrid').innerHTML = data.map(x => {
+  const grid = document.getElementById('boardGrid');
+  if(!data.length){
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:48px 20px;color:var(--mid);"><div style="font-size:1.6rem;margin-bottom:8px;">&#128269;</div><div style="font-weight:600;color:var(--ink2);margin-bottom:4px;">No listings match these filters</div><div style="font-size:.85rem;">Try a different sector, or clear the filters to see everything.</div></div>';
+    return;
+  }
+  grid.innerHTML = data.map(x => {
     // Count non-ad cards to decide blur
     if(x.t !== 'ad') regularCount++;
     
