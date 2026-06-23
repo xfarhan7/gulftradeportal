@@ -346,6 +346,7 @@ function gtpHexToRgba(col, a){
 
   window.giLaunch = function(){
     const intro=document.getElementById('gtp-intro');
+    if(!intro) return;
     intro.classList.add('gi-exit');
     setTimeout(()=>intro.remove(),900);
   };
@@ -632,7 +633,8 @@ function gtpHexToRgba(col, a){
 
 
   // Tap/click to skip
-  document.getElementById('gtp-intro').addEventListener('click', function(e){
+  const giClickEl = document.getElementById('gtp-intro');
+  if(giClickEl) giClickEl.addEventListener('click', function(e){
     if(e.target.classList.contains('gi-skip')) return;
     // Only skip if progress > 50% (prevent accidental skip)
     if(cur > 50) giLaunch();
