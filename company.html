@@ -246,6 +246,79 @@ const COMPANIES = {
   },
 };
 
+function esc(s){ return (s==null?'':String(s)).replace(/[<>&"]/g,function(c){return {'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c];}); }
+const REGION_LABELS = {GCC:'🌍 GCC',EU:'🇪🇺 Europe',US:'🇺🇸 USA',ASIA:'🌏 Asia'};
+function gtpRegionBucket(region, country){
+  const R=(region||'').toUpperCase();
+  if(['GCC','EU','US','ASIA'].includes(R)) return R;
+  const c=(country||'').toLowerCase();
+  if(['uae','united arab emirates','saudi arabia','ksa','kuwait','qatar','oman','bahrain'].includes(c)) return 'GCC';
+  if(['united states','usa','us'].includes(c)) return 'US';
+  if(['china','india','malaysia','singapore','indonesia','japan','south korea','thailand','vietnam','philippines','pakistan'].includes(c)) return 'ASIA';
+  return 'EU';
+}
+async function revealContact(companyId){
+  const area = document.getElementById('cpContactArea');
+  if(!area) return;
+  area.innerHTML = '<div style="font-size:.78rem;color:var(--mid);padding:4px 0;">Checking access…</div>';
+  try{
+    const sc = await gtpClient();
+    const { data, error } = await sc.rpc('get_company_contact', { p_company_id: companyId });
+    if(error) throw error;
+    const row = Array.isArray(data) ? data[0] : data;
+    if(row && (row.email || row.whatsapp)){
+      const wa = (row.whatsapp||'').replace(/[^0-9]/g,'');
+      area.innerHTML =
+        (wa ? '<a href="https://wa.me/'+wa+'" target="_blank" rel="noopener" class="cp-cta-btn cp-cta-wa">WhatsApp</a>' : '') +
+        (row.email ? '<a href="mailto:'+esc(row.email)+'" class="cp-cta-btn cp-cta-email">'+esc(row.email)+'</a>' : '') +
+        (row.contact_name ? '<div style="font-size:.75rem;color:var(--mid);margin-top:8px;">Contact: '+esc(row.contact_name)+'</div>' : '');
+    } else {
+      area.innerHTML = '<div style="font-size:.75rem;color:var(--mid);margin-bottom:10px;">Contact details are reserved for paid members.</div><a href="packages.html" class="cp-cta-btn cp-cta-email" style="margin-top:0;">Upgrade to reveal →</a>';
+    }
+  }catch(e){
+    area.innerHTML = '<div style="font-size:.75rem;color:var(--mid);margin-bottom:10px;">Please <a href="register.html" style="color:var(--teal);">sign in</a> to view contact details.</div>';
+  }
+}
+function renderRealCompany(co){
+  const bucket = gtpRegionBucket(co.region, co.country);
+  document.title = (co.name||'Company') + ' — Gulf Trade Portal';
+  document.getElementById('cpLogo').textContent = (co.name||'?')[0];
+  document.getElementById('cpName').textContent = co.name || 'Company';
+  document.getElementById('cpSector').textContent = '🏷 ' + (co.sector || '—');
+  document.getElementById('cpCountry').textContent = '📍 ' + (co.country || '');
+  document.getElementById('cpRegion').textContent = REGION_LABELS[bucket] || bucket;
+  document.getElementById('cpRegion2').textContent = (REGION_LABELS[bucket]||bucket).replace(/[^\w\s]/g,'').trim();
+  document.getElementById('cpAbout').textContent = co.description || 'Verified member of the Gulf Trade Portal network.';
+  document.getElementById('cpType').textContent = co.company_type || '—';
+  document.getElementById('cpEst').textContent = '—';
+  if(!co.verified){ const v=document.getElementById('cpVerified'); if(v) v.style.display='none'; }
+  const tags = [co.company_type, co.sector].filter(Boolean);
+  document.getElementById('cpTags').innerHTML = tags.map(function(t){return '<span class="cp-tag">'+esc(t)+'</span>';}).join('');
+  // Products & certifications aren't stored yet — hide those sections for live companies.
+  const prod = document.getElementById('cpProducts'); if(prod){ const s=prod.closest('.cp-section'); if(s) s.style.display='none'; }
+  const certs = document.getElementById('cpCerts'); if(certs){ const s=certs.closest('.cp-section'); if(s) s.style.display='none'; }
+  // Contact = paid-only reveal via RPC
+  const lock = document.getElementById('cpLockNote'); if(lock) lock.style.display='none';
+  const area = document.getElementById('cpContactArea');
+  if(area){
+    area.innerHTML = '<button type="button" class="cp-cta-btn cp-cta-wa" onclick="revealContact(\'' + co.id + '\')">Reveal Contact Details</button><div style="font-size:.72rem;color:var(--mid);margin-top:8px;">Available to paid members.</div>';
+  }
+  if(window.location.hash === '#contact'){ const c=document.getElementById('contact'); if(c) c.scrollIntoView({behavior:'smooth'}); }
+}
+async function loadCompanyDispatch(){
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get('id') || '';
+  const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+  if(isUuid && typeof gtpClient === 'function'){
+    try{
+      const sc = await gtpClient();
+      const { data, error } = await sc.from('directory_companies').select('*').eq('id', id).maybeSingle();
+      if(!error && data){ renderRealCompany(data); return; }
+    }catch(e){ /* fall through to demo */ }
+  }
+  loadCompany();
+}
+
 // Load company from URL ?id=
 function loadCompany() {
   const params = new URLSearchParams(window.location.search);
@@ -287,7 +360,8 @@ function loadCompany() {
     document.getElementById('cpEmail').href = 'mailto:trade@gulftradeportal.com?subject=Enquiry via Gulf Trade Portal — ' + encodeURIComponent(co.n);
   }
 }
-loadCompany();
+loadCompanyDispatch();
 </script>
+  <script src="cookie-consent.js" defer></script>
 </body>
 </html>

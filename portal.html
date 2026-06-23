@@ -370,7 +370,7 @@ window.__gtpGateFailsafe = setTimeout(function(){
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
         Main Portal
       </a>
-      <button class="tb-btn tb-btn-gold" onclick="openMo('mo-post')">
+      <button class="tb-btn tb-btn-gold" onclick="newPost()">
         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="margin-right:4px;vertical-align:-1px;"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
         Post Request
       </button>
@@ -460,7 +460,7 @@ window.__gtpGateFailsafe = setTimeout(function(){
           <div style="font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--teal);font-weight:700;margin-bottom:4px;">Your trade activity</div>
           <h2 style="font-family:Cairo,sans-serif;font-size:1.25rem;font-weight:700;">My Trade Requests</h2>
         </div>
-        <button class="tb-btn tb-btn-gold" onclick="openMo('mo-post')">+ Post New Request</button>
+        <button class="tb-btn tb-btn-gold" onclick="newPost()">+ Post New Request</button>
       </div>
       <div class="card card-body-0">
         <div class="tbl-wrap">
@@ -476,7 +476,7 @@ window.__gtpGateFailsafe = setTimeout(function(){
                 <th>Actions</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody id="pp-requests-body">
               <tr>
                 <td><strong>Nespresso Original Line Capsules</strong><div style="font-size:.71rem;color:var(--mid);">All varieties · FMCG · EU origin required</div></td>
                 <td>UAE</td><td>50,000/mo</td>
@@ -982,6 +982,7 @@ function showPanel(id, btn) {
   document.getElementById('page-title').textContent = TITLES[id] || id;
   window.scrollTo(0, 0);
   if (id === 'responses') { try { loadInbox(true); } catch(e){ console.warn('inbox', e); } }
+  if (id === 'requests') { try { loadMyRequests(); } catch(e){ console.warn('requests', e); } }
   if (id === 'notifications') { try { loadNotifications(); } catch(e){ console.warn('notifs', e); } }
 }
 
@@ -1012,6 +1013,93 @@ function submitKYB(){
   document.getElementById('kyb-succ').style.display='block';
   document.querySelector('[onclick="submitKYB()"]').disabled=true;
 }
+window.gtpEditId = null;
+function gtpFmtDate(ts){
+  if(!ts) return '—';
+  try { return new Date(ts).toLocaleDateString('en-GB',{day:'numeric',month:'short'}); }
+  catch(e){ return '—'; }
+}
+function resetPostModal(){
+  window.gtpEditId = null;
+  const h = document.querySelector('#mo-post .mo-h'); if(h) h.textContent = 'Post a Trade Request';
+  const b = document.getElementById('pp-btn'); if(b){ b.textContent = 'Post to Trade Board →'; b.disabled = false; }
+  ['pp-product','pp-qty','pp-desc'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+  const succ = document.getElementById('post-succ'); if(succ) succ.style.display='none';
+}
+function newPost(){ resetPostModal(); newPost(); }
+
+async function loadMyRequests(){
+  const tb = document.getElementById('pp-requests-body');
+  if(!tb) return;
+  tb.innerHTML = '<tr><td colspan="7" style="padding:16px;color:var(--mid);font-size:.82rem;">Loading…</td></tr>';
+  const _sc = await gtpClient(); if(!_sc){ return; }
+  const { data: { user } } = await _sc.auth.getUser();
+  if(!user){ tb.innerHTML = '<tr><td colspan="7" style="padding:16px;color:var(--mid);font-size:.82rem;">Please sign in.</td></tr>'; return; }
+  const { data: mine, error } = await _sc.from('listings')
+    .select('id,type,title,product,quantity,country,category,origin,description,status,created_at')
+    .eq('user_id', user.id).order('created_at',{ascending:false});
+  if(error){ tb.innerHTML = '<tr><td colspan="7" style="padding:16px;color:var(--mid);font-size:.82rem;">Could not load your requests.</td></tr>'; return; }
+  const list = mine || [];
+  // Reply counts per listing (RLS returns only replies on my own listings)
+  let cnt = {};
+  try { const { data: reps } = await _sc.from('trade_replies').select('listing_id'); (reps||[]).forEach(r=>{ cnt[r.listing_id]=(cnt[r.listing_id]||0)+1; }); } catch(e){}
+  if(!list.length){
+    tb.innerHTML = '<tr><td colspan="7" style="padding:20px;color:var(--mid);font-size:.85rem;">No trade requests yet — click <strong>+ Post New Request</strong> to add one.</td></tr>';
+    return;
+  }
+  tb.innerHTML = list.map(l=>{
+    const st = l.status || 'active';
+    const live = st==='active', closed = st==='closed';
+    const n = cnt[l.id] || 0;
+    const badge = live ? '<span class="bdg bdg-grn">Live</span>'
+      : closed ? '<span class="bdg" style="background:#ececec;color:#888;">Closed</span>'
+      : '<span class="bdg bdg-gold">Under review</span>';
+    const resp = n ? '<a href="#" style="color:var(--teal);font-weight:700;" onclick="showPanel(\'responses\',document.querySelectorAll(\'.sb-link\')[2]);return false;">'+n+' response'+(n>1?'s':'')+'</a>' : '<span style="color:var(--mid);">—</span>';
+    const actions = '<button class="ibtn ibtn-o" style="margin-right:4px;" onclick="editRequest(\''+l.id+'\')">Edit</button>'
+      + (closed ? '<button class="ibtn ibtn-r" onclick="deleteRequest(\''+l.id+'\')">Delete</button>'
+                : '<button class="ibtn ibtn-r" onclick="closeRequest(\''+l.id+'\')">Close</button>');
+    return '<tr data-id="'+l.id+'"><td><strong>'+esc(l.title||l.product||'Request')+'</strong><div style="font-size:.71rem;color:var(--mid);">'+esc(l.category||'')+(l.product&&l.product!==l.title?(' · '+esc(l.product)):'')+'</div></td>'
+      + '<td>'+esc(l.country||'')+'</td><td>'+esc(l.quantity||'')+'</td><td>'+badge+'</td><td>'+resp+'</td>'
+      + '<td style="color:var(--mid);">'+gtpFmtDate(l.created_at)+'</td><td>'+actions+'</td></tr>';
+  }).join('');
+}
+
+async function editRequest(id){
+  const _sc = await gtpClient(); if(!_sc) return;
+  const { data, error } = await _sc.from('listings').select('*').eq('id', id).maybeSingle();
+  if(error || !data){ alert('Could not load that request.'); return; }
+  // Pre-fill the post modal
+  const setV=(elId,val)=>{ const el=document.getElementById(elId); if(el) el.value = val; };
+  setV('pp-type', data.type === 'export_offer' ? 'export' : 'import');
+  setV('pp-product', data.product || '');
+  setV('pp-qty', data.quantity || '');
+  setV('pp-country', data.country || 'UAE');
+  setV('pp-category', data.category || 'FMCG');
+  setV('pp-origin', data.origin || 'Any origin');
+  setV('pp-desc', data.description || '');
+  window.gtpEditId = id;
+  const h = document.querySelector('#mo-post .mo-h'); if(h) h.textContent = 'Edit Trade Request';
+  const b = document.getElementById('pp-btn'); if(b){ b.textContent = 'Save Changes'; b.disabled=false; }
+  const succ = document.getElementById('post-succ'); if(succ) succ.style.display='none';
+  newPost();
+}
+
+async function closeRequest(id){
+  if(!confirm('Close this request? It will be removed from the public Trade Board, but you keep its responses.')) return;
+  const _sc = await gtpClient(); if(!_sc) return;
+  const { error } = await _sc.from('listings').update({ status:'closed' }).eq('id', id);
+  if(error){ alert('Could not close: ' + (error.message||'please try again.')); return; }
+  loadMyRequests();
+}
+
+async function deleteRequest(id){
+  if(!confirm('Permanently delete this request? This cannot be undone.')) return;
+  const _sc = await gtpClient(); if(!_sc) return;
+  const { error } = await _sc.from('listings').delete().eq('id', id);
+  if(error){ alert('Could not delete: ' + (error.message||'please try again.')); return; }
+  loadMyRequests();
+}
+
 async function submitPost(){
   const btn = document.getElementById('pp-btn');
   const succ = document.getElementById('post-succ');
@@ -1040,6 +1128,25 @@ async function submitPost(){
   const desc = (document.getElementById('pp-desc').value || '').trim();
 
   if(!product){ alert('Please enter a product or commodity.'); return; }
+
+  // EDIT MODE — update the existing listing instead of inserting a new one.
+  if(window.gtpEditId){
+    const editId = window.gtpEditId;
+    btn.disabled = true; btn.textContent = 'Saving…';
+    const etitle = (type==='import' ? 'Import wanted: ' : 'Export offer: ') + product;
+    const { error: upErr } = await _sc.from('listings').update({
+      type: type === 'import' ? 'import_request' : 'export_offer',
+      title: etitle, product: product, category: category,
+      quantity: qty, country: country, origin: origin, description: desc
+    }).eq('id', editId);
+    btn.disabled = false; btn.textContent = 'Save Changes';
+    if(upErr){ alert('Could not save changes: ' + (upErr.message||'please try again.')); return; }
+    window.gtpEditId = null;
+    resetPostModal();
+    closeMo('mo-post');
+    if(typeof loadMyRequests === 'function') loadMyRequests();
+    return;
+  }
 
   btn.disabled = true; btn.textContent = 'Posting…';
 

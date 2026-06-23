@@ -318,7 +318,7 @@ const BOARD=[
   {t:'export',title:'JAKIM Halal Certified Coconut Oil — RBD &amp; Virgin',c:'Malaysia',qty:'50 MT / month',sec:'Food &amp; Beverages',seek:'GCC food manufacturer or FMCG importer',desc:'JAKIM-certified Halal coconut oil from Sabah. Both RBD and virgin grades. Private label available. CIF UAE or Dammam.',posted:'5h ago',urg:false,co:'Halal Foods Malaysia Sdn Bhd'},
   {t:'import',title:'Korean Industrial Precision Machinery — CNC Systems',c:'Saudi Arabia',qty:'12 units',sec:'Machinery',seek:'Korean or Japanese precision machinery manufacturer',desc:'Vision 2030 manufacturing plant requires CNC machining systems. Korean or Japanese brands preferred. Financing options welcome.',posted:'6h ago',urg:false,co:'Saudi Industrial Development Co.'},
 ];
-const COS=[
+let COS=[
   {n:'Al Noor Trading Co.',r:'GCC',c:'UAE',s:'FMCG',tags:['Importer','Distributor','FMCG'],d:'Wholesale FMCG importer supplying hypermarkets and cooperatives across Dubai and Abu Dhabi.',v:true},
   {n:'Dutch Food Export BV',r:'EU',c:'Netherlands',s:'Food & Beverages',tags:['Exporter','Dairy','FMCG','Halal'],d:'Dutch FMCG and dairy exporter. 15 years GCC distribution. HALAL certified.',v:true},
   {n:'Riyadh General Trading',r:'GCC',c:'Saudi Arabia',s:'Food & Beverages',tags:['Importer','Food Distributor'],d:'One of Riyadh largest food importers. Coffee, dairy, frozen goods, packaged consumer products.',v:true},
@@ -416,6 +416,51 @@ function slugify(name){
     .replace(/^-|-$/g,'');
 }
 
+function gtpRegionBucket(region, country){
+  const R = (region||'').toUpperCase();
+  if(['GCC','EU','US','ASIA'].includes(R)) return R;
+  const c = (country||'').toLowerCase();
+  if(['uae','united arab emirates','saudi arabia','ksa','kuwait','qatar','oman','bahrain'].includes(c)) return 'GCC';
+  if(['united states','usa','us','united states of america'].includes(c)) return 'US';
+  if(['china','india','malaysia','singapore','indonesia','japan','south korea','thailand','vietnam','philippines','pakistan'].includes(c)) return 'ASIA';
+  return 'EU';
+}
+function gtpMapCompany(r){
+  const tags = [r.company_type, r.sector].filter(Boolean);
+  return {
+    id: r.id,
+    n: r.name || 'Company',
+    r: gtpRegionBucket(r.region, r.country),
+    c: r.country || '',
+    s: r.sector || '',
+    tags: tags.length ? tags : ['Trade'],
+    d: r.description || 'Verified member of the Gulf Trade Portal network.',
+    v: !!r.verified,
+    slug: r.slug || ''
+  };
+}
+async function loadDirectory(){
+  try{
+    if(typeof gtpClient === 'function'){
+      const sc = await gtpClient();
+      if(sc){
+        const { data, error } = await sc.from('directory_companies')
+          .select('id,name,country,region,sector,company_type,description,website,verified,slug,created_at')
+          .order('verified', { ascending:false })
+          .order('created_at', { ascending:false })
+          .limit(200);
+        if(!error && data && data.length){
+          COS = data.map(gtpMapCompany);
+          filterDir();
+          return;
+        }
+      }
+    }
+  } catch(e){ /* fall through to demo list */ }
+  // No live companies yet (or offline) — show the demo list so the page isn't empty.
+  filterDir();
+}
+
 function renderCos(data){
   const g=document.getElementById('coGrid'),nr=document.getElementById('noRes');
   if(!g||!nr) return;
@@ -429,14 +474,14 @@ function renderCos(data){
   g.innerHTML=data.map(c=>{
     if(loggedIn){
       return `
-    <div class="co-card" style="cursor:pointer;" onclick="window.location.href='company.html?id='+slugify(c.n)">
+    <div class="co-card" style="cursor:pointer;" onclick="window.location.href='company.html?id='+encodeURIComponent(c.id||slugify(c.n))">
       <div class="co-hd"><div class="co-av">${c.n[0]}</div><span class="rtag ${rb[c.r]||'rt-g'}">${rl[c.r]||c.r}</span></div>
       <div class="co-name">${c.n}</div>
       <div class="co-sub">${c.s} · ${c.c}</div>
       ${c.v?'<div class="co-ver">Verified listing</div>':''}
       <p class="co-desc">${c.d}</p>
       <div class="co-tags">${c.tags.map(t=>`<span class="co-tag">${t}</span>`).join('')}</div>
-      <div class="co-ft"><a href="company.html?id=${slugify(c.n)}" class="bx bx-t" style="text-decoration:none;text-align:center;" onclick="event.stopPropagation()">View Profile</a><button class="bx bx-o" onclick="event.stopPropagation()">Contact</button></div>
+      <div class="co-ft"><a href="company.html?id=${encodeURIComponent(c.id||slugify(c.n))}" class="bx bx-t" style="text-decoration:none;text-align:center;" onclick="event.stopPropagation()">View Profile</a><a href="company.html?id=${encodeURIComponent(c.id||slugify(c.n))}#contact" class="bx bx-o" style="text-decoration:none;text-align:center;" onclick="event.stopPropagation()">Contact</a></div>
     </div>`;
     } else {
       // Logged OUT: blur the name, hide sector/country specifics, lock buttons
@@ -590,10 +635,10 @@ function setDR(r,btn){
   document.getElementById('dreg').value=r==='all'?'':r;
   filterDir();
 }
-renderCos(COS);
-// Pre-filter from URL param
+// Pre-filter from URL param, then load live companies
 const urlReg=new URLSearchParams(window.location.search).get('region');
-if(urlReg){document.getElementById('dreg').value=urlReg;filterDir();}
+if(urlReg){document.getElementById('dreg').value=urlReg;}
+loadDirectory();
 </script>
 
 <script>
