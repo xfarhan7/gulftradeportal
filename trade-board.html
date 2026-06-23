@@ -555,6 +555,31 @@ function init(){
   try { renderBoard('all'); } catch(e){ console.warn('renderBoard:', e); }
   try { if(typeof renderCos==='function' && typeof COS!=='undefined') renderCos(COS); } catch(e){ console.warn('renderCos:', e); }
 }
+// Tap-to-zoom image viewer (lightbox)
+function gtpOpenImage(src, ev){
+  if(ev){ ev.stopPropagation(); }
+  let lb = document.getElementById('gtp-lightbox');
+  if(!lb){
+    lb = document.createElement('div');
+    lb.id = 'gtp-lightbox';
+    lb.style.cssText = 'position:fixed;inset:0;z-index:2147483600;background:rgba(8,16,14,.92);display:none;align-items:center;justify-content:center;padding:24px;cursor:zoom-out;opacity:0;transition:opacity .18s;';
+    lb.innerHTML = '<img id="gtp-lightbox-img" src="" alt="" style="max-width:96vw;max-height:92vh;border-radius:10px;box-shadow:0 20px 60px rgba(0,0,0,.5);object-fit:contain;">'+
+      '<button type="button" aria-label="Close" style="position:absolute;top:16px;right:20px;background:rgba(255,255,255,.14);color:#fff;border:none;width:42px;height:42px;border-radius:50%;font-size:1.5rem;line-height:1;cursor:pointer;">&times;</button>';
+    lb.addEventListener('click', gtpCloseImage);
+    document.body.appendChild(lb);
+  }
+  document.getElementById('gtp-lightbox-img').src = src;
+  lb.style.display = 'flex';
+  requestAnimationFrame(function(){ lb.style.opacity = '1'; });
+}
+function gtpCloseImage(){
+  const lb = document.getElementById('gtp-lightbox');
+  if(!lb) return;
+  lb.style.opacity = '0';
+  setTimeout(function(){ lb.style.display = 'none'; }, 180);
+}
+document.addEventListener('keydown', function(e){ if(e.key === 'Escape') gtpCloseImage(); });
+
 function renderBoard(filter){
   const userPlan = localStorage.getItem('gtp_plan') || 'free';
   const isPro    = ['pro','premium','market_entry'].includes(userPlan);
@@ -597,7 +622,7 @@ function renderBoard(filter){
         <span class="bc-time">${x.posted}</span>
       </div>
       <div class="bc-body" style="position:relative;">
-        ${x.img && !blurAll ? `<div style="margin:0 0 10px;border-radius:8px;overflow:hidden;aspect-ratio:16/9;background:#f0ede6;"><img src="${x.img}" alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;"></div>` : ''}
+        ${x.img && !blurAll ? `<div style="margin:0 0 10px;border-radius:8px;overflow:hidden;aspect-ratio:16/9;background:#f0ede6;"><img src="${x.img}" onclick="gtpOpenImage(this.src,event)" alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;cursor:zoom-in;"></div>` : ''}
         <div class="bc-title" style="${blurAll?'filter:blur(5px);user-select:none;':''}">${blurAll?'████████████████████':x.title}</div>
         <div class="bc-meta">
           <span>&#128205; ${x.c}</span>
