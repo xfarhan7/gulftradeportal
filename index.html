@@ -947,9 +947,9 @@ function gtpHexToRgba(col, a){
       </div>
       <div class="foot-col"><h4 data-i18n="ft_buyers">For Buyers</h4><a href="#">Post Import Request</a><a href="trade-board.html">Browse Export Offers</a><a href="directory.html">Supplier Directory</a><a href="packages.html">Buyer Packages</a><a href="portal.html">Client Portal</a></div>
       <div class="foot-col"><h4 data-i18n="ft_sellers">For Sellers</h4><a href="trade-board.html">Browse Buy Requests</a><a href="#">Post Export Offer</a><a href="register.html">Register as Supplier</a><a href="packages.html">Seller Packages</a><a href="packages.html">Advertise</a></div>
-      <div class="foot-col"><h4 data-i18n="ft_markets">GCC Markets</h4><a href="trade-board.html?country=UAE">🇦🇪 UAE</a><a href="trade-board.html?country=Saudi+Arabia">🇸🇦 Saudi Arabia</a><a href="trade-board.html?country=Kuwait">🇰🇼 Kuwait</a><a href="trade-board.html?country=Qatar">🇶🇦 Qatar</a><a href="trade-board.html?country=Oman">🇴🇲 Oman</a><a href="trade-board.html?country=Bahrain">🇧🇭 Bahrain</a></div>
-      <div class="foot-col"><h4 data-i18n="ft_regions">Supplier Regions</h4>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:2px 16px;">
+      <div class="foot-col mk-col"><h4 data-i18n="ft_markets">GCC Markets</h4><div class="mk-grid"><a href="trade-board.html?country=UAE">🇦🇪 UAE</a><a href="trade-board.html?country=Saudi+Arabia">🇸🇦 Saudi Arabia</a><a href="trade-board.html?country=Kuwait">🇰🇼 Kuwait</a><a href="trade-board.html?country=Qatar">🇶🇦 Qatar</a><a href="trade-board.html?country=Oman">🇴🇲 Oman</a><a href="trade-board.html?country=Bahrain">🇧🇭 Bahrain</a></div></div>
+      <div class="foot-col reg-col"><h4 data-i18n="ft_regions">Supplier Regions</h4>
+<div class="reg-grid">
 <a href="directory.html?region=EU">🇪🇺 Europe</a><a href="directory.html?region=ASIA">🇸🇬 Singapore</a>
 <a href="directory.html?region=US">🇺🇸 United States</a><a href="directory.html?region=ASIA">🇮🇩 Indonesia</a>
 <a href="directory.html?region=ASIA">🌏 Asia</a><a href="directory.html?region=ASIA">🇹🇷 Turkey</a>
@@ -1182,7 +1182,8 @@ function mapHomeListing(r){
     desc: r.description || '',
     posted: tAgoHome(r.created_at),
     urg: !!r.urgent,
-    co: 'Verified Member'
+    co: 'Verified Member',
+    img: r.image_url || ''
   };
 }
 function renderHomeBoard(items, loggedIn){
@@ -1201,13 +1202,14 @@ function renderHomeBoard(items, loggedIn){
       <div class="bc-hd">
         <div class="bc-badges">
           ${isAd?'<span class="bdg b-a">&#11088; Sponsored</span>':''}
-          ${item.t==='import'?'<span class="bdg b-i">Import Wanted</span>':''}
-          ${item.t==='export'?'<span class="bdg b-e">Export Available</span>':''}
+          ${item.t==='import'?'<span class="bdg b-i">Find Buyers</span>':''}
+          ${item.t==='export'?'<span class="bdg b-e">Find Suppliers</span>':''}
           ${isUrgent?'<span class="bdg b-u">Urgent</span>':''}
         </div>
         <span class="bc-time">${item.posted}</span>
       </div>
       <div class="bc-body" style="position:relative;">
+        ${item.img && !blurAll ? `<div style="margin:0 0 10px;border-radius:8px;overflow:hidden;aspect-ratio:16/9;background:#f0ede6;"><img src="${item.img}" alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;"></div>` : ''}
         <div class="bc-title" style="${blurAll?'filter:blur(5px);user-select:none;':''}">${blurAll?'&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;':item.title}</div>
         <div class="bc-meta"><span>&#128205; ${item.c}</span><span>&#128230; ${item.qty}</span></div>
         <div class="bc-seek" style="${blurAll?'filter:blur(4px);user-select:none;':''}"><strong>Seeking</strong>${blurAll?'&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;':item.seek}</div>
@@ -1238,7 +1240,7 @@ async function loadHomeBoard(){
       const _sc=await gtpClient();
       if(_sc){
         const { data } = await _sc.from('listings')
-          .select('type,title,product,country,quantity,category,description,urgent,status,created_at')
+          .select('type,title,product,country,quantity,category,description,urgent,status,created_at,image_url')
           .eq('status','active')
           .order('created_at',{ascending:false})
           .limit(6);
@@ -1437,5 +1439,6 @@ document.addEventListener('DOMContentLoaded', function(){
   }
 });
 </script>
+  <script src="cookie-consent.js" defer></script>
 </body>
 </html>

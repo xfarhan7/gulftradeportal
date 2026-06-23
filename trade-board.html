@@ -143,8 +143,8 @@
   <div style="max-width:1200px;margin:0 auto;display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:space-between;">
     <div class="fbar" id="bfbar" style="margin-bottom:0;">
       <button class="fbtn on" onclick="setBF('all',this)">All</button>
-      <button class="fbtn" onclick="setBF('import',this)"><span class="fdot" style="background:#1A4FB5;"></span>Import Wanted</button>
-      <button class="fbtn" onclick="setBF('export',this)"><span class="fdot" style="background:#0A7369;"></span>Export Available</button>
+      <button class="fbtn" onclick="setBF('import',this)"><span class="fdot" style="background:#1A4FB5;"></span>Find Buyers</button>
+      <button class="fbtn" onclick="setBF('export',this)"><span class="fdot" style="background:#0A7369;"></span>Find Suppliers</button>
       <button class="fbtn" onclick="setBF('urgent',this)"><span class="fdot" style="background:#C0392B;"></span>Urgent</button>
     </div>
     <button class="bx bx-t" style="padding:9px 18px;font-size:.8rem;" onclick="openMo('mo-rfq')">+ Post Request</button>
@@ -174,9 +174,9 @@
       </div>
       <div class="foot-col"><h4>For Buyers</h4><a href="#">Post Import Request</a><a href="trade-board.html">Browse Export Offers</a><a href="directory.html">Supplier Directory</a><a href="packages.html">Buyer Packages</a><a href="portal.html">Client Portal</a></div>
       <div class="foot-col"><h4>For Sellers</h4><a href="trade-board.html">Browse Buy Requests</a><a href="#">Post Export Offer</a><a href="register.html">Register as Supplier</a><a href="packages.html">Seller Packages</a><a href="packages.html">Advertise</a></div>
-      <div class="foot-col"><h4>GCC Markets</h4><a href="trade-board.html?country=UAE">🇦🇪 UAE</a><a href="trade-board.html?country=Saudi+Arabia">🇸🇦 Saudi Arabia</a><a href="trade-board.html?country=Kuwait">🇰🇼 Kuwait</a><a href="trade-board.html?country=Qatar">🇶🇦 Qatar</a><a href="trade-board.html?country=Oman">🇴🇲 Oman</a><a href="trade-board.html?country=Bahrain">🇧🇭 Bahrain</a></div>
-      <div class="foot-col"><h4>Supplier Regions</h4>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:2px 16px;">
+      <div class="foot-col mk-col"><h4>GCC Markets</h4><div class="mk-grid"><a href="trade-board.html?country=UAE">🇦🇪 UAE</a><a href="trade-board.html?country=Saudi+Arabia">🇸🇦 Saudi Arabia</a><a href="trade-board.html?country=Kuwait">🇰🇼 Kuwait</a><a href="trade-board.html?country=Qatar">🇶🇦 Qatar</a><a href="trade-board.html?country=Oman">🇴🇲 Oman</a><a href="trade-board.html?country=Bahrain">🇧🇭 Bahrain</a></div></div>
+      <div class="foot-col reg-col"><h4>Supplier Regions</h4>
+<div class="reg-grid">
 <a href="directory.html?region=EU">🇪🇺 Europe</a><a href="directory.html?region=ASIA">🇸🇬 Singapore</a>
 <a href="directory.html?region=US">🇺🇸 United States</a><a href="directory.html?region=ASIA">🇮🇩 Indonesia</a>
 <a href="directory.html?region=ASIA">🌏 Asia</a><a href="directory.html?region=ASIA">🇹🇷 Turkey</a>
@@ -454,6 +454,7 @@ document.addEventListener('click',e=>{if(e.target.classList.contains('mo'))e.tar
   </div>
   <div class="fg"><label>Category</label><select id="rfq-category"><option>FMCG</option><option>Food &amp; Beverages</option><option>Coffee</option><option>Dairy</option><option>Construction Materials</option><option>Auto Parts</option><option>Electronics</option><option>Machinery</option><option>Other</option></select></div>
   <div class="fg"><label>Details</label><textarea id="rfq-desc" style="font-family:Inter,sans-serif;font-size:.85rem;border:1.5px solid var(--mist);border-radius:4px;padding:9px;width:100%;outline:none;resize:vertical;min-height:70px;" placeholder="Specs, certifications, delivery terms…"></textarea></div>
+  <div class="fg"><label>Product Photo <span style="color:var(--mid);font-weight:400;">(optional)</span></label><input type="file" id="rfq-image" accept="image/*" style="font-size:.82rem;width:100%;"><div style="font-size:.72rem;color:var(--mid);margin-top:3px;">JPG or PNG, max 5MB — a clear photo gets more responses.</div></div>
   <label style="display:flex;align-items:center;gap:8px;font-size:.82rem;color:var(--mid);margin-bottom:6px;cursor:pointer;"><input type="checkbox" id="rfq-urgent" style="width:15px;height:15px;accent-color:var(--red);"> Mark as urgent</label>
   <button class="btn-next" id="rfq-btn" style="width:100%;margin-top:4px;" onclick="submitRFQ()">Post to Trade Board →</button>
   <div id="rfq-succ" class="succ">✓ Posted! Your request is now live on the Trade Board.</div>
@@ -589,13 +590,14 @@ function renderBoard(filter){
       <div class="bc-hd">
         <div class="bc-badges">
           ${isAd?'<span class="bdg b-a">&#11088; Sponsored</span>':''}
-          ${x.t==='import'?'<span class="bdg b-i">Import Wanted</span>':''}
-          ${x.t==='export'?'<span class="bdg b-e">Export Available</span>':''}
+          ${x.t==='import'?'<span class="bdg b-i">Find Buyers</span>':''}
+          ${x.t==='export'?'<span class="bdg b-e">Find Suppliers</span>':''}
           ${isUrgent?'<span class="bdg b-u">Urgent</span>':''}
         </div>
         <span class="bc-time">${x.posted}</span>
       </div>
       <div class="bc-body" style="position:relative;">
+        ${x.img && !blurAll ? `<div style="margin:0 0 10px;border-radius:8px;overflow:hidden;aspect-ratio:16/9;background:#f0ede6;"><img src="${x.img}" alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;"></div>` : ''}
         <div class="bc-title" style="${blurAll?'filter:blur(5px);user-select:none;':''}">${blurAll?'████████████████████':x.title}</div>
         <div class="bc-meta">
           <span>&#128205; ${x.c}</span>
@@ -640,7 +642,7 @@ function setReg(r,el){
   const data=r==='all'?BOARD:BOARD.filter(c=>c.c===r||c.t==='ad');
   document.getElementById('boardGrid').innerHTML=data.map(c=>`
     <div class="bc ${c.t==='ad'?'ad':''}">
-      <div class="bc-hd"><div class="bc-badges">${c.t==='ad'?'<span class="bdg b-a">⭐ Sponsored</span>':''}${c.t==='import'?'<span class="bdg b-i">Import Wanted</span>':''}${c.t==='export'?'<span class="bdg b-e">Export Available</span>':''}${c.urg?'<span class="bdg b-u">Urgent</span>':''}</div><span class="bc-time">${c.posted}</span></div>
+      <div class="bc-hd"><div class="bc-badges">${c.t==='ad'?'<span class="bdg b-a">⭐ Sponsored</span>':''}${c.t==='import'?'<span class="bdg b-i">Find Buyers</span>':''}${c.t==='export'?'<span class="bdg b-e">Find Suppliers</span>':''}${c.urg?'<span class="bdg b-u">Urgent</span>':''}</div><span class="bc-time">${c.posted}</span></div>
       <div class="bc-body"><div class="bc-title">${c.title}</div><div class="bc-meta"><span>📍 ${c.c}</span><span>📦 ${c.qty}</span></div><div class="bc-seek"><strong>Seeking</strong>${c.seek}</div><div class="bc-desc">${c.desc}</div></div>
       <div class="bc-ft"><span class="bc-co"><strong>${c.co}</strong></span><button class="bx bx-t" onclick="gtpRespond()">Respond</button></div>
     </div>`).join('');
@@ -837,6 +839,7 @@ async function loadRealListings(){
         posted: timeAgo(r.created_at),
         urg: !!r.urgent,
         co: 'Verified Member',
+        img: r.image_url || '',
         real: true
       }));
       // Real listings go on top of the sample data
@@ -895,6 +898,14 @@ async function submitRFQ(){
 
   if(!product){ alert('Please enter a product.'); return; }
 
+  // Optional product photo — validate before we start.
+  const imgInput = document.getElementById('rfq-image');
+  const imgFile = imgInput && imgInput.files && imgInput.files[0];
+  if(imgFile){
+    if(!imgFile.type.startsWith('image/')){ alert('That file is not an image. Please choose a JPG or PNG.'); return; }
+    if(imgFile.size > 5 * 1024 * 1024){ alert('That image is too large — please use one under 5MB.'); return; }
+  }
+
   btn.disabled = true; btn.textContent = 'Posting…';
 
   try {
@@ -902,6 +913,19 @@ async function submitRFQ(){
     const company = await gtpCurrentCompany();
     const title = (type==='import' ? 'Import wanted: ' : 'Export offer: ') + product;
     const slug = gtpSlugify(product + '-' + country) + '-' + Date.now().toString(36);
+
+    // Upload the photo (if any) to the user's own folder, then keep its URL.
+    let imageUrl = null;
+    if(imgFile){
+      btn.textContent = 'Uploading photo…';
+      const ext = ((imgFile.name.split('.').pop() || 'jpg').toLowerCase().replace(/[^a-z0-9]+/g, '')) || 'jpg';
+      const path = user.id + '/' + Date.now() + '.' + ext;
+      const { error: upErr } = await _sc.storage.from('listing-images')
+        .upload(path, imgFile, { cacheControl: '3600', upsert: false, contentType: imgFile.type });
+      if(upErr) throw upErr;
+      imageUrl = _sc.storage.from('listing-images').getPublicUrl(path).data.publicUrl;
+      btn.textContent = 'Posting…';
+    }
 
     const { error } = await _sc.from('listings').insert({
       company_id: company ? company.id : null,
@@ -916,7 +940,8 @@ async function submitRFQ(){
       description: desc,
       urgent: urgent,
       status: 'active',
-      slug: slug
+      slug: slug,
+      image_url: imageUrl
     });
     if(error) throw error;
 
@@ -991,4 +1016,5 @@ function removePhoto(idx) {
 function openMobMenu(){document.getElementById('mobDrawer').classList.add('open');document.getElementById('mobBg').classList.add('open');}
 function closeMobMenu(){document.getElementById('mobDrawer').classList.remove('open');document.getElementById('mobBg').classList.remove('open');}
 </script>
+  <script src="cookie-consent.js" defer></script>
 </body></html>
