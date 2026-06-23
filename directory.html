@@ -461,6 +461,7 @@ async function loadDirectory(){
   filterDir();
 }
 
+function esc(s){ return (s==null?'':String(s)).replace(/[<>&"']/g,function(c){return {'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&#39;'}[c];}); }
 function renderCos(data){
   const g=document.getElementById('coGrid'),nr=document.getElementById('noRes');
   if(!g||!nr) return;
@@ -476,11 +477,11 @@ function renderCos(data){
       return `
     <div class="co-card" style="cursor:pointer;" onclick="window.location.href='company.html?id='+encodeURIComponent(c.id||slugify(c.n))">
       <div class="co-hd"><div class="co-av">${c.n[0]}</div><span class="rtag ${rb[c.r]||'rt-g'}">${rl[c.r]||c.r}</span></div>
-      <div class="co-name">${c.n}</div>
-      <div class="co-sub">${c.s} · ${c.c}</div>
+      <div class="co-name">${esc(c.n)}</div>
+      <div class="co-sub">${esc(c.s)} · ${esc(c.c)}</div>
       ${c.v?'<div class="co-ver">Verified listing</div>':''}
-      <p class="co-desc">${c.d}</p>
-      <div class="co-tags">${c.tags.map(t=>`<span class="co-tag">${t}</span>`).join('')}</div>
+      <p class="co-desc">${esc(c.d)}</p>
+      <div class="co-tags">${c.tags.map(t=>`<span class="co-tag">${esc(t)}</span>`).join('')}</div>
       <div class="co-ft"><a href="company.html?id=${encodeURIComponent(c.id||slugify(c.n))}" class="bx bx-t" style="text-decoration:none;text-align:center;" onclick="event.stopPropagation()">View Profile</a><a href="company.html?id=${encodeURIComponent(c.id||slugify(c.n))}#contact" class="bx bx-o" style="text-decoration:none;text-align:center;" onclick="event.stopPropagation()">Contact</a></div>
     </div>`;
     } else {
@@ -488,11 +489,11 @@ function renderCos(data){
       return `
     <div class="co-card">
       <div class="co-hd"><div class="co-av" style="filter:blur(5px);">${c.n[0]}</div><span class="rtag ${rb[c.r]||'rt-g'}">${rl[c.r]||c.r}</span></div>
-      <div class="co-name" style="filter:blur(6px);user-select:none;pointer-events:none;">${c.n}</div>
-      <div class="co-sub" style="filter:blur(4px);user-select:none;">${c.s} · ${c.c}</div>
+      <div class="co-name" style="filter:blur(6px);user-select:none;pointer-events:none;">${esc(c.n)}</div>
+      <div class="co-sub" style="filter:blur(4px);user-select:none;">${esc(c.s)} · ${esc(c.c)}</div>
       ${c.v?'<div class="co-ver">Verified listing</div>':''}
-      <p class="co-desc">${c.d}</p>
-      <div class="co-tags">${c.tags.map(t=>`<span class="co-tag">${t}</span>`).join('')}</div>
+      <p class="co-desc">${esc(c.d)}</p>
+      <div class="co-tags">${c.tags.map(t=>`<span class="co-tag">${esc(t)}</span>`).join('')}</div>
       <div class="co-ft" style="display:flex;gap:8px;align-items:center;">
         <span style="font-size:.78rem;color:var(--mid,#6b6457);">🔒 Register to view company</span>
         <a href="register.html" class="bx bx-t" style="text-decoration:none;text-align:center;margin-left:auto;">Register Free</a>

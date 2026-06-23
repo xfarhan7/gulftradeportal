@@ -594,6 +594,7 @@ function gtpCloseImage(){
 }
 document.addEventListener('keydown', function(e){ if(e.key === 'Escape') gtpCloseImage(); });
 
+function esc(s){ return (s==null?'':String(s)).replace(/[<>&"']/g,function(c){return {'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&#39;'}[c];}); }
 window.currentCat = "all";
 function setCat(v){ window.currentCat = v || 'all'; renderBoard(window.currentFilter || 'all'); }
 function renderBoard(filter){
@@ -649,15 +650,15 @@ function renderBoard(filter){
         <span class="bc-time">${x.posted}</span>
       </div>
       <div class="bc-body" style="position:relative;">
-        ${x.img && !blurAll ? `<div style="margin:0 0 10px;border-radius:8px;overflow:hidden;aspect-ratio:16/9;background:#f0ede6;"><img src="${x.img}" onclick="gtpOpenImage(this.src,event)" alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;cursor:zoom-in;"></div>` : ''}
-        <div class="bc-title" style="${blurAll?'filter:blur(5px);user-select:none;':''}">${blurAll?'████████████████████':x.title}</div>
+        ${x.img && !blurAll ? `<div style="margin:0 0 10px;border-radius:8px;overflow:hidden;aspect-ratio:16/9;background:#f0ede6;"><img src="${esc(x.img)}" onclick="gtpOpenImage(this.src,event)" alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;cursor:zoom-in;"></div>` : ''}
+        <div class="bc-title" style="${blurAll?'filter:blur(5px);user-select:none;':''}">${blurAll?'████████████████████':esc(x.title)}</div>
         <div class="bc-meta">
-          <span>&#128205; ${x.c}</span>
-          <span>&#128230; ${x.qty}</span>
-          <span>&#127991; ${x.sec}</span>
+          <span>&#128205; ${esc(x.c)}</span>
+          <span>&#128230; ${esc(x.qty)}</span>
+          <span>&#127991; ${esc(x.sec)}</span>
         </div>
-        <div class="bc-seek" style="${blurAll?'filter:blur(3px);user-select:none;':''}">${blurAll?'<strong>Seeking</strong>████████████':('<strong>Seeking</strong>'+x.seek)}</div>
-        <div class="bc-desc" style="${blurAll?'filter:blur(3px);user-select:none;':''}">${blurAll?'████ ████████ ████ ██████ ████ ████████ ████.':x.desc}</div>
+        <div class="bc-seek" style="${blurAll?'filter:blur(3px);user-select:none;':''}">${blurAll?'<strong>Seeking</strong>████████████':('<strong>Seeking</strong>'+esc(x.seek))}</div>
+        <div class="bc-desc" style="${blurAll?'filter:blur(3px);user-select:none;':''}">${blurAll?'████ ████████ ████ ██████ ████ ████████ ████.':esc(x.desc)}</div>
         ${blurAll ? `
         <div class="gate-overlay">
           <div class="gate-lock">
@@ -673,7 +674,7 @@ function renderBoard(filter){
       </div>
       <div class="bc-ft">
         <span class="bc-co">
-          <strong style="${blurContact||blurAll?'filter:blur(4px);user-select:none;':''}">${blurContact||blurAll?'████████ ████':x.co}</strong>
+          <strong style="${blurContact||blurAll?'filter:blur(4px);user-select:none;':''}">${blurContact||blurAll?'████████ ████':esc(x.co)}</strong>
         </span>
         ${!blurAll ? `
           <button class="bx bx-t" onclick="event.stopPropagation();${blurContact?'openMo(\'mo-register\')':`gtpReplyClick(${x.real?`'${x.id}','${x.ownerId}'`:'null,null'})`}">${isAd?'Contact &rarr;':'Respond'}</button>
