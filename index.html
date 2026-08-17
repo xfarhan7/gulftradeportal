@@ -666,6 +666,7 @@ function gtpHexToRgba(col, a){
   <div class="hero-inner">
     <div>
       <p class="hero-ey">GCC Import & Export Platform — UAE · Saudi Arabia · Kuwait · Qatar</p>
+      <a href="register.html" class="hero-promo" style="display:inline-flex;align-items:center;gap:7px;background:linear-gradient(135deg,#E8B84B,#C8922A);color:#1a1a1a;font-family:Inter,sans-serif;font-weight:700;font-size:.8rem;letter-spacing:.01em;padding:7px 15px;border-radius:100px;text-decoration:none;margin-bottom:16px;box-shadow:0 2px 12px rgba(200,146,42,.28);">🎁 Limited time — register now &amp; get <span style="text-decoration:underline;text-underline-offset:2px;">3 months of Pro, free</span> &rarr;</a>
       <h1 data-i18n="hero_h1" data-i18n-html="1">Trade between the <span class="acc">Gulf</span><br>and the world — direct.</h1>
       <p class="hero-sub" data-i18n="hero_sub">The unified trade gateway between GCC countries and the rest of the world. We help international companies discover GCC suppliers — and GCC companies reach global buyers.</p>
       <div class="htabs">
@@ -1152,16 +1153,7 @@ function authLogin(){
   s.textContent='Signing you in... Redirecting to your dashboard.';
   setTimeout(()=>window.location.href='portal.html',1800);
 }
-const BOARD_HOME=[
-  
-  {t:'import',title:'Genuine OEM Car Parts — Brake Pads, Filters',c:'UAE',qty:'Container load monthly',sec:'Auto Parts',seek:'EU or Japanese OEM auto parts supplier',desc:'Dubai distributor. Genuine OEM — Bosch, Mann, Febi. CIF Jebel Ali. Ongoing monthly.',posted:'1h ago',urg:true,co:'Gulf Auto Spares LLC'},
-  {t:'import',title:'Nespresso Original Line Capsules',c:'UAE',qty:'50,000 sleeves/month',sec:'FMCG',seek:'EU wholesale distributor with origin documentation',desc:'Seeking verified wholesale supplier. EU origin docs required. CIF Dubai preferred.',posted:'2h ago',urg:true,co:'Al Noor Trading Co.'},
-  {t:'ad',title:'Dutch Food Export B.V. &mdash; Premium Dairy &amp; FMCG',c:'Netherlands',qty:'Min. 1MT per SKU',sec:'Food &amp; Beverages',seek:'UAE, Saudi Arabia, Kuwait distributors',desc:'HALAL certified dairy, coffee, packaged goods. 15 years GCC experience.',posted:'Sponsored',urg:false,co:'Dutch Food Export BV'},
-  {t:'import',title:'Halal Frozen Chicken &mdash; IQF Whole &amp; Cuts',c:'Saudi Arabia',qty:'50MT first order',sec:'Food &amp; Beverages',seek:'EU or US SFDA-approved Halal poultry supplier',desc:'SFDA-registered importer. Ongoing monthly. CIF Jeddah or Dammam.',posted:'5h ago',urg:true,co:'Riyadh General Trading'},
-  {t:'export',title:'JAKIM Halal Coconut Oil &mdash; RBD &amp; Virgin',c:'Malaysia',qty:'50MT/month',sec:'Food &amp; Beverages',seek:'GCC food manufacturer or FMCG importer',desc:'JAKIM-certified Halal coconut oil. Private label available.',posted:'5h ago',urg:false,co:'Halal Foods Malaysia'},
-  {t:'export',title:'Grade 60 Steel Rebar &mdash; 12mm to 25mm',c:'Germany',qty:'500MT available',sec:'Construction',seek:'UAE or GCC construction importer',desc:'German manufacturer surplus stock. CE certified. FOB Hamburg or CIF Jebel Ali.',posted:'Yesterday',urg:false,co:'German Metals GmbH'},
-  {t:'import',title:'Organic Extra Virgin Olive Oil',c:'Kuwait',qty:'20,000 litres/month',sec:'Food &amp; Beverages',seek:'Spanish, Italian, or Greek EVOO producer',desc:'Certified organic EVOO. Private label welcome.',posted:'Yesterday',urg:false,co:'Gulf Premium Foods'},
-];
+const BOARD_HOME=[];
 function isLoggedInHome(){
   return !!(window.GTP_LOGGED_IN || Object.keys(localStorage).some(k=>k.includes('-auth-token')));
 }
@@ -1277,8 +1269,16 @@ async function loadHomeBoard(){
       }
     }
   } catch(e){ /* fall through to demo teaser */ }
-  // No real listings yet (or offline) — show the demo teaser so the section isn't empty.
-  renderHomeBoard(BOARD_HOME, loggedIn);
+  // No real listings yet — show a genuine call-to-action, never fake samples.
+  const g = document.getElementById('homeBoard');
+  if(g){
+    g.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px 20px;background:#fff;border:1px solid #E8E2D6;border-radius:12px;">'
+      + '<div style="font-size:1.7rem;margin-bottom:10px;">&#128228;</div>'
+      + '<div style="font-family:Fraunces,serif;font-size:1.15rem;font-weight:600;color:var(--ink);margin-bottom:6px;">The trade board is just getting started</div>'
+      + '<div style="color:var(--mid);font-size:.9rem;max-width:440px;margin:0 auto 16px;">Be one of the first to post what you\u2019re buying or selling \u2014 and reach verified GCC and international counterparties directly.</div>'
+      + '<a href="register.html" style="display:inline-block;background:var(--teal);color:#fff;font-family:Inter,sans-serif;font-weight:700;font-size:.85rem;padding:11px 22px;border-radius:6px;text-decoration:none;">Post a Trade Request \u2014 Free \u2192</a>'
+      + '</div>';
+  }
 }
 loadHomeBoard();
 // Re-render once auth state is confirmed, so members get the unblurred view.

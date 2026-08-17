@@ -499,43 +499,8 @@ const FEED=[
   {t:'import',title:'Basmati Rice 1121 — 200MT bulk India origin',c:'UAE',time:'4h ago'},
   {t:'export',title:'JAKIM Halal Coconut Oil — 50MT Malaysia',c:'Malaysia',time:'5h ago'},
 ];
-let BOARD=[
-  
-  {t:'import',title:'Genuine OEM Car Parts — Brake Pads, Filters, Belts',c:'UAE',qty:'Container load monthly',sec:'Auto Parts',seek:'EU or Japanese OEM auto parts supplier',desc:'Dubai-based auto parts distributor. Genuine OEM only — Bosch, Mann, Febi, Mahle. CIF Jebel Ali. Ongoing monthly orders.',posted:'1h ago',urg:true,co:'Gulf Auto Spares LLC'},
-  {t:'export',title:'European Auto Parts — Aftermarket & OEM',c:'Germany',qty:'Flexible MOQ',sec:'Auto Parts',seek:'GCC auto parts importers & workshops',desc:'German auto parts exporter. Bosch, ATE, Sachs, LuK. Full range for European & Asian vehicles. FOB Hamburg or CIF Gulf ports.',posted:'4h ago',urg:false,co:'Auto Teile Deutschland GmbH'},
-  {t:'import',title:'Tyres — Passenger & Commercial, All Sizes',c:'Saudi Arabia',qty:'2,000 units first order',sec:'Auto Parts',seek:'Asian or European tyre manufacturer',desc:'Riyadh tyre distributor seeking direct manufacturer. Passenger, SUV, light truck. SASO certification required.',posted:'Yesterday',urg:false,co:'Saudi Tyre Trading Co.'},
-  {t:'import',title:'Nespresso Original Line Capsules — All Varieties',c:'UAE',qty:'50,000 sleeves/month',sec:'FMCG',seek:'EU wholesale distributor with origin documentation',desc:'Seeking verified wholesale supplier. EU origin docs required. CIF Dubai preferred. Ongoing monthly.',posted:'2h ago',urg:true,co:'Al Noor Trading Co.'},
-  {t:'ad',title:'Dutch Food Export B.V. — Premium Dairy &amp; FMCG to GCC',c:'Netherlands',qty:'Min. 1MT per SKU',sec:'Food &amp; Beverages',seek:'UAE, Saudi Arabia, Kuwait distributors',desc:'Established Dutch FMCG exporter. HALAL certified dairy, coffee, packaged goods. 15 years GCC experience. Request our full catalogue.',posted:'Sponsored',urg:false,co:'Dutch Food Export BV'},
-  {t:'import',title:'Halal Frozen Chicken — IQF Whole &amp; Cuts',c:'Saudi Arabia',qty:'50MT first order',sec:'Food &amp; Beverages',seek:'EU or US SFDA-approved Halal poultry supplier',desc:'SFDA-registered importer. Ongoing monthly requirement. CIF Jeddah or Dammam preferred.',posted:'5h ago',urg:true,co:'Riyadh General Trading'},
-  {t:'export',title:'Grade 60 Steel Rebar — 12mm to 25mm',c:'Germany',qty:'500MT available',sec:'Construction',seek:'UAE or GCC construction importer',desc:'German manufacturer with surplus stock. CE certified. FOB Hamburg or CIF Jebel Ali.',posted:'Yesterday',urg:false,co:'German Metals GmbH'},
-  {t:'import',title:'Organic Extra Virgin Olive Oil — Retail &amp; Bulk',c:'Kuwait',qty:'20,000 litres/month',sec:'Food &amp; Beverages',seek:'Spanish, Italian, or Greek EVOO producer',desc:'Certified organic EVOO for retail repackaging and food service in Kuwait. Private label welcome.',posted:'Yesterday',urg:false,co:'Gulf Premium Foods'},
-  {t:'export',title:'Premium Medjool Dates — Export Grade',c:'Saudi Arabia',qty:'10MT per month',sec:'Food &amp; Beverages',seek:'EU importer or specialty food distributor',desc:'GlobalGAP certified, export packaged. Targeting Netherlands, Germany, UK importers.',posted:'2 days ago',urg:false,co:'Arabian Dates Trading'},
-  {t:'import',title:'Pharmaceutical API — GMP Certified Raw Materials',c:'Saudi Arabia',qty:'Various SKUs',sec:'Healthcare',seek:'EU GMP-certified API manufacturer',desc:'SFDA-registered importer seeking GMP API suppliers. Molecule list on request.',posted:'3 days ago',urg:false,co:'Gulf Pharma Distribution'},
-  {t:'import',title:'Industrial Electrical Control Panels',c:'UAE',qty:'200 units/quarter',sec:'Machinery',seek:'German or EU industrial equipment manufacturer',desc:'CE-certified panels for oil &amp; gas clients. Full specs on request.',posted:'4 days ago',urg:false,co:'Emirates Industrial Supply'},
-  {t:'export',title:'Basmati Rice 1121 Long Grain — Premium Grade',c:'India',qty:'200 MT per shipment',sec:'Food &amp; Beverages',seek:'UAE or KSA bulk food importer / distributor',desc:'Premium 1121 basmati from Punjab. APEDA certified, Halal compliant. FOB Mundra or CIF Jebel Ali. Competitive pricing for full lots.',posted:'4h ago',urg:false,co:'India Spice &amp; Agri Exports'},
-  {t:'export',title:'JAKIM Halal Certified Coconut Oil — RBD &amp; Virgin',c:'Malaysia',qty:'50 MT / month',sec:'Food &amp; Beverages',seek:'GCC food manufacturer or FMCG importer',desc:'JAKIM-certified Halal coconut oil from Sabah. Both RBD and virgin grades. Private label available. CIF UAE or Dammam.',posted:'5h ago',urg:false,co:'Halal Foods Malaysia Sdn Bhd'},
-  {t:'import',title:'Korean Industrial Precision Machinery — CNC Systems',c:'Saudi Arabia',qty:'12 units',sec:'Machinery',seek:'Korean or Japanese precision machinery manufacturer',desc:'Vision 2030 manufacturing plant requires CNC machining systems. Korean or Japanese brands preferred. Financing options welcome.',posted:'6h ago',urg:false,co:'Saudi Industrial Development Co.'},
-];
-const COS=[
-  {n:'Al Noor Trading Co.',r:'GCC',c:'UAE',s:'FMCG',tags:['Importer','Distributor','FMCG'],d:'Wholesale FMCG importer supplying hypermarkets and cooperatives across Dubai and Abu Dhabi.',v:true},
-  {n:'Dutch Food Export BV',r:'EU',c:'Netherlands',s:'Food & Beverages',tags:['Exporter','Dairy','FMCG','Halal'],d:'Dutch FMCG and dairy exporter. 15 years GCC distribution. HALAL certified.',v:true},
-  {n:'Riyadh General Trading',r:'GCC',c:'Saudi Arabia',s:'Food & Beverages',tags:['Importer','Food Distributor'],d:'One of Riyadh largest food importers. Coffee, dairy, frozen goods, packaged consumer products.',v:true},
-  {n:'German Metals GmbH',r:'EU',c:'Germany',s:'Construction',tags:['Manufacturer','Exporter','Steel'],d:'German steel manufacturer exporting structural rebar, coils, and plates to GCC construction sector.',v:true},
-  {n:'B&F Global Solutions BV',r:'EU',c:'Netherlands',s:'FMCG',tags:['Wholesaler','Coffee','FMCG Exporter'],d:'Dutch B2B wholesale distributor of Nespresso Original Line capsules and FMCG products for GCC.',v:true},
-  {n:'Gulf Construction Supply',r:'GCC',c:'UAE',s:'Construction',tags:['Importer','Exporter','Steel'],d:'UAE supplier of structural steel and building materials to contractors across UAE and Oman.',v:true},
-  {n:'UK Chemicals Ltd',r:'EU',c:'United Kingdom',s:'Chemicals',tags:['Manufacturer','Exporter'],d:'UK specialty chemicals manufacturer. Industrial solvents and cleaning chemicals for GCC.',v:true},
-  {n:'Pharma Gulf Distribution',r:'GCC',c:'UAE',s:'Healthcare',tags:['Distributor','Pharma'],d:'Licensed pharmaceutical distributor in Dubai. Hospitals, pharmacies, and clinics across GCC.',v:true},
-  {n:'American Agri Exports',r:'US',c:'United States',s:'Food & Beverages',tags:['Exporter','Agri','Grains'],d:'US agricultural exporter specialising in grains, pulses, and processed food for GCC.',v:false},
-  {n:'Arabian Coffee Traders',r:'GCC',c:'Saudi Arabia',s:'Food & Beverages',tags:['Importer','Coffee','Wholesale'],d:'Official channel for premium coffee brands in KSA. Hotels, cafes, food service distributors.',v:true},
-  {n:'Halal Foods Malaysia Sdn Bhd',r:'ASIA',c:'Malaysia',s:'Food & Beverages',tags:['Exporter','Halal','JAKIM Certified'],d:'JAKIM-certified Halal food manufacturer and exporter. Palm oil derivatives, processed food, halal snacks. Established UAE and KSA distribution.',v:true},
-  {n:'Shanghai General Trading Co.',r:'ASIA',c:'China',s:'Electronics',tags:['Manufacturer','Exporter','Electronics'],d:'Major Chinese electronics and consumer goods manufacturer. CE certified products. Established GCC distribution through Jebel Ali FTZ.',v:true},
-  {n:'India Spice & Agri Exports',r:'ASIA',c:'India',s:'Food & Beverages',tags:['Exporter','Agri','Spices','Rice'],d:'Leading Indian exporter of Basmati rice, spices, pulses, and agri products to GCC. UAE-India CEPA certified, Halal compliant.',v:true},
-  {n:'Singapore Trade Hub Pte Ltd',r:'ASIA',c:'Singapore',s:'FMCG',tags:['Trader','Distributor','Multi-category'],d:'Singapore-based multi-category FMCG trader. Regional hub for Southeast Asian goods entering GCC via Jebel Ali. ISO 9001 certified.',v:false},
-  {n:'Korean Industrial Group',r:'ASIA',c:'South Korea',s:'Machinery',tags:['Manufacturer','Exporter','Industrial'],d:'South Korean industrial machinery and equipment manufacturer. CE and KS certified. Active in UAE construction and manufacturing sectors.',v:true},
-  {n:'PT Indo Halal Foods',r:'ASIA',c:'Indonesia',s:'Food & Beverages',tags:['Exporter','Halal','MUI Certified'],d:'Indonesian MUI-certified halal food and palm oil exporter. Coconut products, processed seafood, and packaged foods for GCC retail.',v:true},
-  {n:'Thai Export Alliance Co.',r:'ASIA',c:'Thailand',s:'Food & Beverages',tags:['Exporter','Manufacturer','Canned Foods'],d:'Thai food manufacturer and exporter. Canned seafood, rice, processed foods. Established GCC trade lane through Dubai distributor network.',v:false},
-  {n:'Japan Machinery & Tech KK',r:'ASIA',c:'Japan',s:'Machinery',tags:['Manufacturer','Exporter','Precision Engineering'],d:'Japanese precision machinery and industrial equipment manufacturer. Supplying UAE oil & gas and manufacturing sectors since 2010.',v:true},
-];
+let BOARD=[];
+const COS=[];
 const PKGS={
   gcc:[
     {id:'gf',n:'Free',p:'€0',note:'forever',pop:false,feats:['Company profile in directory','2 trade requests/month','WhatsApp & email contact','Browse supplier directory','– Featured search','– Verified badge','– Email alerts to suppliers']},
@@ -617,7 +582,10 @@ function renderBoard(filter){
 
   const grid = document.getElementById('boardGrid');
   if(!data.length){
-    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:48px 20px;color:var(--mid);"><div style="font-size:1.6rem;margin-bottom:8px;">&#128269;</div><div style="font-weight:600;color:var(--ink2);margin-bottom:4px;">No listings match these filters</div><div style="font-size:.85rem;">Try a different sector, or clear the filters to see everything.</div></div>';
+    const noneAtAll = (filter==='all' && (window.currentCat||'all')==='all' && !BOARD.length);
+    grid.innerHTML = noneAtAll
+      ? '<div style="grid-column:1/-1;text-align:center;padding:48px 20px;color:var(--mid);"><div style="font-size:1.6rem;margin-bottom:8px;">&#128228;</div><div style="font-weight:600;color:var(--ink2);margin-bottom:4px;">No open trade requests yet</div><div style="font-size:.85rem;">Be the first to post &mdash; buyers and suppliers will see it here.</div></div>'
+      : '<div style="grid-column:1/-1;text-align:center;padding:48px 20px;color:var(--mid);"><div style="font-size:1.6rem;margin-bottom:8px;">&#128269;</div><div style="font-weight:600;color:var(--ink2);margin-bottom:4px;">No listings match these filters</div><div style="font-size:.85rem;">Try a different sector, or clear the filters to see everything.</div></div>';
     return;
   }
   grid.innerHTML = data.map(x => {
@@ -903,8 +871,8 @@ async function loadRealListings(){
         img: r.image_url || '',
         real: true
       }));
-      // Real listings go on top of the sample data
-      BOARD = realCards.concat(BOARD);
+      // Show only real member listings
+      BOARD = realCards;
     }
   } catch(e){ console.warn('Listings load error:', e); }
   renderBoard('all');
