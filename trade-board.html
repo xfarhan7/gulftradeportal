@@ -132,6 +132,22 @@
     </div>
   </div>
 </nav>
+
+<div class="mob-drawer-bg" id="mobBg" onclick="closeMobMenu()"></div>
+<div class="mob-drawer" id="mobDrawer">
+  <button class="mob-drawer-close" onclick="closeMobMenu()">&times;</button>
+  <div class="mob-drawer-logo">Gulf <span>Trade</span> Portal</div>
+  <a class="mob-link" href="index.html">Home</a>
+  <a class="mob-link" href="trade-board.html">Trade Board</a>
+  <a class="mob-link" href="directory.html">Directory</a>
+  <a class="mob-link" href="logistics.html">Logistics</a>
+  <a class="mob-link" href="packages.html">Packages</a>
+  <a class="mob-link" href="features.html">Features</a>
+  <div class="mob-drawer-cta">
+    <a href="portal.html" style="background:transparent;border:1px solid var(--gold);color:var(--gold);">Sign In</a>
+    <a href="register.html" style="background:var(--teal);color:#fff;">Register Free</a>
+  </div>
+</div>
 <div style="background:var(--teal-dk);padding:36px 32px 32px;">
   <div style="max-width:1200px;margin:0 auto;">
     <p style="font-size:.67rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.45);font-weight:600;margin-bottom:8px;">Live requests</p>
@@ -1044,8 +1060,8 @@ function removePhoto(idx) {
 </div></div>
 
 <script>
-function openMobMenu(){document.getElementById('mobDrawer').classList.add('open');document.getElementById('mobBg').classList.add('open');}
-function closeMobMenu(){document.getElementById('mobDrawer').classList.remove('open');document.getElementById('mobBg').classList.remove('open');}
+function openMobMenu(){var d=document.getElementById('mobDrawer'),b=document.getElementById('mobBg');if(d)d.classList.add('open');if(b)b.classList.add('open');}
+function closeMobMenu(){var d=document.getElementById('mobDrawer'),b=document.getElementById('mobBg');if(d)d.classList.remove('open');if(b)b.classList.remove('open');}
 </script>
   <script src="cookie-consent.js" defer></script>
 </body></html>

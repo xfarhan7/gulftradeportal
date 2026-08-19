@@ -662,11 +662,27 @@ function gtpHexToRgba(col, a){
   </div>
 </nav>
 
+<div class="mob-drawer-bg" id="mobBg" onclick="closeMobMenu()"></div>
+<div class="mob-drawer" id="mobDrawer">
+  <button class="mob-drawer-close" onclick="closeMobMenu()">&times;</button>
+  <div class="mob-drawer-logo">Gulf <span>Trade</span> Portal</div>
+  <a class="mob-link" href="index.html">Home</a>
+  <a class="mob-link" href="trade-board.html">Trade Board</a>
+  <a class="mob-link" href="directory.html">Directory</a>
+  <a class="mob-link" href="logistics.html">Logistics</a>
+  <a class="mob-link" href="packages.html">Packages</a>
+  <a class="mob-link" href="features.html">Features</a>
+  <div class="mob-drawer-cta">
+    <a href="portal.html" style="background:transparent;border:1px solid var(--gold);color:var(--gold);">Sign In</a>
+    <a href="register.html" style="background:var(--teal);color:#fff;">Register Free</a>
+  </div>
+</div>
+
 <section class="hero">
   <div class="hero-inner">
     <div>
       <p class="hero-ey">GCC Import & Export Platform — UAE · Saudi Arabia · Kuwait · Qatar</p>
-      <a href="register.html" class="hero-promo" style="display:inline-flex;align-items:center;gap:7px;background:linear-gradient(135deg,#E8B84B,#C8922A);color:#1a1a1a;font-family:Inter,sans-serif;font-weight:700;font-size:.8rem;letter-spacing:.01em;padding:7px 15px;border-radius:100px;text-decoration:none;margin-bottom:16px;box-shadow:0 2px 12px rgba(200,146,42,.28);">🎁 Limited time — register now &amp; get <span style="text-decoration:underline;text-underline-offset:2px;">3 months of Pro, free</span> &rarr;</a>
+      <a href="register.html" class="hero-promo" style="display:inline-flex;align-items:center;gap:9px;background:linear-gradient(135deg,#E8B84B,#C8922A);color:#1a1a1a;font-family:Inter,sans-serif;font-weight:700;font-size:.8rem;letter-spacing:.01em;padding:7px 16px;border-radius:100px;text-decoration:none;margin-bottom:16px;box-shadow:0 2px 12px rgba(200,146,42,.28);"><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#1a1a1a;flex-shrink:0;"></span>Limited time — register now &amp; get <span style="text-decoration:underline;text-underline-offset:2px;">3 months of Pro, free</span> &rarr;</a>
       <h1 data-i18n="hero_h1" data-i18n-html="1">Trade between the <span class="acc">Gulf</span><br>and the world — direct.</h1>
       <p class="hero-sub" data-i18n="hero_sub">The unified trade gateway between GCC countries and the rest of the world. We help international companies discover GCC suppliers — and GCC companies reach global buyers.</p>
       <div class="htabs">
@@ -886,7 +902,7 @@ function gtpHexToRgba(col, a){
 <section class="sec sec-alt">
   <div class="sec-inner" style="max-width:1200px;margin:0 auto;">
     <div class="sec-hd"><p class="ey" data-i18n="ey_simple">Simple by design</p><h2 class="sech" data-i18n="h2_how">How it works</h2><p class="secsub" data-i18n="sub_simple">Two sides. One platform. Direct connections — no middlemen, no commission.</p></div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;">
+    <div class="two-col" style="display:grid;grid-template-columns:1fr 1fr;gap:32px;">
       <div>
         <div style="font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);margin-bottom:18px;padding-bottom:10px;border-bottom:2px solid var(--teal);" data-i18n="hw_buyers">For GCC Buyers</div>
         <div style="display:flex;flex-direction:column;gap:16px;">
@@ -1289,8 +1305,8 @@ window.onGtpAuthReady = function(){ try{ loadHomeBoard(); }catch(e){} };
 
 
 <script>
-function openMobMenu(){document.getElementById('mobDrawer').classList.add('open');document.getElementById('mobBg').classList.add('open');}
-function closeMobMenu(){document.getElementById('mobDrawer').classList.remove('open');document.getElementById('mobBg').classList.remove('open');}
+function openMobMenu(){var d=document.getElementById('mobDrawer'),b=document.getElementById('mobBg');if(d)d.classList.add('open');if(b)b.classList.add('open');}
+function closeMobMenu(){var d=document.getElementById('mobDrawer'),b=document.getElementById('mobBg');if(d)d.classList.remove('open');if(b)b.classList.remove('open');}
 </script>
 
 <script>
