@@ -1163,20 +1163,6 @@ function heroTab(t){
   document.getElementById('htc-b').className='htc'+(t==='b'?' on':'');
   document.getElementById('htc-s').className='htc'+(t==='s'?' on':'');
 }
-function switchAuth(tab){
-  document.getElementById('auth-login').style.display=tab==='login'?'block':'none';
-  document.getElementById('auth-register').style.display=tab==='reg'?'block':'none';
-  ['login','reg'].forEach(t=>{
-    document.getElementById('auth-tab-'+t).style.background=tab===t?'var(--teal)':'var(--white)';
-    document.getElementById('auth-tab-'+t).style.color=tab===t?'#fff':'var(--mid)';
-  });
-}
-function authLogin(){
-  const s=document.getElementById('auth-succ');
-  s.style.display='block';
-  s.textContent='Signing you in... Redirecting to your dashboard.';
-  setTimeout(()=>window.location.href='portal.html',1800);
-}
 const BOARD_HOME=[];
 function isLoggedInHome(){
   return !!(window.GTP_LOGGED_IN || Object.keys(localStorage).some(k=>k.includes('-auth-token')));

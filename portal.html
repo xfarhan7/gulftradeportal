@@ -267,12 +267,21 @@ body{font-family:'Inter',sans-serif;background:#F0EDE8;color:var(--ink);font-siz
 </div>
 <style>@keyframes gtpspin{to{transform:rotate(360deg)}}</style>
 <script>
+// Fast path: if there's NO auth token in storage, the user is simply logged
+// out — send them straight to the sign-in form instead of making them watch
+// the "Loading your portal…" spinner. (This is what made "Sign In" feel broken,
+// especially on mobile.) replace() keeps the portal out of history so Back
+// doesn't loop here.
+try {
+  var _hasTok = Object.keys(localStorage).some(function(k){ return k.indexOf('-auth-token') !== -1; });
+  if(!_hasTok){ window.location.replace('register.html'); }
+} catch(e){}
 // FAILSAFE: never leave the user stuck on "Loading…". If the portal hasn't
-// resolved within 12s, send them to sign-in.
+// resolved within 8s (token exists but session is slow), send them to sign-in.
 window.__gtpGateFailsafe = setTimeout(function(){
   var g = document.getElementById('gtp-auth-gate');
   if(g && getComputedStyle(g).display !== 'none'){
-    // Still loading after 12s — assume not logged in / connection issue
+    // Still loading after 8s — assume not logged in / connection issue
     window.location.href = 'register.html';
   }
 }, 8000);
