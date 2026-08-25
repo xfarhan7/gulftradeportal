@@ -321,12 +321,12 @@ body{font-family:'Inter',sans-serif;background:#ECEAE6;color:var(--ink);font-siz
     <button class="sb-link" onclick="go('members',this)">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
       All Members
-      <span class="sb-badge">342</span>
+      <span class="sb-badge" id="sb-members-badge">—</span>
     </button>
     <button class="sb-link" onclick="go('kyb',this)">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
       KYB Reviews
-      <span class="sb-badge">7</span>
+      <span class="sb-badge" id="sb-kyb-badge">—</span>
     </button>
     <button class="sb-link" onclick="go('memberships',this)">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
@@ -370,7 +370,7 @@ body{font-family:'Inter',sans-serif;background:#ECEAE6;color:var(--ink);font-siz
     <span class="tb-title" id="page-title">Overview</span>
     <div class="tb-right">
       <span style="font-size:.72rem;color:var(--mid);">Last updated: just now</span>
-      <button class="btn btn-t btn-sm" onclick="go('kyb',document.querySelectorAll('.sb-link')[2])">7 KYB pending</button>
+      <button class="btn btn-t btn-sm" id="hdr-kyb-btn" onclick="go('kyb',document.querySelectorAll('.sb-link')[2])">— KYB pending</button>
     </div>
   </header>
   <div class="content">
@@ -664,8 +664,8 @@ body{font-family:'Inter',sans-serif;background:#ECEAE6;color:var(--ink);font-siz
         <div class="card-body">
           <div class="fg"><label>Platform Name</label><input type="text" value="Gulf Trade Portal"></div>
           <div class="fg"><label>Legal Entity</label><input type="text" value="Gulf Trade Portal"></div>
-          <div class="fg"><label>KVK Number</label><input type="text" value="12345678"></div>
-          <div class="fg"><label>BTW / VAT Number</label><input type="text" value="NL123456789B01"></div>
+          <div class="fg"><label>KVK Number</label><input type="text" value="" placeholder="Optional"></div>
+          <div class="fg"><label>BTW / VAT Number</label><input type="text" value="" placeholder="Optional"></div>
           <div class="fg"><label>Invoice Email</label><input type="email" value="invoice@gulftradeportal.com"></div>
           <div class="fg"><label>Support WhatsApp</label><input type="text" value="+31 6 00 000 000"></div>
           <button class="btn btn-t">Save Settings</button>
@@ -983,6 +983,10 @@ async function loadOverview(){
   const kyb=companies.filter(c=>!c.verified && (!c.kyb_status||c.kyb_status==='pending')).length;
   setTxt('ov-total',total); setTxt('ov-paid',paid.length); setTxt('ov-free',total-paid.length);
   setTxt('ov-mrr',eur(mrr)); setTxt('ov-kyb',kyb); setTxt('ov-rev-subs',eur(mrr));
+  // Live sidebar + header badges (were hardcoded)
+  setTxt('sb-members-badge',total);
+  setTxt('sb-kyb-badge',kyb);
+  const hkb=document.getElementById('hdr-kyb-btn'); if(hkb) hkb.textContent=kyb+' KYB pending';
 
   const { data:lst } = await _sc.from('listings').select('status');
   setTxt('ov-requests',(lst||[]).filter(l=>(l.status||'active')==='active').length);
