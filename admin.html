@@ -202,7 +202,7 @@ body{font-family:'Inter',sans-serif;background:#ECEAE6;color:var(--ink);font-siz
       Restricted Access
     </div>
     <div class="gate-label">Email Address</div>
-    <input type="email" class="gate-input" id="gate-email" placeholder="farhan@excorpdistribution.nl" autocomplete="email">
+    <input type="email" class="gate-input" id="gate-email" placeholder="you@yourcompany.com" autocomplete="email">
     <div class="gate-label">Password</div>
     <input type="password" class="gate-input" id="gate-pass" placeholder="Enter admin password" autocomplete="current-password" onkeydown="if(event.key==='Enter')gateLogin()">
     <button class="gate-btn" onclick="gateLogin()">Sign In to Admin →</button>
@@ -600,28 +600,29 @@ body{font-family:'Inter',sans-serif;background:#ECEAE6;color:var(--ink);font-siz
         <div class="card">
           <div class="card-hd"><span class="card-title">Compose This Week's Edition</span></div>
           <div class="card-body">
-            <div class="fg"><label>Subject Line</label><input type="text" value="Gulf Trade Weekly #24 — 5 urgent GCC import requests this week"></div>
-            <div class="fg"><label>Top Import Request 1</label><input type="text" value="Nespresso OL Capsules — 50K sleeves/mo — UAE"></div>
-            <div class="fg"><label>Top Import Request 2</label><input type="text" value="Halal Frozen Chicken — 50MT — Saudi Arabia"></div>
-            <div class="fg"><label>Top Import Request 3</label><input type="text" value="Organic EVOO — 20,000L/mo — Kuwait"></div>
-            <div class="fg"><label>Market Insight</label><textarea>GCC food imports from the EU grew 14% in Q1 2025, driven by demand for premium dairy, coffee, and packaged goods. UAE remains the entry point for 62% of European FMCG entering the Gulf.</textarea></div>
-            <div class="fg"><label>New Members Spotlight</label><input type="text" value="12 new verified suppliers joined this week from Germany, Netherlands, and Spain."></div>
-            <div style="display:flex;gap:8px;margin-top:4px;">
-              <button class="btn btn-t" onclick="alert('Preview shown on right →')">Preview</button>
-              <button class="btn btn-g" onclick="sendNL()">Send to 847 subscribers</button>
-              <button class="btn btn-out">Schedule</button>
+            <div class="fg"><label>Subject Line</label><input type="text" id="nl-subject" oninput="updateNLPreview()" value="Gulf Trade Weekly — top GCC trade requests this week"></div>
+            <div class="fg"><label>Top Trade Request 1</label><input type="text" id="nl-req1" oninput="updateNLPreview()" placeholder="e.g. Nespresso OL Capsules — 50K sleeves/mo — UAE" value=""></div>
+            <div class="fg"><label>Top Trade Request 2</label><input type="text" id="nl-req2" oninput="updateNLPreview()" placeholder="e.g. Halal Frozen Chicken — 50MT — Saudi Arabia" value=""></div>
+            <div class="fg"><label>Top Trade Request 3</label><input type="text" id="nl-req3" oninput="updateNLPreview()" placeholder="e.g. Organic EVOO — 20,000L/mo — Kuwait" value=""></div>
+            <div class="fg"><label>Market Insight</label><textarea id="nl-insight" oninput="updateNLPreview()" placeholder="A short market note for this week's edition."></textarea></div>
+            <div class="fg"><label>New Members Spotlight</label><input type="text" id="nl-spotlight" oninput="updateNLPreview()" placeholder="e.g. 5 new verified suppliers joined this week." value=""></div>
+            <div style="display:flex;gap:8px;margin-top:4px;flex-wrap:wrap;">
+              <button class="btn btn-g" onclick="sendNewsletter(this)">Send to all members</button>
+              <button class="btn btn-t" onclick="copyRecipients(this)">Copy emails (BCC)</button>
+              <button class="btn btn-t" onclick="copyNewsletter(this)">Copy text</button>
             </div>
-            <div id="nl-succ" class="succ">✓ Newsletter sent to 847 subscribers. Open rate tracking active.</div>
+            <div id="nl-succ" class="succ" style="display:none;"></div>
+            <div style="font-size:.72rem;color:var(--mid);margin-top:10px;line-height:1.55;">To send: open a new message in your Private Email, paste the copied addresses into the <strong>Bcc</strong> field (put your own address in To), paste the newsletter text as the body, and send. One-click sending with open-rate tracking needs an email service connected — ask to set up Resend when you're ready.</div>
           </div>
         </div>
         <div class="card" style="margin-top:14px;">
           <div class="card-hd"><span class="card-title">Newsletter Stats</span></div>
           <div class="card-body">
             <div class="fr2">
-              <div><div style="font-size:.63rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--mid);">Subscribers</div><div style="font-family:Cairo,sans-serif;font-size:1.4rem;font-weight:700;color:var(--teal);">847</div></div>
-              <div><div style="font-size:.63rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--mid);">Avg Open Rate</div><div style="font-family:Cairo,sans-serif;font-size:1.4rem;font-weight:700;color:var(--gold);">42%</div></div>
-              <div><div style="font-size:.63rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--mid);">Click Rate</div><div style="font-family:Cairo,sans-serif;font-size:1.4rem;font-weight:700;">18%</div></div>
-              <div><div style="font-size:.63rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--mid);">Editions Sent</div><div style="font-family:Cairo,sans-serif;font-size:1.4rem;font-weight:700;">24</div></div>
+              <div><div style="font-size:.63rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--mid);">Subscribers</div><div id="nls-subs" style="font-family:Cairo,sans-serif;font-size:1.4rem;font-weight:700;color:var(--teal);">—</div></div>
+              <div><div style="font-size:.63rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--mid);">Verified</div><div id="nls-verified" style="font-family:Cairo,sans-serif;font-size:1.4rem;font-weight:700;color:var(--gold);">—</div></div>
+              <div><div style="font-size:.63rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--mid);">Countries</div><div id="nls-countries" style="font-family:Cairo,sans-serif;font-size:1.4rem;font-weight:700;">—</div></div>
+              <div><div style="font-size:.63rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--mid);">Total Members</div><div id="nls-members" style="font-family:Cairo,sans-serif;font-size:1.4rem;font-weight:700;">—</div></div>
             </div>
           </div>
         </div>
@@ -630,24 +631,22 @@ body{font-family:'Inter',sans-serif;background:#ECEAE6;color:var(--ink);font-siz
         <div class="nl-preview">
           <div class="nl-hd">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--gold-lt)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-            GCC Trade Weekly #24
+            GCC Trade Weekly
           </div>
-          <div class="nl-sub-hd">16 June 2025 · Gulf Trade Portal</div>
+          <div class="nl-sub-hd" id="nlp-date">Gulf Trade Portal</div>
           <div class="nl-section">
-            <div class="nl-section-title">This week's top import requests</div>
-            <div class="nl-item">🔵 <strong>Nespresso OL Capsules</strong> — 50,000 sleeves/mo · UAE · EU origin required</div>
-            <div class="nl-item">🔵 <strong>Halal Frozen Chicken IQF</strong> — 50MT · Saudi Arabia · SFDA approved</div>
-            <div class="nl-item">🔵 <strong>Organic EVOO</strong> — 20,000L/mo · Kuwait · Private label welcome</div>
+            <div class="nl-section-title">This week's top trade requests</div>
+            <div id="nlp-reqs"><div class="nl-item" style="opacity:.5;">Add trade requests on the left to preview them here.</div></div>
           </div>
-          <div class="nl-section">
-            <div class="nl-section-title">Market intelligence</div>
-            <div class="nl-item">GCC food imports from the EU grew 14% in Q1 2025, driven by premium dairy, coffee, and packaged goods. UAE remains the entry point for 62% of European FMCG entering the Gulf.</div>
+          <div class="nl-section" id="nlp-insight-sec" style="display:none;">
+            <div class="nl-section-title">Market insight</div>
+            <div class="nl-item" id="nlp-insight"></div>
           </div>
-          <div class="nl-section">
-            <div class="nl-section-title">New verified suppliers</div>
-            <div class="nl-item">12 new verified EU suppliers joined this week — Germany, Netherlands, Spain. <a href="#" style="color:var(--gold-lt);">Browse directory →</a></div>
+          <div class="nl-section" id="nlp-spot-sec" style="display:none;">
+            <div class="nl-section-title">New members</div>
+            <div class="nl-item" id="nlp-spot"></div>
           </div>
-          <div style="margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,.08);font-size:.68rem;color:rgba(255,255,255,.3);">Gulf Trade Portal · Excorp Distribution B.V. · Unsubscribe</div>
+          <div style="margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,.08);font-size:.68rem;color:rgba(255,255,255,.3);">Gulf Trade Portal · Gulf Trade Portal · Unsubscribe</div>
         </div>
       </div>
     </div>
@@ -664,7 +663,7 @@ body{font-family:'Inter',sans-serif;background:#ECEAE6;color:var(--ink);font-siz
         <div class="card-hd"><span class="card-title">Platform Identity</span></div>
         <div class="card-body">
           <div class="fg"><label>Platform Name</label><input type="text" value="Gulf Trade Portal"></div>
-          <div class="fg"><label>Legal Entity</label><input type="text" value="Excorp Distribution B.V."></div>
+          <div class="fg"><label>Legal Entity</label><input type="text" value="Gulf Trade Portal"></div>
           <div class="fg"><label>KVK Number</label><input type="text" value="12345678"></div>
           <div class="fg"><label>BTW / VAT Number</label><input type="text" value="NL123456789B01"></div>
           <div class="fg"><label>Invoice Email</label><input type="email" value="invoice@gulftradeportal.com"></div>
@@ -761,6 +760,7 @@ function go(id,btn){
   if(id==='requests'){ try{ loadRequests(); }catch(e){ console.warn('requests', e); } }
   if(id==='ads'){ try{ loadAds(); }catch(e){ console.warn('ads', e); } }
   if(id==='revenue'){ try{ loadInvoices(); }catch(e){ console.warn('revenue', e); } }
+  if(id==='newsletter'){ try{ loadNewsletterStats(); updateNLPreview(); }catch(e){ console.warn('newsletter', e); } }
 }
 
 // ── LIVE MEMBER MANAGEMENT ──────────────────────────────────
@@ -861,8 +861,92 @@ function openMo(id){document.getElementById(id).classList.add('open');}
 function closeMo(id){document.getElementById(id).classList.remove('open');}
 document.addEventListener('click',e=>{if(e.target.classList.contains('mo'))e.target.classList.remove('open');});
 
-function sendNL(){
-  document.getElementById('nl-succ').style.display='block';
+function nlFlash(msg){
+  const s=document.getElementById('nl-succ');
+  if(s){ s.textContent=msg; s.style.display='block'; }
+}
+async function nlCopy(text){
+  try { await navigator.clipboard.writeText(text); return true; }
+  catch(e){
+    try { const t=document.createElement('textarea'); t.value=text; t.style.position='fixed'; t.style.opacity='0'; document.body.appendChild(t); t.focus(); t.select(); document.execCommand('copy'); t.remove(); return true; }
+    catch(_){ return false; }
+  }
+}
+async function copyRecipients(btn){
+  const _sc = await gtpClient(); if(!_sc){ alert('Not connected to the database.'); return; }
+  const { data, error } = await _sc.from('companies').select('email');
+  if(error){ alert('Could not load recipients: '+error.message); return; }
+  const emails = [...new Set((data||[]).map(r=>(r.email||'').trim()).filter(Boolean))];
+  if(!emails.length){ alert('No subscriber emails found.'); return; }
+  const ok = await nlCopy(emails.join(', '));
+  nlFlash((ok?'✓ Copied ':'Select-and-copy failed for ')+emails.length+' recipient emails. Paste them into the Bcc field.');
+}
+function nlFields(){
+  const v=id=>{ const el=document.getElementById(id); return el&&el.value?el.value.trim():''; };
+  return { subject:v('nl-subject'), reqs:[v('nl-req1'),v('nl-req2'),v('nl-req3')].filter(Boolean), insight:v('nl-insight'), spot:v('nl-spotlight') };
+}
+function copyNewsletter(btn){
+  const f=nlFields();
+  let body='';
+  if(f.subject) body+=f.subject+'\n\n';
+  if(f.reqs.length){ body+="This week's top trade requests:\n"+f.reqs.map(r=>'• '+r).join('\n')+'\n\n'; }
+  if(f.insight){ body+='Market insight:\n'+f.insight+'\n\n'; }
+  if(f.spot){ body+='New members:\n'+f.spot+'\n\n'; }
+  body+='Browse the live trade board: https://gulftradeportal.com/trade-board.html\n\n— Gulf Trade Portal';
+  nlCopy(body).then(ok=>nlFlash(ok?'✓ Newsletter text copied. Paste it as the email body.':'Copy failed — select the text manually.'));
+}
+function nlBuildHtml(f){
+  let h='<div style="font-family:Arial,Helvetica,sans-serif;max-width:600px;margin:0 auto;color:#222;">';
+  h+='<h2 style="color:#0A7369;margin:0 0 16px;">'+esc(f.subject)+'</h2>';
+  if(f.reqs.length){ h+='<h3 style="color:#065550;margin:20px 0 8px;">This week\u2019s top trade requests</h3><ul style="padding-left:18px;line-height:1.6;">'+f.reqs.map(r=>'<li>'+esc(r)+'</li>').join('')+'</ul>'; }
+  if(f.insight){ h+='<h3 style="color:#065550;margin:20px 0 8px;">Market insight</h3><p style="line-height:1.6;">'+esc(f.insight)+'</p>'; }
+  if(f.spot){ h+='<h3 style="color:#065550;margin:20px 0 8px;">New members</h3><p style="line-height:1.6;">'+esc(f.spot)+'</p>'; }
+  h+='<p style="margin:24px 0;"><a href="https://gulftradeportal.com/trade-board.html" style="background:#0A7369;color:#fff;padding:11px 20px;text-decoration:none;border-radius:5px;font-weight:bold;">Browse the live trade board</a></p>';
+  h+='<p style="color:#888;font-size:13px;">Gulf Trade Portal \u2014 connecting GCC with the world</p></div>';
+  return h;
+}
+async function sendNewsletter(btn){
+  const f=nlFields();
+  if(!f.subject){ alert('Add a subject line first.'); return; }
+  if(!confirm('Send this newsletter to ALL registered members now?\n\nThis sends real emails and cannot be undone.')) return;
+  btn.disabled=true; const orig=btn.textContent; btn.textContent='Sending\u2026';
+  try{
+    const _sc=await gtpClient(); if(!_sc) throw new Error('Not connected.');
+    const { data, error } = await _sc.functions.invoke('send-newsletter', { body:{ subject:f.subject, html:nlBuildHtml(f) } });
+    if(error){
+      let msg=error.message||'Send failed.';
+      try{ const ctx=await error.context.json(); if(ctx&&ctx.error) msg=ctx.error; }catch(_){ }
+      throw new Error(msg);
+    }
+    nlFlash('\u2713 Newsletter sent to '+((data&&data.sent!=null)?data.sent:'all')+' members.');
+  }catch(e){
+    alert('Send failed: '+(e.message||e)+'\n\nIf email isn\u2019t set up yet, use "Copy emails (BCC)" to send via your own inbox.');
+  }finally{
+    btn.disabled=false; btn.textContent=orig;
+  }
+}
+async function loadNewsletterStats(){
+  const _sc=await gtpClient(); if(!_sc) return;
+  const { data, error } = await _sc.from('companies').select('email,verified,country');
+  if(error||!data) return;
+  const subs=data.filter(c=>c.email && c.email.trim()).length;
+  const ver=data.filter(c=>c.verified).length;
+  const countries=new Set(data.map(c=>(c.country||'').trim()).filter(Boolean)).size;
+  const set=(id,v)=>{ const el=document.getElementById(id); if(el) el.textContent=v; };
+  set('nls-subs',subs); set('nls-verified',ver); set('nls-countries',countries); set('nls-members',data.length);
+}
+function nlEsc(s){ return (s==null?'':String(s)).replace(/[<>&]/g,function(c){return {'<':'&lt;','>':'&gt;','&':'&amp;'}[c];}); }
+function updateNLPreview(){
+  var v=function(id){ var el=document.getElementById(id); return el&&el.value?el.value.trim():''; };
+  var d=document.getElementById('nlp-date');
+  if(d) d.textContent = new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})+' \u00b7 Gulf Trade Portal';
+  var reqs=[v('nl-req1'),v('nl-req2'),v('nl-req3')].filter(Boolean);
+  var rc=document.getElementById('nlp-reqs');
+  if(rc) rc.innerHTML = reqs.length ? reqs.map(function(r){return '<div class="nl-item">\ud83d\udd35 '+nlEsc(r)+'</div>';}).join('') : '<div class="nl-item" style="opacity:.5;">Add trade requests on the left to preview them here.</div>';
+  var ins=v('nl-insight'), insSec=document.getElementById('nlp-insight-sec'), insEl=document.getElementById('nlp-insight');
+  if(insSec&&insEl){ insSec.style.display=ins?'':'none'; insEl.textContent=ins; }
+  var sp=v('nl-spotlight'), spSec=document.getElementById('nlp-spot-sec'), spEl=document.getElementById('nlp-spot');
+  if(spSec&&spEl){ spSec.style.display=sp?'':'none'; spEl.textContent=sp; }
 }
 
 // ── BACK-OFFICE: KYB / REQUESTS / ADS / INVOICES ────────────
