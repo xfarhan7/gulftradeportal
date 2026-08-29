@@ -185,6 +185,16 @@
     <div class="board-grid" id="boardGrid"></div>
   </div>
 </section>
+<section class="sec" style="background:#f4f6f9;display:none;" id="tenders-section">
+  <div class="wrap">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:5px;flex-wrap:wrap;">
+      <h2 style="font-family:Cairo,sans-serif;font-size:1.5rem;font-weight:700;color:var(--ink);margin:0;">Public Tenders</h2>
+      <span style="background:#E6F1FB;color:#0C447C;font-size:.66rem;font-weight:700;letter-spacing:.06em;padding:3px 10px;border-radius:100px;">PRO MEMBERS</span>
+    </div>
+    <p style="color:var(--mid);font-size:.85rem;margin:0 0 16px;">Live government &amp; enterprise tenders across the GCC, sourced from official portals.</p>
+    <div class="board-grid" id="tendersGrid"></div>
+  </div>
+</section>
 <section class="cta-band">
   <p class="ey">No platform fees. No commission.</p>
   <h2>Gulf trade, simplified.</h2>
@@ -837,7 +847,7 @@ function setBF(f,btn){
 // Check real Supabase session and unlock member content if logged in
 async function checkAuthState(){
   const _sc = await gtpClient(); if(!_sc){ return; }
-  if(!supabaseClient) return;
+  if(typeof supabaseClient==='undefined' || !supabaseClient) return;
   try {
     const { data: { session } } = await _sc.auth.getSession();
     GTP_LOGGED_IN = !!(session && session.user);
@@ -854,14 +864,59 @@ async function checkAuthState(){
 
 // When shared auth determines login state, unblur & re-render
 window.onGtpAuthReady = function(loggedIn){
+  try{ loadTenders(); }catch(e){}
   window.GTP_LOGGED_IN = loggedIn;
   renderBoard(window.currentFilter || 'all');
 };
 
 // Load real listings from Supabase, then render
+
+var TENDER_PAID_PLANS=['pro','premium','market_entry','pro_importer','pro_exporter','corporate'];
+function gtpIsPaid(){ return TENDER_PAID_PLANS.indexOf((localStorage.getItem('gtp_plan')||'free').toLowerCase())!==-1; }
+function tenderDaysLeft(d){ if(!d) return ''; var diff=Math.ceil((new Date(d)-new Date())/86400000); if(diff<0) return 'Closed'; if(diff===0) return 'Closes today'; return diff+' day'+(diff===1?'':'s')+' left'; }
+async function loadTenders(){
+  if(typeof gtpClient!=='function'){ return; }
+  var grid=document.getElementById('tendersGrid'), sec=document.getElementById('tenders-section');
+  if(!grid) return;
+  try{
+    var _sc=await gtpClient(); if(!_sc) return;
+    var res=await _sc.from('tenders').select('*').eq('status','open').order('deadline',{ascending:true}).limit(12);
+    if(res.error) throw res.error;
+    var data=res.data||[];
+    if(!data.length){ if(sec) sec.style.display='none'; return; }
+    if(sec) sec.style.display='';
+    renderTenders(data);
+  }catch(e){ console.warn('Tenders:', e); if(sec) sec.style.display='none'; }
+}
+function renderTenders(items){
+  var grid=document.getElementById('tendersGrid'); if(!grid) return;
+  var paid=gtpIsPaid();
+  grid.innerHTML=items.map(function(t){
+    var days=tenderDaysLeft(t.deadline);
+    var head='<div class="bc-hd" style="background:#eef4fb;display:flex;justify-content:space-between;align-items:center;"><span style="background:#E6F1FB;color:#0C447C;font-size:.62rem;font-weight:700;letter-spacing:.05em;padding:3px 8px;border-radius:100px;">PUBLIC TENDER</span>'+(days?'<span style="font-size:.68rem;color:#607066;">'+esc(days)+'</span>':'')+'</div>';
+    if(!paid){
+      return '<div class="bc" style="cursor:pointer;" onclick="location.href=\'packages.html\'">'+head
+        +'<div class="bc-body"><div class="bc-title" style="filter:blur(5px);user-select:none;">████████████████</div>'
+        +'<div style="filter:blur(3px);user-select:none;margin:6px 0;font-size:.78rem;color:var(--mid);">████████ · ████████</div>'
+        +'<div style="background:#fff8ea;border:1px solid #f0d9a0;border-radius:6px;padding:14px;text-align:center;margin-top:10px;">'
+        +'<div style="font-weight:700;font-size:.85rem;color:var(--ink);margin-bottom:4px;">Pro members only</div>'
+        +'<div style="font-size:.75rem;color:var(--mid);margin-bottom:10px;">Upgrade to see live GCC tenders and bid directly with the buyer.</div>'
+        +'<span style="display:inline-block;background:var(--teal);color:#fff;font-weight:700;font-size:.78rem;padding:8px 16px;border-radius:5px;">Upgrade to Pro →</span></div></div></div>';
+    }
+    return '<div class="bc">'+head
+      +'<div class="bc-body"><div class="bc-title">'+esc(t.title)+'</div>'
+      +'<div style="margin:6px 0;font-size:.78rem;color:var(--mid);">'+(t.entity?esc(t.entity)+' · ':'')+esc(t.country||'')+(t.city?', '+esc(t.city):'')+'</div>'
+      +(t.sector?'<div style="font-size:.74rem;color:var(--mid);margin-bottom:6px;">'+esc(t.sector)+'</div>':'')
+      +(t.description?'<div class="bc-desc" style="font-size:.78rem;color:#555;">'+esc(t.description)+'</div>':'')
+      +'</div>'
+      +'<div class="bc-ft"><span style="font-size:.72rem;color:var(--mid);">'+esc(t.source||'Official')+'</span>'
+      +(t.source_url?'<a href="'+esc(t.source_url)+'" target="_blank" rel="noopener" class="bx bx-t" style="padding:6px 12px;font-size:.74rem;text-decoration:none;">View & bid →</a>':'')+'</div></div>';
+  }).join('');
+}
+
 async function loadRealListings(){
   try {
-    if(!supabaseClient){ renderBoard('all'); return; }
+    if(typeof supabaseClient==='undefined' || !supabaseClient){ renderBoard('all'); return; }
     const { data, error } = await supabaseClient
       .from('listings')
       .select('*')
@@ -909,6 +964,7 @@ function timeAgo(ts){
 function gtpInitBoard(){
   try { renderBoard('all'); } catch(e){ console.warn('Initial render:', e); }
   loadRealListings().then(checkAuthState).catch(e=>{ console.warn('Listings:', e); try{renderBoard('all');}catch(_){} });
+  try{ loadTenders(); }catch(e){}
 }
 if(document.readyState === 'loading'){
   document.addEventListener('DOMContentLoaded', gtpInitBoard);

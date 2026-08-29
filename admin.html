@@ -341,6 +341,10 @@ body{font-family:'Inter',sans-serif;background:#ECEAE6;color:var(--ink);font-siz
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2L15 22 11 13 2 9l20-7z"/></svg>
       Ad Slots
     </button>
+    <button class="sb-link" onclick="go('tenders',this)">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 15h6M9 11h2"/></svg>
+      Public Tenders
+    </button>
     <div class="sb-sec">Revenue</div>
     <button class="sb-link" onclick="go('revenue',this)">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
@@ -567,6 +571,30 @@ body{font-family:'Inter',sans-serif;background:#ECEAE6;color:var(--ink);font-siz
   </div>
 
   <!-- ═══ REVENUE ═══ -->
+  <div class="panel" id="p-tenders">
+    <div class="panel-head"><h2>Public Tenders</h2><p style="color:var(--mid);font-size:.82rem;">Post real government / enterprise tenders. Paid members see them on the trade board; free members see a locked preview and an upgrade prompt.</p></div>
+    <div class="card" style="max-width:660px;margin-bottom:20px;"><div class="card-body">
+      <div class="fg"><label>Tender Title *</label><input type="text" id="td-title" placeholder="Supply of frozen poultry and meat"></div>
+      <div class="fr2">
+        <div class="fg"><label>Buying Entity</label><input type="text" id="td-entity" placeholder="Ministry of Health"></div>
+        <div class="fg"><label>Sector</label><select id="td-sector"><option>FMCG</option><option>Food &amp; Beverages</option><option>Agriculture &amp; Commodities</option><option>Industrial Manufacturing / Engineering</option><option>Machinery &amp; Equipment</option><option>Steel &amp; Metals</option><option>Paper &amp; Packaging</option><option>Construction &amp; Building Materials</option><option>Chemicals</option><option>Textiles &amp; Apparel</option><option>Electronics</option><option>Healthcare &amp; Pharma</option><option>Energy &amp; Utilities</option><option>Logistics &amp; Services</option><option>Other</option></select></div>
+      </div>
+      <div class="fr2">
+        <div class="fg"><label>Country</label><input type="text" id="td-country" value="Saudi Arabia"></div>
+        <div class="fg"><label>City</label><input type="text" id="td-city" placeholder="Riyadh"></div>
+      </div>
+      <div class="fr2">
+        <div class="fg"><label>Deadline</label><input type="date" id="td-deadline"></div>
+        <div class="fg"><label>Source</label><input type="text" id="td-source" value="Etimad"></div>
+      </div>
+      <div class="fg"><label>Official Tender URL *</label><input type="url" id="td-url" placeholder="https://tenders.etimad.sa/..."></div>
+      <div class="fg"><label>Short Description</label><textarea id="td-desc" placeholder="SFDA-approved, Halal certified. Framework contract." style="font-family:Inter,sans-serif;font-size:.85rem;border:1.5px solid var(--mist);border-radius:4px;padding:9px 11px;width:100%;outline:none;resize:vertical;min-height:64px;"></textarea></div>
+      <button class="btn btn-g" onclick="addTender(this)">Add Tender</button>
+      <div id="td-succ" class="succ" style="display:none;margin-top:10px;"></div>
+    </div></div>
+    <h3 style="font-size:.9rem;margin:0 0 10px;">Live tenders (<span id="td-count">0</span>)</h3>
+    <div id="td-list"></div>
+  </div>
   <div class="panel" id="p-revenue">
     <div style="margin-bottom:16px;">
       <div style="font-size:.65rem;letter-spacing:.16em;text-transform:uppercase;color:var(--teal);font-weight:700;margin-bottom:4px;">Financial overview</div>
@@ -742,7 +770,7 @@ body{font-family:'Inter',sans-serif;background:#ECEAE6;color:var(--ink);font-siz
 </div></div>
 
 <script>
-const PANELS=['overview','kyb','memberships','members','requests','ads','revenue','newsletter','settings'];
+const PANELS=['overview','kyb','memberships','members','requests','ads','tenders','revenue','newsletter','settings'];
 const TITLES={overview:'Overview',kyb:'KYB Reviews',memberships:'Grant Memberships',members:'All Members',requests:'Trade Requests',ads:'Ad Slots',revenue:'Revenue & Invoices',newsletter:'Weekly Newsletter',settings:'Platform Settings'};
 
 function go(id,btn){
@@ -759,6 +787,7 @@ function go(id,btn){
   if(id==='kyb'){ try{ loadKYB(); }catch(e){ console.warn('kyb', e); } }
   if(id==='requests'){ try{ loadRequests(); }catch(e){ console.warn('requests', e); } }
   if(id==='ads'){ try{ loadAds(); }catch(e){ console.warn('ads', e); } }
+  if(id==='tenders'){ try{ loadTenders(); }catch(e){ console.warn('tenders', e); } }
   if(id==='revenue'){ try{ loadInvoices(); }catch(e){ console.warn('revenue', e); } }
   if(id==='newsletter'){ try{ loadNewsletterStats(); updateNLPreview(); }catch(e){ console.warn('newsletter', e); } }
 }
@@ -1102,6 +1131,40 @@ async function removeListing(id){
 }
 
 // ADS
+
+async function loadTenders(){
+  const _sc=await gtpClient(); if(!_sc) return;
+  const { data, error } = await _sc.from('tenders').select('*').order('deadline',{ascending:true});
+  const list=document.getElementById('td-list'), cnt=document.getElementById('td-count');
+  if(error||!data){ if(list) list.innerHTML='<p style="color:var(--mid);font-size:.8rem;">Could not load tenders.</p>'; return; }
+  if(cnt) cnt.textContent=data.length;
+  if(!data.length){ if(list) list.innerHTML='<p style="color:var(--mid);font-size:.8rem;">No tenders yet \u2014 add one above.</p>'; return; }
+  if(list) list.innerHTML=data.map(function(t){ return '<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--mist);border-radius:6px;margin-bottom:8px;"><div style="min-width:0;"><div style="font-weight:600;font-size:.82rem;">'+esc(t.title)+'</div><div style="font-size:.72rem;color:var(--mid);">'+esc(t.entity||'')+' \u00b7 '+esc(t.country||'')+' \u00b7 '+esc(t.sector||'')+(t.deadline?' \u00b7 closes '+esc(t.deadline):'')+'</div></div><button class="btn btn-out btn-sm" onclick="deleteTender(\''+t.id+'\')">Delete</button></div>'; }).join('');
+}
+async function addTender(btn){
+  var v=function(id){ var el=document.getElementById(id); return el&&el.value?el.value.trim():''; };
+  var title=v('td-title'), url=v('td-url');
+  if(!title){ alert('Add a tender title.'); return; }
+  if(!url){ alert('Add the official tender URL so members can view and bid.'); return; }
+  btn.disabled=true; var orig=btn.textContent; btn.textContent='Adding\u2026';
+  try{
+    var _sc=await gtpClient();
+    var res=await _sc.from('tenders').insert({ title:title, entity:v('td-entity'), country:v('td-country'), city:v('td-city'), sector:v('td-sector'), deadline:v('td-deadline')||null, source:v('td-source')||'Etimad', source_url:url, description:v('td-desc'), status:'open' });
+    if(res.error) throw res.error;
+    ['td-title','td-entity','td-city','td-deadline','td-url','td-desc'].forEach(function(id){ var el=document.getElementById(id); if(el) el.value=''; });
+    var sc=document.getElementById('td-succ'); if(sc){ sc.textContent='\u2713 Tender added.'; sc.style.display='block'; }
+    loadTenders();
+  }catch(e){ alert('Could not add tender: '+(e.message||e)); }
+  finally{ btn.disabled=false; btn.textContent=orig; }
+}
+async function deleteTender(id){
+  if(!confirm('Delete this tender?')) return;
+  var _sc=await gtpClient();
+  var res=await _sc.from('tenders').delete().eq('id',id);
+  if(res.error){ alert('Could not delete: '+res.error.message); return; }
+  loadTenders();
+}
+
 async function loadAds(){
   const tb=document.getElementById('adm-ads'); if(!tb) return;
   const _sc=await gtpClient(); if(!_sc) return;
