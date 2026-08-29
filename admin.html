@@ -574,6 +574,13 @@ body{font-family:'Inter',sans-serif;background:#ECEAE6;color:var(--ink);font-siz
   <div class="panel" id="p-tenders">
     <div class="panel-head"><h2>Public Tenders</h2><p style="color:var(--mid);font-size:.82rem;">Post real government / enterprise tenders. Paid members see them on the trade board; free members see a locked preview and an upgrade prompt.</p></div>
     <div class="card" style="max-width:660px;margin-bottom:20px;"><div class="card-body">
+      <div class="fg"><label>Paste an Etimad tender link to auto-fill</label>
+        <div style="display:flex;gap:8px;">
+          <input type="url" id="td-fetch-url" placeholder="https://tenders.etimad.sa/Tender/Details/..." style="flex:1;">
+          <button class="btn btn-t" onclick="fetchTender(this)" style="white-space:nowrap;">Fetch from link</button>
+        </div>
+        <div style="font-size:.72rem;color:var(--mid);margin-top:4px;">Fills the fields below from the tender page — review, then Add. Arabic/Hijri parsing is best-effort.</div>
+      </div>
       <div class="fg"><label>Tender Title *</label><input type="text" id="td-title" placeholder="Supply of frozen poultry and meat"></div>
       <div class="fr2">
         <div class="fg"><label>Buying Entity</label><input type="text" id="td-entity" placeholder="Ministry of Health"></div>
@@ -1132,6 +1139,29 @@ async function removeListing(id){
 
 // ADS
 
+async function fetchTender(btn){
+  var urlEl=document.getElementById('td-fetch-url');
+  var url=urlEl&&urlEl.value?urlEl.value.trim():'';
+  if(!url){ alert('Paste a tender link first.'); return; }
+  btn.disabled=true; var orig=btn.textContent; btn.textContent='Fetching\u2026';
+  try{
+    var _sc=await gtpClient(); if(!_sc) throw new Error('Not connected.');
+    var res=await _sc.functions.invoke('fetch-tender', { body:{ url:url } });
+    if(res.error){
+      var msg=res.error.message||'Fetch failed.';
+      try{ var ctx=await res.error.context.json(); if(ctx&&ctx.error) msg=ctx.error; }catch(_){ }
+      throw new Error(msg);
+    }
+    var f=(res.data&&res.data.fields)||{};
+    var setV=function(id,val){ var el=document.getElementById(id); if(el&&val) el.value=val; };
+    setV('td-title',f.title); setV('td-entity',f.entity); setV('td-deadline',f.deadline);
+    setV('td-desc',f.description); setV('td-url',f.source_url); setV('td-source',f.source);
+    setV('td-country',f.country);
+    var sc=document.getElementById('td-succ');
+    if(sc){ sc.textContent='\u2713 '+((res.data&&res.data.note)||'Fetched \u2014 review and Add.'); sc.style.display='block'; }
+  }catch(e){ alert('Could not fetch tender: '+(e.message||e)+'\n\nYou can still fill the fields manually below.'); }
+  finally{ btn.disabled=false; btn.textContent=orig; }
+}
 async function loadTenders(){
   const _sc=await gtpClient(); if(!_sc) return;
   const { data, error } = await _sc.from('tenders').select('*').order('deadline',{ascending:true});
