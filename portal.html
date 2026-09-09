@@ -562,28 +562,23 @@ window.__gtpGateFailsafe = setTimeout(function(){
           <div class="card-head"><span class="card-title">Verified Company Details</span></div>
           <div class="card-body">
             <div class="fr2" style="margin-bottom:8px;">
-              <div><div style="font-size:.67rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mid);margin-bottom:2px;">Legal Name</div><div style="font-size:.85rem;font-weight:600;">Gulf Trade Portal</div></div>
-              <div><div style="font-size:.67rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mid);margin-bottom:2px;">Trading Name</div><div style="font-size:.85rem;font-weight:600;">Gulf Trade Portal</div></div>
+              <div><div style="font-size:.67rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mid);margin-bottom:2px;">Legal Name</div><div style="font-size:.85rem;font-weight:600;" id="vcd-legal">Loading…</div></div>
+              <div><div style="font-size:.67rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mid);margin-bottom:2px;">Trading Name</div><div style="font-size:.85rem;font-weight:600;" id="vcd-trading">Loading…</div></div>
             </div>
             <div class="fr2" style="margin-bottom:8px;">
-              <div><div style="font-size:.67rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mid);margin-bottom:2px;">KVK Number</div><div style="font-size:.85rem;font-weight:600;">12345678</div></div>
-              <div><div style="font-size:.67rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mid);margin-bottom:2px;">BTW / VAT</div><div style="font-size:.85rem;font-weight:600;">NL123456789B01</div></div>
+              <div><div style="font-size:.67rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mid);margin-bottom:2px;">Registration Number</div><div style="font-size:.85rem;font-weight:600;" id="vcd-reg">—</div></div>
+              <div><div style="font-size:.67rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mid);margin-bottom:2px;">VAT / Tax Number</div><div style="font-size:.85rem;font-weight:600;" id="vcd-vat">—</div></div>
             </div>
             <div class="fr2">
-              <div><div style="font-size:.67rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mid);margin-bottom:2px;">Country</div><div style="font-size:.85rem;font-weight:600;">Netherlands</div></div>
-              <div><div style="font-size:.67rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mid);margin-bottom:2px;">Verified</div><div style="font-size:.85rem;font-weight:600;color:var(--grn);">14 Jun 2025</div></div>
+              <div><div style="font-size:.67rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mid);margin-bottom:2px;">Country</div><div style="font-size:.85rem;font-weight:600;" id="vcd-country">—</div></div>
+              <div><div style="font-size:.67rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mid);margin-bottom:2px;">Verified</div><div style="font-size:.85rem;font-weight:600;color:var(--grn);" id="vcd-verified">—</div></div>
             </div>
           </div>
         </div>
         <div class="card">
-          <div class="card-head"><span class="card-title">Verification Checklist</span></div>
-          <div class="card-body" style="display:flex;flex-direction:column;gap:9px;">
-            <div style="display:flex;align-items:center;gap:10px;font-size:.81rem;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--grn)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>KVK extract — active registration confirmed</div>
-            <div style="display:flex;align-items:center;gap:10px;font-size:.81rem;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--grn)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>VAT number validated via EU VIES</div>
-            <div style="display:flex;align-items:center;gap:10px;font-size:.81rem;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--grn)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Director ID verified</div>
-            <div style="display:flex;align-items:center;gap:10px;font-size:.81rem;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--grn)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Business address confirmed</div>
-            <div style="display:flex;align-items:center;gap:10px;font-size:.81rem;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--grn)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Sanctions &amp; PEP screening passed</div>
-            <div style="display:flex;align-items:center;gap:10px;font-size:.81rem;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--grn)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Trade sector confirmed — FMCG / Wholesale</div>
+          <div class="card-head"><span class="card-title">Verification Status</span></div>
+          <div class="card-body" id="vcd-checklist" style="display:flex;flex-direction:column;gap:9px;">
+            <div style="font-size:.81rem;color:var(--mid);">Loading…</div>
           </div>
         </div>
       </div>
@@ -788,7 +783,7 @@ window.__gtpGateFailsafe = setTimeout(function(){
       </div>
       <div class="kyb-alert kyb-info">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-        <div class="kyb-alert-text"><strong>Invoicing entity</strong>All Gulf Trade Portal subscriptions and ad packages are invoiced by <strong>Gulf Trade Portal</strong>, trading as Gulf Trade Portal. KVK 12345678 · BTW NL123456789B01 · Registered in Dordrecht, Netherlands. Invoices are 0% VAT for EU B2B clients with valid VAT numbers (reverse charge). Non-EU clients: no EU VAT applies.</div>
+        <div class="kyb-alert-text"><strong>Invoicing entity</strong>All Gulf Trade Portal subscriptions and ad packages are invoiced by <strong>Gulf Trade Portal</strong>. Full registration details will appear on your invoice. Invoices are 0% VAT for EU B2B clients with valid VAT numbers (reverse charge). Non-EU clients: no EU VAT applies.</div>
       </div>
     </div>
 
@@ -816,11 +811,12 @@ window.__gtpGateFailsafe = setTimeout(function(){
           <div class="card" style="margin-bottom:16px;">
             <div class="card-head"><span class="card-title">Contact Details</span></div>
             <div class="card-body">
-              <div class="fg"><label>Full Name</label><input type="text" value="Farhan A."></div>
-              <div class="fg"><label>Email Address</label><input type="email" value="you@yourcompany.com"></div>
-              <div class="fg"><label>WhatsApp / Phone</label><input type="text" value="+31 6 00 000 000"></div>
-              <div class="fg"><label>Language</label><select><option>English</option><option>Arabic (soon)</option></select></div>
-              <button class="tb-btn tb-btn-teal">Save Changes</button>
+              <div class="fg"><label>Full Name</label><input type="text" id="cd-name" placeholder="Your full name"></div>
+              <div class="fg"><label>Email Address</label><input type="email" id="cd-email" placeholder="you@yourcompany.com" disabled></div>
+              <div class="fg"><label>WhatsApp / Phone</label><input type="text" id="cd-phone" placeholder="+31 6 00 000 000"></div>
+              <div class="fg"><label>Language</label><select id="cd-lang"><option>English</option><option>Arabic (soon)</option></select></div>
+              <button class="tb-btn tb-btn-teal" onclick="saveContactDetails(this)">Save Changes</button>
+              <div id="cd-succ" class="succ" style="display:none;margin-top:10px;"></div>
             </div>
           </div>
           <div class="card">
@@ -865,23 +861,24 @@ window.__gtpGateFailsafe = setTimeout(function(){
       </div>
     </div>
 
-    <!-- PLACEHOLDER PANELS -->
+    <!-- COMPANY PROFILE PANEL — wired to the logged-in company's real record -->
     <div class="panel" id="panel-profile">
       <div style="margin-bottom:18px;"><div style="font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--teal);font-weight:700;margin-bottom:4px;">Public listing</div><h2 style="font-family:Cairo,sans-serif;font-size:1.25rem;font-weight:700;">Company Profile</h2></div>
       <div class="card"><div class="card-body">
         <div class="fr2" style="margin-bottom:12px;">
-          <div class="fg"><label>Company Name</label><input type="text" value="Gulf Trade Portal"></div>
-          <div class="fg"><label>Trading Name on Portal</label><input type="text" value="Gulf Trade Portal"></div>
+          <div class="fg"><label>Company Name</label><input type="text" id="cp-name"></div>
+          <div class="fg"><label>Trading Name on Portal</label><input type="text" id="cp-trading"></div>
         </div>
         <div class="fr2" style="margin-bottom:12px;">
-          <div class="fg"><label>Sector</label><select><option>FMCG</option><option>Food &amp; Beverages</option><option>Agriculture &amp; Commodities</option><option>Industrial Manufacturing / Engineering</option><option>Machinery &amp; Equipment</option><option>Steel &amp; Metals</option><option>Paper &amp; Packaging</option><option>Printing</option><option>Construction &amp; Building Materials</option><option>Chemicals</option><option>Textiles &amp; Apparel</option><option>Electronics</option><option>Automotive &amp; Parts</option><option>Healthcare &amp; Pharma</option><option>Energy &amp; Utilities</option><option>Logistics &amp; Services</option><option>Other</option></select></div>
-          <div class="fg"><label>Company Type</label><select><option>Manufacturer</option><option>Importer</option><option>Exporter</option><option>Importer &amp; Exporter</option><option>Wholesaler / Distributor</option><option>Trading Company</option><option>Broker / Agent</option><option>Other</option></select></div>
+          <div class="fg"><label>Sector</label><select id="cp-sector"><option>FMCG</option><option>Food &amp; Beverages</option><option>Agriculture &amp; Commodities</option><option>Industrial Manufacturing / Engineering</option><option>Machinery &amp; Equipment</option><option>Steel &amp; Metals</option><option>Paper &amp; Packaging</option><option>Printing</option><option>Construction &amp; Building Materials</option><option>Chemicals</option><option>Textiles &amp; Apparel</option><option>Electronics</option><option>Automotive &amp; Parts</option><option>Healthcare &amp; Pharma</option><option>Energy &amp; Utilities</option><option>Logistics &amp; Services</option><option>Other</option></select></div>
+          <div class="fg"><label>Company Type</label><select id="cp-type"><option>Manufacturer</option><option>Importer</option><option>Exporter</option><option>Importer &amp; Exporter</option><option>Wholesaler / Distributor</option><option>Trading Company</option><option>Broker / Agent</option><option>Other</option></select></div>
         </div>
-        <div class="fg"><label>Products / Commodities</label><textarea>Nespresso Original Line capsules, Starbucks by Nespresso, Nespresso machines</textarea></div>
-        <div class="fg"><label>Company Description (shown on listing)</label><textarea>B2B wholesale distributor of genuine Nespresso Original Line capsules, Starbucks by Nespresso, and Nespresso machines. Based in Dordrecht, Netherlands. Supplying verified EU & GCC buyers.</textarea></div>
-        <div class="fg"><label>WhatsApp</label><input type="text" placeholder="+31 6 00 000 000"></div>
-        <div class="fg"><label>Business Email</label><input type="email" placeholder="info@gulftradeportal.com"></div>
-        <button class="tb-btn tb-btn-teal">Save Profile</button>
+        <div class="fg"><label>Products / Commodities</label><textarea id="cp-products" placeholder="e.g. Precision-engineered industrial rolls for Paper, Packaging, Printing, Textile, Steel and Process Industries"></textarea></div>
+        <div class="fg"><label>Company Description (shown on listing)</label><textarea id="cp-desc" placeholder="A short description of your company, shown on your public directory listing."></textarea></div>
+        <div class="fg"><label>WhatsApp</label><input type="text" id="cp-whatsapp" placeholder="+31 6 00 000 000"></div>
+        <div class="fg"><label>Business Email</label><input type="email" id="cp-email" placeholder="info@yourcompany.com"></div>
+        <button class="tb-btn tb-btn-teal" onclick="saveCompanyProfile(this)">Save Profile</button>
+        <div id="cp-succ" class="succ" style="display:none;margin-top:10px;"></div>
       </div></div>
     </div>
 
@@ -940,8 +937,8 @@ window.__gtpGateFailsafe = setTimeout(function(){
         <div class="inv-party-name">Gulf Trade Portal</div>
         <div class="inv-party-detail">
           Trading as: Gulf Trade Portal<br>
-          KVK: 12345678<br>
-          BTW: NL123456789B01<br>
+          KVK: —<br>
+          BTW: —<br>
           Haringvliet 2, 3311 NR Dordrecht<br>
           Netherlands<br>
           invoice@gulftradeportal.com
@@ -951,8 +948,8 @@ window.__gtpGateFailsafe = setTimeout(function(){
         <div class="inv-party-label">Bill To</div>
         <div class="inv-party-name">Gulf Trade Portal</div>
         <div class="inv-party-detail">
-          KVK: 12345678<br>
-          BTW: NL123456789B01<br>
+          KVK: —<br>
+          BTW: —<br>
           Haringvliet 2, 3311 NR Dordrecht<br>
           Netherlands
         </div>
@@ -994,6 +991,9 @@ function showPanel(id, btn) {
   if (id === 'responses') { try { loadInbox(true); } catch(e){ console.warn('inbox', e); } }
   if (id === 'requests') { try { loadMyRequests(); } catch(e){ console.warn('requests', e); } }
   if (id === 'notifications') { try { loadNotifications(); } catch(e){ console.warn('notifs', e); } }
+  if (id === 'profile') { try { loadCompanyProfile(); } catch(e){ console.warn('profile', e); } }
+  if (id === 'settings') { try { loadContactDetails(); } catch(e){ console.warn('settings', e); } }
+  if (id === 'kyb' || id === 'verification') { try { loadVerifiedDetails(); } catch(e){ console.warn('kyb', e); } }
 }
 
 function openMo(id){document.getElementById(id).classList.add('open');if(id==='mo-post'&&typeof gtpToggleImgReq==='function')gtpToggleImgReq();}
@@ -1046,6 +1046,120 @@ function resetPostModal(){
 }
 function newPost(){ resetPostModal(); openMo('mo-post'); if(typeof gtpToggleImgReq==='function') gtpToggleImgReq(); }
 
+function vcdSet(id, val, fallback){
+  const el = document.getElementById(id);
+  if(el) el.textContent = (val === null || val === undefined || val === '') ? (fallback || 'Not provided') : val;
+}
+function vcdFmtDate(v){
+  if(!v) return '';
+  const d = new Date(v);
+  return isNaN(d) ? String(v) : d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+}
+async function loadVerifiedDetails(){
+  try{
+    const _sc = await gtpClient(); if(!_sc) return;
+    const { data: { user } } = await _sc.auth.getUser();
+    if(!user) return;
+    // Pull the row for the LOGGED-IN user's own company — never a static/demo value.
+    const { data: co, error } = await _sc.from('companies').select('*').eq('user_id', user.id).maybeSingle();
+    if(error || !co){
+      vcdSet('vcd-legal', null, 'Not yet submitted');
+      vcdSet('vcd-trading', null, 'Not yet submitted');
+      const cl = document.getElementById('vcd-checklist');
+      if(cl) cl.innerHTML = '<div style="font-size:.81rem;color:var(--mid);">No verification submitted yet. Complete KYB to get verified.</div>';
+      return;
+    }
+    // Defensive field mapping — real column names may vary slightly by field.
+    const legal = co.legal_name || co.name || null;
+    const trading = co.trading_name || co.name || null;
+    const reg = co.registration_number || co.reg_number || co.kvk_number || co.trade_license_number || null;
+    const vat = co.vat_number || co.tax_number || null;
+    const country = co.country || null;
+    const verifiedAt = co.verified_at || co.kyb_verified_at || null;
+    const isVerified = !!(co.verified || verifiedAt);
+
+    vcdSet('vcd-legal', legal);
+    vcdSet('vcd-trading', trading);
+    vcdSet('vcd-reg', reg, 'Not provided');
+    vcdSet('vcd-vat', vat, 'Not provided');
+    vcdSet('vcd-country', country);
+    vcdSet('vcd-verified', isVerified ? (vcdFmtDate(verifiedAt) || 'Verified') : 'Pending review');
+
+    const cl = document.getElementById('vcd-checklist');
+    if(cl){
+      if(isVerified){
+        const items = [];
+        if(reg) items.push('Registration number on file');
+        if(country) items.push('Business location confirmed');
+        if(co.sector) items.push('Sector confirmed — '+co.sector);
+        items.push('Verified by Gulf Trade Portal team');
+        cl.innerHTML = items.map(t=>'<div style="display:flex;align-items:center;gap:10px;font-size:.81rem;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--grn)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>'+t+'</div>').join('');
+      } else {
+        cl.innerHTML = '<div style="font-size:.81rem;color:var(--mid);">Your verification is under review. We will notify you once it is approved.</div>';
+      }
+    }
+  }catch(e){ console.warn('loadVerifiedDetails:', e); }
+}
+
+async function loadCompanyProfile(){
+  try{
+    const _sc = await gtpClient(); if(!_sc) return;
+    const { data: { user } } = await _sc.auth.getUser(); if(!user) return;
+    const { data: co } = await _sc.from('companies').select('*').eq('user_id', user.id).maybeSingle();
+    const set=(id,val)=>{ const el=document.getElementById(id); if(el) el.value = val || ''; };
+    if(!co) return;
+    set('cp-name', co.name || co.legal_name);
+    set('cp-trading', co.trading_name || co.name);
+    set('cp-products', co.products);
+    set('cp-desc', co.description);
+    set('cp-whatsapp', co.whatsapp);
+    set('cp-email', co.email);
+    const sec=document.getElementById('cp-sector'); if(sec && co.sector) sec.value = co.sector;
+    const typ=document.getElementById('cp-type'); if(typ && co.company_type) typ.value = co.company_type;
+  }catch(e){ console.warn('loadCompanyProfile:', e); }
+}
+async function saveCompanyProfile(btn){
+  btn.disabled=true; const orig=btn.textContent; btn.textContent='Saving…';
+  try{
+    const _sc = await gtpClient(); if(!_sc) throw new Error('Not connected.');
+    const { data: { user } } = await _sc.auth.getUser(); if(!user) throw new Error('Not logged in.');
+    const v=id=>{ const el=document.getElementById(id); return el ? el.value.trim() : ''; };
+    const res = await _sc.from('companies').update({
+      name: v('cp-name'),
+      trading_name: v('cp-trading'),
+      sector: v('cp-sector'),
+      company_type: v('cp-type'),
+      products: v('cp-products'),
+      description: v('cp-desc'),
+      whatsapp: v('cp-whatsapp'),
+      email: v('cp-email'),
+    }).eq('user_id', user.id);
+    if(res.error) throw res.error;
+    const sc=document.getElementById('cp-succ'); if(sc){ sc.textContent='✓ Profile saved.'; sc.style.display='block'; }
+  }catch(e){ alert('Could not save profile: '+(e.message||e)); }
+  finally{ btn.disabled=false; btn.textContent=orig; }
+}
+async function loadContactDetails(){
+  try{
+    const _sc = await gtpClient(); if(!_sc) return;
+    const { data: { user } } = await _sc.auth.getUser(); if(!user) return;
+    const set=(id,val)=>{ const el=document.getElementById(id); if(el) el.value = val || ''; };
+    set('cd-email', user.email);
+    set('cd-name', (user.user_metadata && user.user_metadata.full_name) || '');
+    set('cd-phone', (user.user_metadata && user.user_metadata.phone) || '');
+  }catch(e){ console.warn('loadContactDetails:', e); }
+}
+async function saveContactDetails(btn){
+  btn.disabled=true; const orig=btn.textContent; btn.textContent='Saving…';
+  try{
+    const _sc = await gtpClient(); if(!_sc) throw new Error('Not connected.');
+    const v=id=>{ const el=document.getElementById(id); return el ? el.value.trim() : ''; };
+    const res = await _sc.auth.updateUser({ data: { full_name: v('cd-name'), phone: v('cd-phone') } });
+    if(res.error) throw res.error;
+    const sc=document.getElementById('cd-succ'); if(sc){ sc.textContent='✓ Contact details saved.'; sc.style.display='block'; }
+  }catch(e){ alert('Could not save: '+(e.message||e)); }
+  finally{ btn.disabled=false; btn.textContent=orig; }
+}
 async function loadMyRequests(){
   const tb = document.getElementById('pp-requests-body');
   if(!tb) return;
