@@ -807,7 +807,7 @@ function planLabel(p){ return ({free:'Free',pro:'Pro',premium:'Premium',market_e
 async function loadMembers(){
   const _sc = await gtpClient(); if(!_sc) return;
   const { data, error } = await _sc.from('companies')
-    .select('id, user_id, name, email, country, company_type, sector, plan, verified, created_at, is_admin')
+    .select('*')
     .order('created_at', { ascending:false });
   const tb = document.getElementById('adm-members');
   if(error){ if(tb) tb.innerHTML = '<tr><td colspan="8" style="padding:16px;color:#c0392b;">Could not load: '+esc(error.message)+'</td></tr>'; return; }
@@ -842,10 +842,38 @@ function renderMembers(filter){
       <td><select onchange="setPlan('${m.id}',this.value)" style="font-family:Inter,sans-serif;font-size:.72rem;padding:4px 6px;border:1.5px solid var(--mist);border-radius:4px;cursor:pointer;">${opts}</select></td>
       <td>${verBtn}</td>
       <td style="color:var(--mid);white-space:nowrap;">${joined}</td>
-      <td><span id="save-${m.id}" style="font-size:.66rem;color:var(--teal);"></span></td>
-    </tr>`;
+      <td style="display:flex;gap:6px;align-items:center;"><button class="btn btn-t btn-sm" onclick="toggleMemberDetails('${m.id}')" id="viewbtn-${m.id}">View</button><span id="save-${m.id}" style="font-size:.66rem;color:var(--teal);"></span></td>
+    </tr>
+    <tr id="details-${m.id}" style="display:none;"><td colspan="8" style="background:#fafbfc;padding:0;"><div id="details-body-${m.id}" style="padding:14px 18px;"></div></td></tr>`;
   }).join('');
   if(foot) foot.textContent = 'Showing ' + rows.length + ' of ' + ADM_MEMBERS.length + ' members';
+}
+function toggleMemberDetails(id){
+  const row=document.getElementById('details-'+id), body=document.getElementById('details-body-'+id), btn=document.getElementById('viewbtn-'+id);
+  if(!row) return;
+  const showing = row.style.display !== 'none';
+  if(showing){ row.style.display='none'; if(btn) btn.textContent='View'; return; }
+  const m = ADM_MEMBERS.find(x=>x.id===id);
+  if(!m){ return; }
+  const field=(label,val)=> val ? '<div style="margin-bottom:8px;"><span style="font-size:.68rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--mid);">'+esc(label)+'</span><br><span style="font-size:.83rem;">'+esc(val)+'</span></div>' : '';
+  const legal = m.legal_name || m.name;
+  const trading = m.trading_name && m.trading_name!==legal ? m.trading_name : '';
+  const reg = m.registration_number || m.reg_number || m.kvk_number || m.trade_license_number;
+  const vat = m.vat_number || m.tax_number;
+  if(body) body.innerHTML =
+    '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px 20px;margin-bottom:8px;">'
+    + field('Trading Name', trading)
+    + field('Registration Number', reg)
+    + field('VAT / Tax Number', vat)
+    + field('WhatsApp', m.whatsapp)
+    + field('Website', m.website)
+    + field('Business Email', m.email)
+    + '</div>'
+    + (m.products ? '<div style="margin-bottom:8px;"><span style="font-size:.68rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--mid);">Products / Commodities</span><br><span style="font-size:.83rem;">'+esc(m.products)+'</span></div>' : '')
+    + (m.description ? '<div><span style="font-size:.68rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--mid);">Company Description</span><br><span style="font-size:.83rem;color:#444;line-height:1.5;">'+esc(m.description)+'</span></div>' : '')
+    + (!trading && !reg && !vat && !m.whatsapp && !m.website && !m.products && !m.description ? '<div style="font-size:.82rem;color:var(--mid);">No additional KYC/company details submitted yet.</div>' : '');
+  row.style.display='';
+  if(btn) btn.textContent='Hide';
 }
 
 async function setPlan(id, plan){
@@ -1063,24 +1091,40 @@ async function loadKYB(){
   const box=document.getElementById('adm-kyb'); if(!box) return;
   const _sc=await gtpClient(); if(!_sc) return;
   const { data, error } = await _sc.from('companies')
-    .select('id,name,email,country,sector,company_type,verified,kyb_status,created_at')
+    .select('*')
     .or('kyb_status.eq.pending,kyb_status.is.null')
     .order('created_at',{ascending:true});
   if(error){ box.innerHTML='<div style="padding:16px;color:#c0392b;">'+esc(error.message)+'</div>'; return; }
   const rows=(data||[]).filter(c=>!c.verified);
   setTxt('adm-kyb-count', rows.length);
   if(!rows.length){ box.innerHTML='<div style="padding:18px;color:var(--mid);font-size:.85rem;">No pending verifications — queue is clear.</div>'; return; }
-  box.innerHTML=rows.map(c=>`
+  const field=(label,val)=> val ? '<div style="margin-bottom:6px;"><span style="font-size:.68rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--mid);">'+esc(label)+'</span><br><span style="font-size:.83rem;">'+esc(val)+'</span></div>' : '';
+  box.innerHTML=rows.map(c=>{
+    const legal = c.legal_name || c.name;
+    const trading = c.trading_name && c.trading_name!==legal ? c.trading_name : '';
+    const reg = c.registration_number || c.reg_number || c.kvk_number || c.trade_license_number;
+    const vat = c.vat_number || c.tax_number;
+    return `
     <div class="kyb-card" id="kyb-${c.id}">
       <div class="kyb-card-hd">
-        <div><div class="kyb-co-name">${esc(c.name||'—')}</div><div class="kyb-co-sub">${esc(c.country||'')} · ${esc(c.sector||'')} · ${esc(c.company_type||'')} · ${esc(c.email||'')}</div></div>
+        <div><div class="kyb-co-name">${esc(legal||'—')}</div><div class="kyb-co-sub">${esc(c.country||'')} · ${esc(c.sector||'')} · ${esc(c.company_type||'')} · ${esc(c.email||'')}</div></div>
         <span class="bdg bdg-gold">Pending</span>
       </div>
+      <div style="padding:10px 14px;border-top:1px solid var(--mist);border-bottom:1px solid var(--mist);display:grid;grid-template-columns:1fr 1fr;gap:4px 16px;">
+        ${field('Trading Name', trading)}
+        ${field('Registration Number', reg)}
+        ${field('VAT / Tax Number', vat)}
+        ${field('WhatsApp', c.whatsapp)}
+        ${field('Website', c.website)}
+        ${field('Products / Commodities', c.products)}
+      </div>
+      ${c.description ? '<div style="padding:10px 14px;font-size:.82rem;color:#444;line-height:1.5;border-bottom:1px solid var(--mist);">'+esc(c.description)+'</div>' : ''}
       <div class="kyb-actions">
         <button class="btn btn-grn btn-sm" onclick="approveKYB('${c.id}')">Approve &amp; Verify</button>
         <button class="btn btn-red btn-sm" onclick="rejectKYB('${c.id}')">Reject</button>
       </div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 }
 async function approveKYB(id){
   const _sc=await gtpClient(); if(!_sc) return;
