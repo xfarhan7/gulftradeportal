@@ -541,15 +541,16 @@ window.__gtpGateFailsafe = setTimeout(function(){
       <div style="margin-bottom:20px;">
         <div style="font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--teal);font-weight:700;margin-bottom:4px;">Company verification</div>
         <h2 style="font-family:Cairo,sans-serif;font-size:1.25rem;font-weight:700;">KYB — Know Your Business</h2>
-        <p style="font-size:.84rem;color:var(--mid);margin-top:5px;line-height:1.6;">All companies on Gulf Trade Portal are verified before their listing goes live. This keeps the platform trusted by buyers and suppliers on both sides. The process takes 1–2 business days.</p>
+        <p style="font-size:.84rem;color:var(--mid);margin-top:5px;line-height:1.6;">All companies on Gulf Trade Portal are verified before their listing goes live. This keeps the platform trusted by buyers and suppliers on both sides. Our team reviews your registration number and documents manually, usually within 1–2 business days.</p>
       </div>
 
-      <div class="kyb-steps">
-        <div class="kyb-step"><div class="kyb-dot done">✓</div><span class="kyb-lbl">Company details</span><div class="kyb-line done"></div></div>
-        <div class="kyb-step"><div class="kyb-dot done">✓</div><span class="kyb-lbl">Documents</span><div class="kyb-line done"></div></div>
-        <div class="kyb-step"><div class="kyb-dot done">✓</div><span class="kyb-lbl">Auto-check</span><div class="kyb-line done"></div></div>
-        <div class="kyb-step"><div class="kyb-dot done">✓</div><span class="kyb-lbl">Manual review</span><div class="kyb-line done"></div></div>
-        <div class="kyb-step"><div class="kyb-dot done">✓</div><span class="kyb-lbl">Verified</span></div>
+      <div id="kyb-status-banner" style="display:none;margin-bottom:18px;"></div>
+
+      <div class="kyb-steps" id="kyb-steps">
+        <div class="kyb-step" id="kyb-step-0"><div class="kyb-dot pend">1</div><span class="kyb-lbl">Company details</span><div class="kyb-line"></div></div>
+        <div class="kyb-step" id="kyb-step-1"><div class="kyb-dot pend">2</div><span class="kyb-lbl">Documents</span><div class="kyb-line"></div></div>
+        <div class="kyb-step" id="kyb-step-2"><div class="kyb-dot pend">3</div><span class="kyb-lbl">Manual review</span><div class="kyb-line"></div></div>
+        <div class="kyb-step" id="kyb-step-3"><div class="kyb-dot pend">4</div><span class="kyb-lbl">Verified</span></div>
       </div>
 
       <div class="kyb-alert kyb-info" style="margin-bottom:20px;">
@@ -989,7 +990,7 @@ function showPanel(id, btn) {
   if (id === 'notifications') { try { loadNotifications(); } catch(e){ console.warn('notifs', e); } }
   if (id === 'profile') { try { loadCompanyProfile(); } catch(e){ console.warn('profile', e); } }
   if (id === 'settings') { try { loadContactDetails(); } catch(e){ console.warn('settings', e); } }
-  if (id === 'kyb' || id === 'verification') { try { loadVerifiedDetails(); } catch(e){ console.warn('kyb', e); } }
+  if (id === 'kyb' || id === 'verification') { try { loadVerifiedDetails(); loadKybFormStatus(); } catch(e){ console.warn('kyb', e); } }
 }
 
 function openMo(id){document.getElementById(id).classList.add('open');if(id==='mo-post'&&typeof gtpToggleImgReq==='function')gtpToggleImgReq();}
@@ -1004,6 +1005,44 @@ function gtpToggleImgReq(){
 }
 document.addEventListener('click',e=>{if(e.target.classList.contains('mo'))e.target.classList.remove('open');});
 
+async function loadKybFormStatus(){
+  try{
+    const _sc = await gtpClient(); if(!_sc) return;
+    const { data: { user } } = await _sc.auth.getUser(); if(!user) return;
+    const { data: co } = await _sc.from('companies').select('*').eq('user_id', user.id).maybeSingle();
+    const banner = document.getElementById('kyb-status-banner');
+    const regInput = document.getElementById('kyb-reg');
+    if(!co){ if(banner) banner.style.display='none'; return; }
+
+    if(regInput && co.registration_number && !regInput.value) regInput.value = co.registration_number;
+
+    const status = co.verified ? 'verified' : (co.kyb_status || (co.kyb_submitted_at ? 'pending' : 'not_submitted'));
+    const stepEls = [0,1,2,3].map(i=>document.getElementById('kyb-step-'+i));
+    const setStep = (i, state) => {
+      const el = stepEls[i]; if(!el) return;
+      const dot = el.querySelector('.kyb-dot'); const line = el.querySelector('.kyb-line');
+      if(dot){ dot.className = 'kyb-dot ' + (state==='done'?'done':state==='current'?'cur':'pend'); dot.textContent = state==='done' ? '✓' : String(i+1); }
+      if(line){ line.className = 'kyb-line' + (state==='done'?' done':''); }
+    };
+
+    if(banner) banner.style.display = 'block';
+    if(status === 'verified'){
+      setStep(0,'done'); setStep(1,'done'); setStep(2,'done'); setStep(3,'done');
+      if(banner) banner.innerHTML = '<div style="background:#EAF7EE;border:1px solid #B7E4C4;border-radius:6px;padding:12px 14px;font-size:.83rem;color:#1E7B3C;font-weight:600;">✓ Your company is verified.</div>';
+    } else if(status === 'rejected'){
+      setStep(0,'done'); setStep(1,'done'); setStep(2,'done');
+      if(banner) banner.innerHTML = '<div style="background:#FDF0EE;border:1px solid #F0C4BC;border-radius:6px;padding:12px 14px;">'
+        + '<div style="font-weight:700;font-size:.85rem;color:#C0392B;margin-bottom:4px;">Your previous submission was not approved</div>'
+        + '<div style="font-size:.8rem;color:#444;">'+ (co.kyb_reject_reason ? esc(co.kyb_reject_reason) : 'Please check your registration number and documents below, then resubmit.') +'</div></div>';
+    } else if(status === 'pending'){
+      setStep(0,'done'); setStep(1,'done'); setStep(2,'current');
+      if(banner) banner.innerHTML = '<div style="background:#FFF8EA;border:1px solid #F0D9A0;border-radius:6px;padding:12px 14px;font-size:.83rem;color:#7A5B12;">⏳ Your verification is pending review. We will notify you once it is approved.</div>';
+    } else {
+      setStep(0,'done');
+      if(banner) banner.style.display = 'none';
+    }
+  }catch(e){ console.warn('loadKybFormStatus:', e); }
+}
 function gtpShowFileName(inputId){
   const el = document.getElementById(inputId);
   const nameEl = document.getElementById(inputId+'-name');
@@ -1112,13 +1151,21 @@ async function loadVerifiedDetails(){
     const country = co.country || null;
     const verifiedAt = co.verified_at || co.kyb_verified_at || null;
     const isVerified = !!(co.verified || verifiedAt);
+    const kybStatus = co.kyb_status || (co.kyb_submitted_at ? 'pending' : 'not_submitted');
 
     vcdSet('vcd-legal', legal);
     vcdSet('vcd-trading', trading);
     vcdSet('vcd-reg', reg, 'Not provided');
     vcdSet('vcd-vat', vat, 'Not provided');
     vcdSet('vcd-country', country);
-    vcdSet('vcd-verified', isVerified ? (vcdFmtDate(verifiedAt) || 'Verified') : 'Pending review');
+
+    const vEl = document.getElementById('vcd-verified');
+    if(vEl){
+      if(isVerified){ vEl.textContent = vcdFmtDate(verifiedAt) || 'Verified'; vEl.style.color = 'var(--grn)'; }
+      else if(kybStatus === 'rejected'){ vEl.textContent = 'Not approved'; vEl.style.color = '#C0392B'; }
+      else if(kybStatus === 'pending'){ vEl.textContent = 'Pending review'; vEl.style.color = '#C8922A'; }
+      else { vEl.textContent = 'Not yet submitted'; vEl.style.color = 'var(--mid)'; }
+    }
 
     const cl = document.getElementById('vcd-checklist');
     if(cl){
@@ -1129,8 +1176,16 @@ async function loadVerifiedDetails(){
         if(co.sector) items.push('Sector confirmed — '+co.sector);
         items.push('Verified by Gulf Trade Portal team');
         cl.innerHTML = items.map(t=>'<div style="display:flex;align-items:center;gap:10px;font-size:.81rem;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--grn)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>'+t+'</div>').join('');
+      } else if(kybStatus === 'rejected'){
+        cl.innerHTML = '<div style="background:#FDF0EE;border:1px solid #F0C4BC;border-radius:6px;padding:12px;">'
+          + '<div style="font-weight:700;font-size:.83rem;color:#C0392B;margin-bottom:4px;">Verification not approved</div>'
+          + '<div style="font-size:.8rem;color:#444;margin-bottom:10px;">'+ (co.kyb_reject_reason ? esc(co.kyb_reject_reason) : 'Your documents or registration number could not be confirmed. Please check your details and resubmit.') +'</div>'
+          + '<a href="#" onclick="showPanel(\'kyb\',document.querySelector(\'[onclick*=kyb]\'));return false;" style="font-size:.8rem;font-weight:700;color:var(--teal);">Resubmit verification →</a>'
+          + '</div>';
+      } else if(kybStatus === 'pending'){
+        cl.innerHTML = '<div style="font-size:.81rem;color:var(--mid);">Your verification is under review. We will notify you once it is approved (usually within 1–2 business days).</div>';
       } else {
-        cl.innerHTML = '<div style="font-size:.81rem;color:var(--mid);">Your verification is under review. We will notify you once it is approved.</div>';
+        cl.innerHTML = '<div style="font-size:.81rem;color:var(--mid);">You haven\'t submitted verification yet. Complete the Verification tab to get your Verified badge.</div>';
       }
     }
   }catch(e){ console.warn('loadVerifiedDetails:', e); }

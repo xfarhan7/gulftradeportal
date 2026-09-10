@@ -1151,15 +1151,16 @@ async function viewKybDoc(path){
 }
 async function approveKYB(id){
   const _sc=await gtpClient(); if(!_sc) return;
-  const { error } = await _sc.from('companies').update({verified:true,kyb_status:'approved'}).eq('id',id);
+  const { error } = await _sc.from('companies').update({verified:true,kyb_status:'approved',kyb_reject_reason:null,verified_at:new Date().toISOString()}).eq('id',id);
   if(error){ alert('Could not approve: '+error.message); return; }
   const el=document.getElementById('kyb-'+id); if(el) el.remove();
   loadKYB(); if(window.loadMembers && ADM_MEMBERS.length) loadMembers();
 }
 async function rejectKYB(id){
-  if(!confirm('Reject this application?')) return;
+  const reason = prompt('Reason for rejection (the member will see this — be specific, e.g. "Registration extract is expired" or "Document does not match company name"):');
+  if(reason === null) return; // cancelled
   const _sc=await gtpClient(); if(!_sc) return;
-  const { error } = await _sc.from('companies').update({kyb_status:'rejected'}).eq('id',id);
+  const { error } = await _sc.from('companies').update({kyb_status:'rejected', kyb_reject_reason: reason || null}).eq('id',id);
   if(error){ alert('Could not reject: '+error.message); return; }
   const el=document.getElementById('kyb-'+id); if(el) el.remove(); loadKYB();
 }
