@@ -735,7 +735,7 @@ window.__gtpGateFailsafe = setTimeout(function(){
               <div style="font-size:.8rem;display:flex;gap:8px;align-items:center;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Client portal dashboard</div>
             </div>
             <div style="display:flex;gap:8px;flex-wrap:wrap;">
-              <button class="tb-btn tb-btn-out" onclick="alert('Manage billing via Stripe Customer Portal — connect Stripe in production')">Manage Billing</button>
+              <button class="tb-btn tb-btn-out" onclick="window.location.href='packages.html'">View Plans</button>
               <button class="ibtn ibtn-r">Cancel Plan</button>
             </div>
           </div>
@@ -751,7 +751,7 @@ window.__gtpGateFailsafe = setTimeout(function(){
               <div style="font-size:.8rem;display:flex;gap:8px;align-items:center;color:var(--ink);"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>WhatsApp broadcast to supplier network</div>
               <div style="font-size:.8rem;display:flex;gap:8px;align-items:center;color:var(--ink);"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Quarterly GCC trade intelligence report</div>
             </div>
-            <button class="tb-btn tb-btn-gold" style="width:100%;" onclick="alert('Stripe upgrade flow — connect payment links in production')">Upgrade Now →</button>
+            <button class="tb-btn tb-btn-gold" style="width:100%;" onclick="window.location.href='packages.html'">Upgrade Now →</button>
           </div>
         </div>
       </div>
@@ -764,17 +764,12 @@ window.__gtpGateFailsafe = setTimeout(function(){
           <div style="font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--teal);font-weight:700;margin-bottom:4px;">Billing history</div>
           <h2 style="font-family:Cairo,sans-serif;font-size:1.25rem;font-weight:700;">Invoices</h2>
         </div>
-        <button class="tb-btn tb-btn-out" onclick="openMo('mo-inv')">Preview Invoice Template</button>
       </div>
       <div class="card card-body-0" style="margin-bottom:20px;">
         <div class="tbl-wrap">
           <table class="tbl">
-            <thead><tr><th>Invoice</th><th>Period</th><th>Description</th><th>Amount</th><th>Status</th><th>Action</th></tr></thead>
-            <tbody>
-              <tr><td><strong>INV-2025-003</strong></td><td>Jun 2025</td><td>Pro Importer — Gulf Trade Portal</td><td><strong>€59.00</strong></td><td><span class="bdg bdg-grn">Paid</span></td><td><button class="ibtn ibtn-o" onclick="openMo('mo-inv')">Download PDF</button></td></tr>
-              <tr><td><strong>INV-2025-002</strong></td><td>May 2025</td><td>Pro Importer — Gulf Trade Portal</td><td><strong>€59.00</strong></td><td><span class="bdg bdg-grn">Paid</span></td><td><button class="ibtn ibtn-o" onclick="openMo('mo-inv')">Download PDF</button></td></tr>
-              <tr><td><strong>INV-2025-001</strong></td><td>Apr 2025</td><td>Pro Importer — Gulf Trade Portal</td><td><strong>€59.00</strong></td><td><span class="bdg bdg-grn">Paid</span></td><td><button class="ibtn ibtn-o" onclick="openMo('mo-inv')">Download PDF</button></td></tr>
-            </tbody>
+            <thead><tr><th>Invoice</th><th>Date</th><th>Description</th><th>Amount</th><th>Status</th></tr></thead>
+            <tbody id="my-invoices-body"><tr><td colspan="5" style="padding:16px;color:var(--mid);">Loading…</td></tr></tbody>
           </table>
         </div>
       </div>
@@ -906,71 +901,6 @@ window.__gtpGateFailsafe = setTimeout(function(){
   <div id="post-succ" class="succ">✓ Submitted! Your request will appear on the Trade Board within 24 hours.</div>
 </div></div>
 
-<!-- REPLY MODAL -->
-<div class="mo" id="mo-reply"><div class="mo-box">
-  <button class="mo-x" onclick="closeMo('mo-reply')">×</button>
-  <h3 class="mo-h">Reply to Supplier</h3>
-  <p class="mo-sub">Your reply will be delivered via email. You can also contact them directly via WhatsApp using the number in their message.</p>
-  <div class="fg"><label>Your Message</label><textarea style="font-family:Inter,sans-serif;font-size:.85rem;border:1.5px solid var(--mist);border-radius:4px;padding:9px 11px;width:100%;outline:none;resize:vertical;min-height:120px;" placeholder="Thank you for your response. Please send us a formal quote with…"></textarea></div>
-  <div class="fg"><label>Attach File (optional)</label><input type="file"></div>
-  <button class="tb-btn tb-btn-teal" style="width:100%;" onclick="alert('Message sent — connect to email API in production.')">Send Reply →</button>
-</div></div>
-
-<!-- INVOICE PREVIEW MODAL -->
-<div class="mo" id="mo-inv"><div class="mo-box" style="max-width:640px;padding:0;">
-  <button class="mo-x" style="top:8px;right:12px;background:rgba(255,255,255,.2);color:#fff;" onclick="closeMo('mo-inv')">×</button>
-  <div class="inv-header">
-    <div class="inv-logo">Gulf <span>Trade</span> Portal<sub></sub></div>
-    <div class="inv-num">
-      <div class="inv-label">Invoice</div>
-      <div class="inv-val">INV-2025-003</div>
-      <div class="inv-date">Issued: 1 June 2025 · Due: 1 June 2025</div>
-    </div>
-  </div>
-  <div class="inv-body">
-    <div class="inv-parties">
-      <div>
-        <div class="inv-party-label">From</div>
-        <div class="inv-party-name">Gulf Trade Portal</div>
-        <div class="inv-party-detail">
-          Trading as: Gulf Trade Portal<br>
-          KVK: —<br>
-          BTW: —<br>
-          Haringvliet 2, 3311 NR Dordrecht<br>
-          Netherlands<br>
-          invoice@gulftradeportal.com
-        </div>
-      </div>
-      <div>
-        <div class="inv-party-label">Bill To</div>
-        <div class="inv-party-name">Gulf Trade Portal</div>
-        <div class="inv-party-detail">
-          KVK: —<br>
-          BTW: —<br>
-          Haringvliet 2, 3311 NR Dordrecht<br>
-          Netherlands
-        </div>
-      </div>
-    </div>
-    <table class="inv-tbl">
-      <thead><tr><th>Description</th><th>Period</th><th>Qty</th><th>Unit Price</th><th>Total</th></tr></thead>
-      <tbody>
-        <tr><td>Gulf Trade Portal — Pro Importer Plan</td><td>Jun 2025</td><td>1</td><td>€59.00</td><td>€59.00</td></tr>
-      </tbody>
-    </table>
-    <div class="inv-totals">
-      <div class="inv-totals-box">
-        <div class="inv-total-row"><span>Subtotal</span><span>€59.00</span></div>
-        <div class="inv-total-row"><span>VAT (0% — B2B reverse charge)</span><span>€0.00</span></div>
-        <div class="inv-total-row total"><span>Total Due</span><span>€59.00</span></div>
-      </div>
-    </div>
-  </div>
-  <div class="inv-footer">
-    <span>Payment via Stripe · Paid by Mastercard ····4242</span>
-    <button class="ibtn ibtn-t" onclick="alert('PDF download — connect to PDF generator in production.')">Download PDF</button>
-  </div>
-</div></div>
 
 <script>
 const PANELS = ['dashboard','requests','responses','kyb','profile','directory','subscription','invoices','notifications','settings'];
@@ -990,6 +920,7 @@ function showPanel(id, btn) {
   if (id === 'notifications') { try { loadNotifications(); } catch(e){ console.warn('notifs', e); } }
   if (id === 'profile') { try { loadCompanyProfile(); } catch(e){ console.warn('profile', e); } }
   if (id === 'settings') { try { loadContactDetails(); } catch(e){ console.warn('settings', e); } }
+  if (id === 'invoices') { try { loadMyInvoices(); } catch(e){ console.warn('invoices', e); } }
   if (id === 'kyb' || id === 'verification') { try { loadVerifiedDetails(); loadKybFormStatus(); } catch(e){ console.warn('kyb', e); } }
 }
 
@@ -1229,6 +1160,25 @@ async function saveCompanyProfile(btn){
     const sc=document.getElementById('cp-succ'); if(sc){ sc.textContent='✓ Profile saved.'; sc.style.display='block'; }
   }catch(e){ alert('Could not save profile: '+(e.message||e)); }
   finally{ btn.disabled=false; btn.textContent=orig; }
+}
+async function loadMyInvoices(){
+  const body = document.getElementById('my-invoices-body');
+  if(!body) return;
+  try{
+    const _sc = await gtpClient(); if(!_sc) return;
+    const { data: { user } } = await _sc.auth.getUser(); if(!user) return;
+    const { data: co } = await _sc.from('companies').select('id').eq('user_id', user.id).maybeSingle();
+    if(!co){ body.innerHTML = '<tr><td colspan="5" style="padding:16px;color:var(--mid);">No invoices yet.</td></tr>'; return; }
+    const { data, error } = await _sc.from('invoices').select('*').eq('company_id', co.id).order('issued_on',{ascending:false});
+    if(error){ body.innerHTML = '<tr><td colspan="5" style="padding:16px;color:#c0392b;">Could not load invoices.</td></tr>'; return; }
+    if(!data || !data.length){ body.innerHTML = '<tr><td colspan="5" style="padding:16px;color:var(--mid);">No invoices yet.</td></tr>'; return; }
+    body.innerHTML = data.map(inv => {
+      const dt = inv.issued_on ? new Date(inv.issued_on).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}) : '—';
+      const amt = '€' + Number(inv.amount||0).toFixed(2);
+      const statusBdg = inv.status === 'paid' ? '<span class="bdg bdg-grn">Paid</span>' : '<span class="bdg bdg-gold">Pending</span>';
+      return `<tr><td><strong>${esc(inv.invoice_no||'—')}</strong></td><td>${esc(dt)}</td><td>${esc(inv.description||'')}</td><td><strong>${esc(amt)}</strong></td><td>${statusBdg}</td></tr>`;
+    }).join('');
+  }catch(e){ console.warn('loadMyInvoices:', e); body.innerHTML = '<tr><td colspan="5" style="padding:16px;color:#c0392b;">Could not load invoices.</td></tr>'; }
 }
 async function loadContactDetails(){
   try{

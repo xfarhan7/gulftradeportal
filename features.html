@@ -490,7 +490,7 @@ body{font-family:'Inter',sans-serif;background:#F0EDE8;color:var(--ink);font-siz
     </div>
   </div>
   <div class="ai-disclaimer">
-    <strong>How AI Matching works:</strong> When you submit a request, our AI reads your product, quantity, origin, and certification requirements, then analyses every verified supplier profile on the platform — from Europe, USA, and Asia — including their products, Halal certifications (JAKIM, MUI, EU Halal), export history, and GCC experience. Results are powered by Claude (Anthropic) and generated in real time.
+    <strong>How Supplier Matching works:</strong> When you submit a request, we match it against every verified supplier profile on the platform — from Europe, USA, and Asia — by sector, origin, product keywords, and Halal certification where stated. Results are ranked by relevance and pulled live from our directory.
   </div>
 </div>
 
@@ -667,7 +667,7 @@ body{font-family:'Inter',sans-serif;background:#F0EDE8;color:var(--ink);font-siz
             </ul>
             <div class="rc-foot">
               <span class="rc-pages">12 pages</span>
-              <button class="btn-xs bx-t" onclick="alert('Opening free preview PDF…')">Download Free</button>
+              <button class="btn-xs bx-t" onclick="toast('This report is coming soon — check back shortly.')">Download Free</button>
             </div>
           </div>
         </div>
@@ -698,8 +698,8 @@ body{font-family:'Inter',sans-serif;background:#F0EDE8;color:var(--ink);font-siz
     <div class="itabpanel" id="it-live">
       <div class="intel-preview">
         <div class="ip-head">
-          <span class="ip-title">Top Import Categories — UAE (June 2025)</span>
-          <span style="font-size:.71rem;color:var(--mid);">Updated weekly · Pro plan</span>
+          <span class="ip-title">Top Import Categories — UAE (illustrative example)</span>
+          <span style="font-size:.71rem;color:var(--mid);">Sample layout · real data sourcing in progress</span>
         </div>
         <div class="ip-body">
           <div style="padding:0 4px;">
@@ -741,6 +741,7 @@ body{font-family:'Inter',sans-serif;background:#F0EDE8;color:var(--ink);font-siz
 
     <!-- TRENDS -->
     <div class="itabpanel" id="it-trends">
+      <div style="background:#FFF8EA;border:1px solid #F0D9A0;border-radius:6px;padding:10px 14px;margin-bottom:14px;font-size:.78rem;color:#7A5B12;">This is a sample layout of the trends dashboard. Live figures from real trade data will replace these once our data sourcing is complete.</div>
       <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;">
         <div style="background:var(--white);border:1.5px solid var(--mist);border-radius:8px;padding:20px;">
           <div style="font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);margin-bottom:10px;">Trending Up</div>
@@ -784,7 +785,7 @@ body{font-family:'Inter',sans-serif;background:#F0EDE8;color:var(--ink);font-siz
     <div class="wa-hero-inner">
       <p style="font-size:.67rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:10px;font-weight:500;">Direct supplier outreach</p>
       <h1>WhatsApp Broadcast</h1>
-      <p>When a new high-value trade request is posted, instantly broadcast it to all matching verified suppliers on the platform. Direct to their WhatsApp — not email, not a feed. WhatsApp.</p>
+      <p>Reach matching verified suppliers directly on WhatsApp — not email, not a feed. This feature is being finalised; join now to be notified the moment it goes live.</p>
     </div>
   </div>
   <div class="wa-main">
@@ -859,7 +860,7 @@ This buyer is actively sourcing. Reply to respond directly.
         </div>
 
         <div class="wa-stats">
-          <div class="wa-stat"><div class="ws-val">342</div><div class="ws-lbl">Total recipients</div></div>
+          <div class="wa-stat"><div class="ws-val">—</div><div class="ws-lbl">Total recipients</div></div>
           <div class="wa-stat"><div class="ws-val">89%</div><div class="ws-lbl">Avg open rate</div></div>
           <div class="wa-stat"><div class="ws-val">34%</div><div class="ws-lbl">Response rate</div></div>
         </div>
@@ -1081,10 +1082,11 @@ function updatePreview() {
 }
 
 function sendBroadcast() {
-  toast('✓ Broadcast queued for 342 recipients via WhatsApp Business API', 'wa');
+  toast('WhatsApp broadcast is not connected yet — this feature is coming soon.', 'wa');
 }
 
 // ── AI SUPPLIER MATCH ────────────────────────────────────────
+function esc(s){ return (s==null?'':String(s)).replace(/[<>&]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[c])); }
 async function runAIMatch() {
   // PAID-ONLY FEATURE: verified against the DATABASE (cannot be bypassed
   // by editing localStorage — the plan is read fresh from Supabase).
@@ -1121,7 +1123,7 @@ async function runAIMatch() {
   btn.classList.add('loading');
   btn.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Analysing suppliers…`;
 
-  document.getElementById('ai-status').textContent = 'Claude is matching…';
+  if(statusEl) statusEl.textContent = 'Matching against verified suppliers…';
   document.getElementById('ai-results').innerHTML = `
     <div class="ai-thinking">
       <div class="ai-thinking-dots">
@@ -1129,103 +1131,72 @@ async function runAIMatch() {
         <div class="dot-pulse"></div>
         <div class="dot-pulse"></div>
       </div>
-      <p>Claude is reading all 342 verified supplier profiles and matching them to your requirement…</p>
+      <p>Searching verified supplier profiles for your requirement…</p>
     </div>`;
 
-  const supplierProfiles = `
-Verified supplier database on Gulf Trade Portal:
-1. Dutch Food Export BV (Netherlands) — Wholesaler/Distributor, FMCG & Food, exports: Nespresso OL capsules, coffee, dairy, packaged FMCG, HALAL certified, FSSC 22000, 15 years GCC experience, CIF Dubai available, €89/mo Pro plan
-2. NL Beverage Export BV (Netherlands) — FMCG exporter, coffee capsules, hot beverages, Nespresso compatible products, Halal line, EU origin docs, CIF UAE
-3. Belgian Dairy Export (Belgium) — Food exporter, UHT milk, butter, cheese, HALAL certified, FSSC 22000, 14 GCC accounts
-4. German Metals GmbH (Germany) — Manufacturer/Exporter, steel rebar, structural steel, CE certified, ESMA compatible
-5. Iberia Food Group (Spain) — Food exporter, organic EVOO, Mediterranean foods, HALAL certified, Organic/BIO, private label
-6. Crete Organics Ltd (Greece) — Food exporter, organic olive oil, herbs, honey, GlobalGAP, BIO, Halal compliant
-7. Halal Poultry EU (Poland) — Food exporter, frozen poultry, IQF chicken, SFDA registered, HALAL, FSSC 22000
-8. UK Chemicals Ltd (United Kingdom) — Manufacturer, industrial solvents, IPA, acetone, specialty chemicals
-9. UK Organic Foods Ltd (United Kingdom) — Food exporter, organic snacks, packaged foods, HALAL, Kosher, Organic
-10. American Agri Exports (United States) — Agri exporter, grains, pulses, processed food
-11. German Pharma GmbH (Germany) — Pharma manufacturer, API, raw materials, EU GMP, GDP certified
-12. UK Machinery Ltd (United Kingdom) — Industrial equipment, control panels, CE certified
-13. Halal Foods Malaysia Sdn Bhd (Malaysia) — JAKIM-certified Halal food manufacturer, palm oil, processed food, coconut products, Halal snacks, established UAE/KSA distribution
-14. India Spice & Agri Exports (India) — Basmati rice, spices, pulses, agri products, APEDA certified, Halal compliant, UAE-India CEPA
-15. Shanghai General Trading Co. (China) — Electronics, consumer goods, CE certified, Jebel Ali FTZ presence, competitive pricing
-16. PT Indo Halal Foods (Indonesia) — MUI-certified Halal food, coconut products, processed seafood, palm oil derivatives
-17. Korean Industrial Group (South Korea) — Industrial machinery, CNC systems, CE and KS certified, UAE manufacturing sector
-18. Thai Export Alliance Co. (Thailand) — Canned seafood, rice, processed foods, established GCC trade lane
-19. Singapore Trade Hub Pte Ltd (Singapore) — Multi-category FMCG trader, regional hub for SEA goods to GCC, ISO 9001
-20. Japan Machinery & Tech KK (Japan) — Precision machinery, industrial equipment, UAE oil & gas sector`;
-
-  const prompt = `You are the AI matching engine for Gulf Trade Portal, a GCC import/export B2B platform. A GCC buyer has posted an import requirement. Analyse the supplier database and return the TOP 3 best matching suppliers.
-
-BUYER REQUIREMENT:
-- Product: ${product}
-- Quantity: ${qty || 'Not specified'}
-- Destination: ${country}
-- Preferred origin: ${origin}
-- Sector: ${sector}
-- Key requirements: ${reqs || 'None specified'}
-- Halal required: ${halal ? 'YES — must be Halal certified' : 'No specific requirement'}
-
-SUPPLIER DATABASE:
-${supplierProfiles}
-
-Return ONLY valid JSON (no markdown, no explanation), exactly this structure:
-{
-  "matches": [
-    {
-      "rank": 1,
-      "name": "exact supplier name from database",
-      "country": "country",
-      "matchScore": 94,
-      "reason": "2-3 sentences explaining exactly why this supplier is the best match for this specific requirement",
-      "strengths": ["strength 1", "strength 2", "strength 3"],
-      "certifications": ["cert1", "cert2"],
-      "halalCertified": true
-    }
-  ],
-  "summary": "One sentence summary of the matching quality overall"
-}`;
-
   try {
-    const resp = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-6',
-        max_tokens: 1000,
-        messages: [{ role: 'user', content: prompt }]
-      })
-    });
+    const _sc = await gtpClient();
+    if(!_sc) throw new Error('Not connected to the database.');
 
-    const data = await resp.json();
-    const text = data.content?.[0]?.text || '';
-    const clean = text.replace(/```json|```/g, '').trim();
-    const result = JSON.parse(clean);
+    // Pull real verified companies from Supabase — never fabricated data.
+    const { data: companies, error } = await _sc
+      .from('directory_companies')
+      .select('id,name,country,region,sector,company_type,description,verified,slug')
+      .eq('verified', true)
+      .limit(300);
+    if(error) throw error;
 
+    const rows = companies || [];
+    if(!rows.length){
+      document.getElementById('ai-results').innerHTML = '<div style="padding:24px;text-align:center;color:var(--mid);font-size:.85rem;">No verified suppliers in the directory yet. Check back soon, or browse the <a href="directory.html" style="color:var(--teal);">full directory</a>.</div>';
+      if(statusEl) statusEl.textContent = 'No suppliers to match yet';
+      return;
+    }
+
+    // Real relevance scoring — sector, product keywords, origin/country, and
+    // (best-effort) Halal mention in the company's own description.
+    const productWords = product.toLowerCase().split(/[\s,]+/).filter(w=>w.length>2);
+    const scored = rows.map(c=>{
+      let score = 30; // baseline for being a real verified match candidate
+      const desc = (c.description||'').toLowerCase();
+      const name = (c.name||'').toLowerCase();
+      if(sector && c.sector === sector) score += 25;
+      if(origin && c.country === origin) score += 20;
+      productWords.forEach(w=>{ if(desc.includes(w) || name.includes(w)) score += 8; });
+      if(halal && (desc.includes('halal'))) score += 15;
+      if(halal && !desc.includes('halal')) score -= 10;
+      return { c, score: Math.max(5, Math.min(98, score)) };
+    }).filter(x=>x.score > 25)
+      .sort((a,b)=>b.score-a.score)
+      .slice(0,3);
+
+    if(!scored.length){
+      document.getElementById('ai-results').innerHTML = '<div style="padding:24px;text-align:center;color:var(--mid);font-size:.85rem;">No close matches found for this exact requirement yet. Try a broader sector or product term, or <a href="directory.html" style="color:var(--teal);">browse the full directory</a>.</div>';
+      if(statusEl) statusEl.textContent = 'No matches found';
+      return;
+    }
+
+    const result = {
+      matches: scored.map((x,i)=>({
+        rank: i+1,
+        name: x.c.name,
+        country: x.c.country,
+        matchScore: x.score,
+        reason: `${x.c.sector||'Verified supplier'} company based in ${x.c.country||'—'}.` + (x.c.description ? ' ' + x.c.description.slice(0,180) : ''),
+        strengths: [x.c.sector, x.c.company_type, x.c.verified?'Verified on Gulf Trade Portal':null].filter(Boolean),
+        certifications: [],
+        halalCertified: halal ? (x.c.description||'').toLowerCase().includes('halal') : false,
+        slug: x.c.slug
+      })),
+      summary: `${scored.length} verified supplier${scored.length>1?'s':''} matched from our directory for ${product}.`
+    };
     renderMatches(result);
-    document.getElementById('ai-status').textContent = `${result.matches.length} suppliers matched`;
+    if(statusEl) statusEl.textContent = `${result.matches.length} suppliers matched`;
 
   } catch(e) {
-    // Fallback with realistic demo data
-    const fallback = {
-      matches: [
-        {rank:1, name:'Dutch Food Export BV', country:'Netherlands', matchScore:96,
-          reason:`Perfect match for ${product}. Dutch Food Export BV has 15 years of GCC distribution experience and holds all required EU origin documentation. Their HALAL certification and FSSC 22000 standard align exactly with ${country} import requirements.`,
-          strengths:['15 years GCC experience','Full EU origin documentation','HALAL & FSSC 22000 certified'],
-          certifications:['Halal','FSSC 22000','EU Origin'],halalCertified:true},
-        {rank:2, name:'NL Beverage Export BV', country:'Netherlands', matchScore:88,
-          reason:`Strong secondary match. Specialises in coffee and beverage products from the Netherlands with established CIF UAE logistics. EU origin docs available, Halal line in production.`,
-          strengths:['Coffee & beverage specialist','CIF UAE direct','EU origin certified'],
-          certifications:['Halal','EU Origin'],halalCertified:true},
-        {rank:3, name:'Belgian Dairy Export', country:'Belgium', matchScore:74,
-          reason:`Broader FMCG capability. While primarily dairy-focused, their GCC distribution network and Halal certification make them worth contacting for cross-category supply opportunities.`,
-          strengths:['Established GCC network','14 active GCC accounts','HALAL certified'],
-          certifications:['Halal','FSSC 22000'],halalCertified:true}
-      ],
-      summary: `3 strong EU supplier matches found for ${product} import into ${country}.`
-    };
-    renderMatches(fallback);
-    document.getElementById('ai-status').textContent = '3 suppliers matched (demo)';
+    console.warn('AI match error:', e);
+    document.getElementById('ai-results').innerHTML = '<div style="padding:24px;text-align:center;color:var(--mid);font-size:.85rem;">Could not load matches right now. Please try again, or <a href="directory.html" style="color:var(--teal);">browse the full directory</a>.</div>';
+    if(statusEl) statusEl.textContent = 'Could not complete match';
   }
 
   btn.disabled = false;
@@ -1240,8 +1211,8 @@ function renderMatches(result) {
         <div style="display:flex;gap:10px;align-items:flex-start;">
           <div class="mc-rank ${m.rank===1?'gold':''}">${m.rank}</div>
           <div>
-            <div class="mc-name">${m.name}</div>
-            <div class="mc-sub">${m.country}</div>
+            <div class="mc-name">${esc(m.name)}</div>
+            <div class="mc-sub">${esc(m.country||'')}</div>
           </div>
         </div>
         <div class="mc-score">
@@ -1249,18 +1220,17 @@ function renderMatches(result) {
           <div class="mc-score-lbl">match score</div>
         </div>
       </div>
-      <div class="mc-reason">${m.reason}</div>
+      <div class="mc-reason">${esc(m.reason)}</div>
       <div class="mc-tags">
-        ${m.certifications.map(c => `<span class="mc-tag ${c==='Halal'||c==='HALAL'?'mc-halal-tag':''}">${c==='Halal'||c==='HALAL'?'☪ ':''} ${c}</span>`).join('')}
-        ${m.strengths.map(s => `<span class="mc-tag">${s}</span>`).join('')}
+        ${(m.certifications||[]).map(c => `<span class="mc-tag ${c==='Halal'||c==='HALAL'?'mc-halal-tag':''}">${c==='Halal'||c==='HALAL'?'☪ ':''} ${esc(c)}</span>`).join('')}
+        ${(m.strengths||[]).map(s => `<span class="mc-tag">${esc(s)}</span>`).join('')}
       </div>
       <div class="mc-actions">
-        <button class="btn-xs bx-t">WhatsApp Supplier</button>
-        <button class="btn-xs bx-o">View Profile</button>
-        <button class="btn-xs bx-g" onclick="toast('Intro request sent to ${m.name}')">Request Intro</button>
+        <a class="btn-xs bx-o" href="${m.slug ? 'company.html?id='+encodeURIComponent(m.slug) : 'directory.html'}">View Profile</a>
+        <a class="btn-xs bx-g" href="${m.slug ? 'company.html?id='+encodeURIComponent(m.slug) : 'directory.html'}">Contact via Profile</a>
       </div>
     </div>
-  `).join('') + `<div style="padding:12px 20px;font-size:.75rem;color:var(--mid);border-top:1px solid var(--mist);background:var(--sand);">${result.summary}</div>`;
+  `).join('') + `<div style="padding:12px 20px;font-size:.75rem;color:var(--mid);border-top:1px solid var(--mist);background:var(--sand);">${esc(result.summary)}</div>`;
 }
 </script>
 
