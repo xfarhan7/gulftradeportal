@@ -356,8 +356,13 @@ function loadCompany() {
     document.getElementById('cpContactArea').style.display = 'none';
     document.getElementById('cpLockNote').style.display = 'block';
   } else {
-    document.getElementById('cpWa').href = 'https://wa.me/';
-    document.getElementById('cpEmail').href = 'mailto:trade@gulftradeportal.com?subject=Enquiry via Gulf Trade Portal — ' + encodeURIComponent(co.n);
+    const waNum = (co.whatsapp || '').replace(/[^\d]/g, '');
+    const waBtn = document.getElementById('cpWa');
+    if(waBtn){
+      if(waNum){ waBtn.href = 'https://wa.me/' + waNum; }
+      else { waBtn.style.display = 'none'; } // no WhatsApp on file — don't show a dead link
+    }
+    document.getElementById('cpEmail').href = 'mailto:' + (co.email || 'info@gulftradeportal.com') + '?subject=Enquiry via Gulf Trade Portal — ' + encodeURIComponent(co.n);
   }
 }
 loadCompanyDispatch();
