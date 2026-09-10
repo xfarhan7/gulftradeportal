@@ -1016,7 +1016,11 @@ async function loadKybFormStatus(){
 
     if(regInput && co.registration_number && !regInput.value) regInput.value = co.registration_number;
 
-    const status = co.verified ? 'verified' : (co.kyb_status || (co.kyb_submitted_at ? 'pending' : 'not_submitted'));
+    // From the member's side there are only 3 real states: verified,
+    // pending (covers "needs another look" too — we never show a scary
+    // "rejected" to a real applicant), or not yet submitted.
+    const rawStatus = co.verified ? 'verified' : (co.kyb_status || (co.kyb_submitted_at ? 'pending' : 'not_submitted'));
+    const status = rawStatus === 'rejected' ? 'pending' : rawStatus;
     const stepEls = [0,1,2,3].map(i=>document.getElementById('kyb-step-'+i));
     const setStep = (i, state) => {
       const el = stepEls[i]; if(!el) return;
@@ -1029,14 +1033,9 @@ async function loadKybFormStatus(){
     if(status === 'verified'){
       setStep(0,'done'); setStep(1,'done'); setStep(2,'done'); setStep(3,'done');
       if(banner) banner.innerHTML = '<div style="background:#EAF7EE;border:1px solid #B7E4C4;border-radius:6px;padding:12px 14px;font-size:.83rem;color:#1E7B3C;font-weight:600;">✓ Your company is verified.</div>';
-    } else if(status === 'rejected'){
-      setStep(0,'done'); setStep(1,'done'); setStep(2,'done');
-      if(banner) banner.innerHTML = '<div style="background:#FDF0EE;border:1px solid #F0C4BC;border-radius:6px;padding:12px 14px;">'
-        + '<div style="font-weight:700;font-size:.85rem;color:#C0392B;margin-bottom:4px;">Your previous submission was not approved</div>'
-        + '<div style="font-size:.8rem;color:#444;">'+ (co.kyb_reject_reason ? esc(co.kyb_reject_reason) : 'Please check your registration number and documents below, then resubmit.') +'</div></div>';
     } else if(status === 'pending'){
       setStep(0,'done'); setStep(1,'done'); setStep(2,'current');
-      if(banner) banner.innerHTML = '<div style="background:#FFF8EA;border:1px solid #F0D9A0;border-radius:6px;padding:12px 14px;font-size:.83rem;color:#7A5B12;">⏳ Your verification is pending review. We will notify you once it is approved.</div>';
+      if(banner) banner.innerHTML = '<div style="background:#FFF8EA;border:1px solid #F0D9A0;border-radius:6px;padding:12px 14px;font-size:.83rem;color:#7A5B12;">⏳ Your verification is pending review. We will notify you once it is approved. You can update your details and resubmit below at any time.</div>';
     } else {
       setStep(0,'done');
       if(banner) banner.style.display = 'none';
@@ -1057,8 +1056,12 @@ async function submitKYB(btn){
   const fAddr = document.getElementById('kyb-file-address').files[0];
   const fLicense = document.getElementById('kyb-file-license').files[0]; // optional
 
-  if(!reg){ alert('Please enter your registration number.'); return; }
-  if(!fReg || !fId || !fAddr){ alert('Please upload the 3 required documents: Registration Extract, Director ID, and Proof of Address.'); return; }
+  // Let members submit with whatever they have ready — our team reviews and
+  // follows up on anything missing, rather than blocking submission here.
+  if(!reg && !fReg && !fId && !fAddr && !fLicense){
+    alert('Please add at least your registration number or one document before submitting.');
+    return;
+  }
   const okTypes = ['application/pdf','image/jpeg','image/png'];
   for(const [label,f] of [['Registration Extract',fReg],['Director ID',fId],['Proof of Address',fAddr],['Trade License',fLicense]]){
     if(f && !okTypes.includes(f.type)){ alert(label+': please upload a PDF, JPG, or PNG.'); return; }
@@ -1080,26 +1083,31 @@ async function submitKYB(btn){
       return path;
     }
 
-    const pathReg = await upload(fReg, 'registration');
-    const pathId = await upload(fId, 'id');
-    const pathAddr = await upload(fAddr, 'address');
-    const pathLicense = fLicense ? await upload(fLicense, 'license') : null;
+    const pathReg = fReg ? await upload(fReg, 'registration') : undefined;
+    const pathId = fId ? await upload(fId, 'id') : undefined;
+    const pathAddr = fAddr ? await upload(fAddr, 'address') : undefined;
+    const pathLicense = fLicense ? await upload(fLicense, 'license') : undefined;
 
     btn.textContent = 'Submitting…';
-    const { error: upErr } = await _sc.from('companies').update({
-      registration_number: reg,
-      kyb_doc_registration: pathReg,
-      kyb_doc_id: pathId,
-      kyb_doc_address: pathAddr,
-      kyb_doc_license: pathLicense,
+    const patch = {
       kyb_submitted_at: new Date().toISOString(),
-      kyb_status: 'pending'
-    }).eq('user_id', user.id);
+      kyb_status: 'pending',           // always pending from the member's view
+      kyb_needs_recheck: false,        // clear any earlier admin flag — this is a fresh look
+      kyb_reject_reason: null
+    };
+    if(reg) patch.registration_number = reg;
+    if(pathReg !== undefined) patch.kyb_doc_registration = pathReg;
+    if(pathId !== undefined) patch.kyb_doc_id = pathId;
+    if(pathAddr !== undefined) patch.kyb_doc_address = pathAddr;
+    if(pathLicense !== undefined) patch.kyb_doc_license = pathLicense;
+
+    const { error: upErr } = await _sc.from('companies').update(patch).eq('user_id', user.id);
     if(upErr) throw upErr;
 
     const succ = document.getElementById('kyb-succ');
-    if(succ){ succ.textContent = '✓ Submitted. Our team will review your registration number and documents within 1–2 business days. You will receive an email once verified.'; succ.style.display = 'block'; }
-    btn.textContent = 'Submitted ✓';
+    if(succ){ succ.textContent = '✓ Sent for verification. Our team will review your details and get in touch if anything else is needed.'; succ.style.display = 'block'; }
+    btn.textContent = 'Sent for verification ✓';
+    try{ loadKybFormStatus(); loadVerifiedDetails(); }catch(_){}
   }catch(e){
     alert('Could not submit: ' + (e.message||e));
     btn.disabled = false; btn.textContent = orig;
@@ -1162,7 +1170,6 @@ async function loadVerifiedDetails(){
     const vEl = document.getElementById('vcd-verified');
     if(vEl){
       if(isVerified){ vEl.textContent = vcdFmtDate(verifiedAt) || 'Verified'; vEl.style.color = 'var(--grn)'; }
-      else if(kybStatus === 'rejected'){ vEl.textContent = 'Not approved'; vEl.style.color = '#C0392B'; }
       else if(kybStatus === 'pending'){ vEl.textContent = 'Pending review'; vEl.style.color = '#C8922A'; }
       else { vEl.textContent = 'Not yet submitted'; vEl.style.color = 'var(--mid)'; }
     }
@@ -1176,16 +1183,10 @@ async function loadVerifiedDetails(){
         if(co.sector) items.push('Sector confirmed — '+co.sector);
         items.push('Verified by Gulf Trade Portal team');
         cl.innerHTML = items.map(t=>'<div style="display:flex;align-items:center;gap:10px;font-size:.81rem;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--grn)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>'+t+'</div>').join('');
-      } else if(kybStatus === 'rejected'){
-        cl.innerHTML = '<div style="background:#FDF0EE;border:1px solid #F0C4BC;border-radius:6px;padding:12px;">'
-          + '<div style="font-weight:700;font-size:.83rem;color:#C0392B;margin-bottom:4px;">Verification not approved</div>'
-          + '<div style="font-size:.8rem;color:#444;margin-bottom:10px;">'+ (co.kyb_reject_reason ? esc(co.kyb_reject_reason) : 'Your documents or registration number could not be confirmed. Please check your details and resubmit.') +'</div>'
-          + '<a href="#" onclick="showPanel(\'kyb\',document.querySelector(\'[onclick*=kyb]\'));return false;" style="font-size:.8rem;font-weight:700;color:var(--teal);">Resubmit verification →</a>'
-          + '</div>';
       } else if(kybStatus === 'pending'){
-        cl.innerHTML = '<div style="font-size:.81rem;color:var(--mid);">Your verification is under review. We will notify you once it is approved (usually within 1–2 business days).</div>';
+        cl.innerHTML = '<div style="font-size:.81rem;color:var(--mid);">Your verification is under review. We will notify you once it is approved.</div>';
       } else {
-        cl.innerHTML = '<div style="font-size:.81rem;color:var(--mid);">You haven\'t submitted verification yet. Complete the Verification tab to get your Verified badge.</div>';
+        cl.innerHTML = '<div style="font-size:.81rem;color:var(--mid);">You have not submitted verification yet. Complete the Verification tab to get your Verified badge.</div>';
       }
     }
   }catch(e){ console.warn('loadVerifiedDetails:', e); }

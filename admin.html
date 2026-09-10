@@ -1103,20 +1103,26 @@ async function loadKYB(){
     .order('created_at',{ascending:true});
   if(error){ box.innerHTML='<div style="padding:16px;color:#c0392b;">'+esc(error.message)+'</div>'; return; }
   const rows=(data||[]).filter(c=>!c.verified);
+  // Flagged ("needs double-check") items surface first so nothing slips through.
+  rows.sort((a,b)=> (b.kyb_needs_recheck?1:0) - (a.kyb_needs_recheck?1:0));
+  const flaggedCount = rows.filter(c=>c.kyb_needs_recheck).length;
   setTxt('adm-kyb-count', rows.length);
   if(!rows.length){ box.innerHTML='<div style="padding:18px;color:var(--mid);font-size:.85rem;">No pending verifications — queue is clear.</div>'; return; }
+  const banner = flaggedCount ? '<div style="background:#FFF3E0;border:1px solid #F0C97A;border-radius:6px;padding:10px 14px;margin-bottom:14px;font-size:.83rem;color:#7A5B12;font-weight:600;">⚑ '+flaggedCount+' application'+(flaggedCount>1?'s':'')+' flagged for a double-check — shown first below.</div>' : '';
   const field=(label,val)=> val ? '<div style="margin-bottom:6px;"><span style="font-size:.68rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--mid);">'+esc(label)+'</span><br><span style="font-size:.83rem;">'+esc(val)+'</span></div>' : '';
-  box.innerHTML=rows.map(c=>{
+  box.innerHTML = banner + rows.map(c=>{
     const legal = c.legal_name || c.name;
     const trading = c.trading_name && c.trading_name!==legal ? c.trading_name : '';
     const reg = c.registration_number || c.reg_number || c.kvk_number || c.trade_license_number;
     const vat = c.vat_number || c.tax_number;
+    const flagged = !!c.kyb_needs_recheck;
     return `
-    <div class="kyb-card" id="kyb-${c.id}">
+    <div class="kyb-card" id="kyb-${c.id}" style="${flagged?'border:1.5px solid #E8B84B;':''}">
       <div class="kyb-card-hd">
         <div><div class="kyb-co-name">${esc(legal||'—')}</div><div class="kyb-co-sub">${esc(c.country||'')} · ${esc(c.sector||'')} · ${esc(c.company_type||'')} · ${esc(c.email||'')}</div></div>
-        <span class="bdg bdg-gold">Pending</span>
+        ${flagged ? '<span class="bdg" style="background:#E8B84B;color:#1a1a1a;">⚑ Needs double-check</span>' : '<span class="bdg bdg-gold">Pending</span>'}
       </div>
+      ${flagged && c.kyb_reject_reason ? '<div style="padding:8px 14px;background:#FFF8EA;font-size:.79rem;color:#7A5B12;border-bottom:1px solid var(--mist);"><strong>Note:</strong> '+esc(c.kyb_reject_reason)+'</div>' : ''}
       <div style="padding:10px 14px;border-top:1px solid var(--mist);border-bottom:1px solid var(--mist);display:grid;grid-template-columns:1fr 1fr;gap:4px 16px;">
         ${field('Trading Name', trading)}
         ${field('Registration Number', reg)}
@@ -1136,7 +1142,7 @@ async function loadKYB(){
       ${c.description ? '<div style="padding:10px 14px;font-size:.82rem;color:#444;line-height:1.5;border-bottom:1px solid var(--mist);">'+esc(c.description)+'</div>' : ''}
       <div class="kyb-actions">
         <button class="btn btn-grn btn-sm" onclick="approveKYB('${c.id}')">Approve &amp; Verify</button>
-        <button class="btn btn-red btn-sm" onclick="rejectKYB('${c.id}')">Reject</button>
+        <button class="btn btn-out btn-sm" onclick="flagKYB('${c.id}')" style="border-color:#E8B84B;color:#7A5B12;">${flagged?'Update note':'Flag for double-check'}</button>
       </div>
     </div>`;
   }).join('');
@@ -1151,18 +1157,21 @@ async function viewKybDoc(path){
 }
 async function approveKYB(id){
   const _sc=await gtpClient(); if(!_sc) return;
-  const { error } = await _sc.from('companies').update({verified:true,kyb_status:'approved',kyb_reject_reason:null,verified_at:new Date().toISOString()}).eq('id',id);
+  const { error } = await _sc.from('companies').update({verified:true,kyb_status:'approved',kyb_needs_recheck:false,kyb_reject_reason:null,verified_at:new Date().toISOString()}).eq('id',id);
   if(error){ alert('Could not approve: '+error.message); return; }
   const el=document.getElementById('kyb-'+id); if(el) el.remove();
   loadKYB(); if(window.loadMembers && ADM_MEMBERS.length) loadMembers();
 }
-async function rejectKYB(id){
-  const reason = prompt('Reason for rejection (the member will see this — be specific, e.g. "Registration extract is expired" or "Document does not match company name"):');
-  if(reason === null) return; // cancelled
+async function flagKYB(id){
+  // Softer than a hard reject: stays visible to the member as "still pending"
+  // (so we don't scare off a real company over a fixable detail), but is
+  // flagged and surfaced at the top of YOUR queue so it doesn't get missed.
+  const note = prompt('What needs a second look? (internal note — this stays visible to you in the queue; the member simply continues to see "pending", not a rejection)');
+  if(note === null) return; // cancelled
   const _sc=await gtpClient(); if(!_sc) return;
-  const { error } = await _sc.from('companies').update({kyb_status:'rejected', kyb_reject_reason: reason || null}).eq('id',id);
-  if(error){ alert('Could not reject: '+error.message); return; }
-  const el=document.getElementById('kyb-'+id); if(el) el.remove(); loadKYB();
+  const { error } = await _sc.from('companies').update({kyb_status:'pending', kyb_needs_recheck:true, kyb_reject_reason: note || null}).eq('id',id);
+  if(error){ alert('Could not flag: '+error.message); return; }
+  loadKYB();
 }
 
 // TRADE REQUESTS — all listings, moderate/remove
