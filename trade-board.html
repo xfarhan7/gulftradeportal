@@ -974,6 +974,24 @@ if(document.readyState === 'loading'){
 
 
 // ── POST A REAL LISTING TO SUPABASE ─────────────────────────
+// Detects website/URL patterns in free text — website links are a paid
+// profile feature, not permitted inside listing text. Catches http(s)://,
+// www., bare domains (example.com), and spaced-out evasions (example . com,
+// example dot com, example[.]com).
+function gtpHasUrl(text){
+  if(!text) return false;
+  var t = text.toLowerCase()
+    .replace(/\s*\[\.\]\s*/g, '.')
+    .replace(/\s+dot\s+/g, '.')
+    .replace(/\s*\(\s*\.\s*\)\s*/g, '.')
+    .replace(/\s+\.\s+/g, '.');
+  var patterns = [
+    /https?:\/\//i,
+    /www\./i,
+    /\b[a-z0-9-]+\.(com|net|org|info|biz|co|io|shop|store|cn|in|ae|sa|nl|de|uk)\b/i
+  ];
+  return patterns.some(function(re){ return re.test(t); });
+}
 async function submitRFQ(){
   const btn = document.getElementById('rfq-btn');
   const succ = document.getElementById('rfq-succ');
@@ -998,6 +1016,10 @@ async function submitRFQ(){
   const urgent = document.getElementById('rfq-urgent').checked;
 
   if(!product){ alert('Please enter a product.'); return; }
+  if(gtpHasUrl(product) || gtpHasUrl(desc) || gtpHasUrl(qty)){
+    alert('Website links or domain names are not allowed in listings. A clickable profile link is a Pro feature — please remove any website/URL from your text and try again.');
+    return;
+  }
 
   // Product photo: REQUIRED for supplier offers (export), optional for buying requests.
   const imgInput = document.getElementById('rfq-image');

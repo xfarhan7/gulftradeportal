@@ -1232,6 +1232,23 @@ async function deleteRequest(id){
   loadMyRequests();
 }
 
+// Detects website/URL patterns in free text — website links are a paid
+// profile feature, not permitted inside listing text. Catches http(s)://,
+// www., bare domains (example.com), and spaced-out evasions.
+function gtpHasUrl(text){
+  if(!text) return false;
+  var t = text.toLowerCase()
+    .replace(/\s*\[\.\]\s*/g, '.')
+    .replace(/\s+dot\s+/g, '.')
+    .replace(/\s*\(\s*\.\s*\)\s*/g, '.')
+    .replace(/\s+\.\s+/g, '.');
+  var patterns = [
+    /https?:\/\//i,
+    /www\./i,
+    /\b[a-z0-9-]+\.(com|net|org|info|biz|co|io|shop|store|cn|in|ae|sa|nl|de|uk)\b/i
+  ];
+  return patterns.some(function(re){ return re.test(t); });
+}
 async function submitPost(){
   const btn = document.getElementById('pp-btn');
   const succ = document.getElementById('post-succ');
@@ -1260,6 +1277,10 @@ async function submitPost(){
   const desc = (document.getElementById('pp-desc').value || '').trim();
 
   if(!product){ alert('Please enter a product or commodity.'); return; }
+  if(gtpHasUrl(product) || gtpHasUrl(desc) || gtpHasUrl(qty)){
+    alert('Website links or domain names are not allowed in listings. A clickable profile link is a Pro feature — please remove any website/URL from your text and try again.');
+    return;
+  }
 
   // EDIT MODE — update the existing listing instead of inserting a new one.
   if(window.gtpEditId){
