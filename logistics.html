@@ -271,8 +271,8 @@
 </footer>
 
 <script>
-function openMobMenu(){document.getElementById('mobDrawer').classList.add('open');document.getElementById('mobBg').classList.add('open');}
-function closeMobMenu(){document.getElementById('mobDrawer').classList.remove('open');document.getElementById('mobBg').classList.remove('open');}
+function openMobMenu(){var d=document.getElementById('mobDrawer'),b=document.getElementById('mobBg');if(d)d.classList.add('open');if(b)b.classList.add('open');}
+function closeMobMenu(){var d=document.getElementById('mobDrawer'),b=document.getElementById('mobBg');if(d)d.classList.remove('open');if(b)b.classList.remove('open');}
 
 function submitQuote(){
   const consent = document.getElementById('quote-consent');

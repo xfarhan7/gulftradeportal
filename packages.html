@@ -112,6 +112,22 @@
     </div>
   </div>
 </nav>
+<div class="mob-drawer-bg" id="mobBg" onclick="closeMobMenu()"></div>
+<div class="mob-drawer" id="mobDrawer">
+  <button class="mob-drawer-close" onclick="closeMobMenu()">&times;</button>
+  <div class="mob-drawer-logo">Gulf <span>Trade</span> Portal</div>
+  <a class="mob-link" href="index.html">Home</a>
+  <a class="mob-link" href="trade-board.html">Trade Board</a>
+  <a class="mob-link" href="directory.html">Directory</a>
+  <a class="mob-link" href="logistics.html">Logistics</a>
+  <a class="mob-link" href="packages.html">Packages</a>
+  <a class="mob-link" href="features.html">Features</a>
+  <div class="mob-drawer-cta">
+    <a href="portal.html" style="background:transparent;border:1px solid var(--gold);color:var(--gold);">Sign In</a>
+    <a href="register.html" style="background:var(--teal);color:#fff;">Register Free</a>
+  </div>
+</div>
+
 
 <!-- HERO -->
 <div style="background:var(--teal-dk);padding:40px 32px 36px;">
@@ -414,7 +430,7 @@
       <div class="foot-col"><h4>For Sellers</h4><a href="trade-board.html">Browse Buy Requests</a><a href="register.html">Register as Supplier</a><a href="packages.html">Seller Packages</a><a href="packages.html#ads">Advertise</a><a href="features.html">AI Supplier Match</a></div>
       <div class="foot-col"><h4>GCC Markets</h4><a href="trade-board.html?country=UAE">🇦🇪 UAE</a><a href="trade-board.html?country=Saudi+Arabia">🇸🇦 Saudi Arabia</a><a href="trade-board.html?country=Kuwait">🇰🇼 Kuwait</a><a href="trade-board.html?country=Qatar">🇶🇦 Qatar</a><a href="trade-board.html?country=Oman">🇴🇲 Oman</a><a href="trade-board.html?country=Bahrain">🇧🇭 Bahrain</a></div>
       <div class="foot-col" style="grid-column:1/-1;"><h4>Trade Guides</h4><div style="display:flex;flex-wrap:wrap;gap:8px 22px;"><a href="suppliers-saudi-arabia.html">Suppliers to Saudi Arabia</a><a href="suppliers-uae.html">Suppliers to UAE</a><a href="freight-forwarding-gcc.html">Freight to the GCC</a><a href="halal-food-exporters-gcc.html">Halal Food Exporters</a></div></div>
-      <div class="foot-col" style="grid-column:1/-1;"><h4>Company</h4><div style="display:flex;flex-wrap:wrap;gap:6px 24px;"><a href="index.html">About Us</a><a href="index.html#how-it-works">How It Works</a><a href="packages.html">Pricing</a><a href="mailto:info@gulftradeportal.com">Contact</a><a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms of Service</a></div></div>
+      <div class="foot-col" style="grid-column:1/-1;"><h4>Company</h4><div style="display:flex;flex-wrap:wrap;gap:6px 24px;"><a href="#">About Us</a><a href="#">How It Works</a><a href="packages.html">Pricing</a><a href="mailto:info@gulftradeportal.com">Contact</a><a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms of Service</a></div></div>
     </div>
     <div class="foot-bot">
       <p style="color:#2E2E2E;font-size:.71rem;">© 2025 Gulf Trade Portal · Dordrecht, Netherlands</p>
@@ -531,8 +547,8 @@ if(window.location.hash === '#ads') {
 </script>
 
 <script>
-function openMobMenu(){document.getElementById('mobDrawer').classList.add('open');document.getElementById('mobBg').classList.add('open');}
-function closeMobMenu(){document.getElementById('mobDrawer').classList.remove('open');document.getElementById('mobBg').classList.remove('open');}
+function openMobMenu(){var d=document.getElementById('mobDrawer'),b=document.getElementById('mobBg');if(d)d.classList.add('open');if(b)b.classList.add('open');}
+function closeMobMenu(){var d=document.getElementById('mobDrawer'),b=document.getElementById('mobBg');if(d)d.classList.remove('open');if(b)b.classList.remove('open');}
 </script>
 </body>
 </html>

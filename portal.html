@@ -1205,7 +1205,8 @@ async function loadMyRequests(){
   const tb = document.getElementById('pp-requests-body');
   if(!tb) return;
   tb.innerHTML = '<tr><td colspan="7" style="padding:16px;color:var(--mid);font-size:.82rem;">Loading…</td></tr>';
-  const _sc = await gtpClient(); if(!_sc){ return; }
+  const _sc = await gtpClient();
+  if(!_sc){ tb.innerHTML = '<tr><td colspan="7" style="padding:16px;color:#c0392b;font-size:.82rem;">Could not connect — please refresh the page.</td></tr>'; return; }
   const { data: { user } } = await _sc.auth.getUser();
   if(!user){ tb.innerHTML = '<tr><td colspan="7" style="padding:16px;color:var(--mid);font-size:.82rem;">Please sign in.</td></tr>'; return; }
   const { data: mine, error } = await _sc.from('listings')

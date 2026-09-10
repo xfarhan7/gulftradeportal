@@ -191,8 +191,8 @@
 </footer>
 
 <script>
-function openMobMenu(){document.getElementById('mobDrawer').classList.add('open');document.getElementById('mobBg').classList.add('open');}
-function closeMobMenu(){document.getElementById('mobDrawer').classList.remove('open');document.getElementById('mobBg').classList.remove('open');}
+function openMobMenu(){var d=document.getElementById('mobDrawer'),b=document.getElementById('mobBg');if(d)d.classList.add('open');if(b)b.classList.add('open');}
+function closeMobMenu(){var d=document.getElementById('mobDrawer'),b=document.getElementById('mobBg');if(d)d.classList.remove('open');if(b)b.classList.remove('open');}
 
 // ── COMPANY DATABASE ────────────────────────────────────────
 const COMPANIES = {
@@ -356,13 +356,8 @@ function loadCompany() {
     document.getElementById('cpContactArea').style.display = 'none';
     document.getElementById('cpLockNote').style.display = 'block';
   } else {
-    const waNum = (co.whatsapp || '').replace(/[^\d]/g, '');
-    const waBtn = document.getElementById('cpWa');
-    if(waBtn){
-      if(waNum){ waBtn.href = 'https://wa.me/' + waNum; }
-      else { waBtn.style.display = 'none'; } // no WhatsApp on file — don't show a dead link
-    }
-    document.getElementById('cpEmail').href = 'mailto:' + (co.email || 'info@gulftradeportal.com') + '?subject=Enquiry via Gulf Trade Portal — ' + encodeURIComponent(co.n);
+    document.getElementById('cpWa').href = 'https://wa.me/';
+    document.getElementById('cpEmail').href = 'mailto:trade@gulftradeportal.com?subject=Enquiry via Gulf Trade Portal — ' + encodeURIComponent(co.n);
   }
 }
 loadCompanyDispatch();
