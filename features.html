@@ -1186,7 +1186,7 @@ async function runAIMatch() {
         strengths: [x.c.sector, x.c.company_type, x.c.verified?'Verified on Gulf Trade Portal':null].filter(Boolean),
         certifications: [],
         halalCertified: halal ? (x.c.description||'').toLowerCase().includes('halal') : false,
-        slug: x.c.slug
+        id: x.c.id
       })),
       summary: `${scored.length} verified supplier${scored.length>1?'s':''} matched from our directory for ${product}.`
     };
@@ -1226,8 +1226,8 @@ function renderMatches(result) {
         ${(m.strengths||[]).map(s => `<span class="mc-tag">${esc(s)}</span>`).join('')}
       </div>
       <div class="mc-actions">
-        <a class="btn-xs bx-o" href="${m.slug ? 'company.html?id='+encodeURIComponent(m.slug) : 'directory.html'}">View Profile</a>
-        <a class="btn-xs bx-g" href="${m.slug ? 'company.html?id='+encodeURIComponent(m.slug) : 'directory.html'}">Contact via Profile</a>
+        <a class="btn-xs bx-o" href="${m.id ? 'company.html?id='+encodeURIComponent(m.id) : 'directory.html'}">View Profile</a>
+        <a class="btn-xs bx-g" href="${m.id ? 'company.html?id='+encodeURIComponent(m.id) : 'directory.html'}">Contact via Profile</a>
       </div>
     </div>
   `).join('') + `<div style="padding:12px 20px;font-size:.75rem;color:var(--mid);border-top:1px solid var(--mist);background:var(--sand);">${esc(result.summary)}</div>`;
