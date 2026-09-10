@@ -870,7 +870,14 @@ function toggleMemberDetails(id){
     + field('Business Email', m.email)
     + '</div>'
     + (m.products ? '<div style="margin-bottom:8px;"><span style="font-size:.68rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--mid);">Products / Commodities</span><br><span style="font-size:.83rem;">'+esc(m.products)+'</span></div>' : '')
-    + (m.description ? '<div><span style="font-size:.68rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--mid);">Company Description</span><br><span style="font-size:.83rem;color:#444;line-height:1.5;">'+esc(m.description)+'</span></div>' : '')
+    + (m.description ? '<div style="margin-bottom:8px;"><span style="font-size:.68rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--mid);">Company Description</span><br><span style="font-size:.83rem;color:#444;line-height:1.5;">'+esc(m.description)+'</span></div>' : '')
+    + ((m.kyb_doc_registration||m.kyb_doc_id||m.kyb_doc_address||m.kyb_doc_license) ?
+        '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;">'
+        + (m.kyb_doc_registration?'<button class="btn btn-out btn-sm" onclick="viewKybDoc(\''+m.kyb_doc_registration+'\')">📄 Registration Extract</button>':'')
+        + (m.kyb_doc_id?'<button class="btn btn-out btn-sm" onclick="viewKybDoc(\''+m.kyb_doc_id+'\')">🪪 Director ID</button>':'')
+        + (m.kyb_doc_address?'<button class="btn btn-out btn-sm" onclick="viewKybDoc(\''+m.kyb_doc_address+'\')">🏠 Proof of Address</button>':'')
+        + (m.kyb_doc_license?'<button class="btn btn-out btn-sm" onclick="viewKybDoc(\''+m.kyb_doc_license+'\')">📋 Trade License</button>':'')
+        + '</div>' : '')
     + (!trading && !reg && !vat && !m.whatsapp && !m.website && !m.products && !m.description ? '<div style="font-size:.82rem;color:var(--mid);">No additional KYC/company details submitted yet.</div>' : '');
   row.style.display='';
   if(btn) btn.textContent='Hide';
@@ -1118,6 +1125,14 @@ async function loadKYB(){
         ${field('Website', c.website)}
         ${field('Products / Commodities', c.products)}
       </div>
+      ${(c.kyb_doc_registration||c.kyb_doc_id||c.kyb_doc_address||c.kyb_doc_license) ? `
+      <div style="padding:10px 14px;border-bottom:1px solid var(--mist);display:flex;gap:8px;flex-wrap:wrap;">
+        ${c.kyb_doc_registration?'<button class="btn btn-out btn-sm" onclick="viewKybDoc(\''+c.kyb_doc_registration+'\')">📄 Registration Extract</button>':''}
+        ${c.kyb_doc_id?'<button class="btn btn-out btn-sm" onclick="viewKybDoc(\''+c.kyb_doc_id+'\')">🪪 Director ID</button>':''}
+        ${c.kyb_doc_address?'<button class="btn btn-out btn-sm" onclick="viewKybDoc(\''+c.kyb_doc_address+'\')">🏠 Proof of Address</button>':''}
+        ${c.kyb_doc_license?'<button class="btn btn-out btn-sm" onclick="viewKybDoc(\''+c.kyb_doc_license+'\')">📋 Trade License</button>':''}
+      </div>` : `
+      <div style="padding:10px 14px;border-bottom:1px solid var(--mist);font-size:.78rem;color:var(--mid);">No documents uploaded yet.</div>`}
       ${c.description ? '<div style="padding:10px 14px;font-size:.82rem;color:#444;line-height:1.5;border-bottom:1px solid var(--mist);">'+esc(c.description)+'</div>' : ''}
       <div class="kyb-actions">
         <button class="btn btn-grn btn-sm" onclick="approveKYB('${c.id}')">Approve &amp; Verify</button>
@@ -1125,6 +1140,14 @@ async function loadKYB(){
       </div>
     </div>`;
   }).join('');
+}
+async function viewKybDoc(path){
+  try{
+    const _sc = await gtpClient(); if(!_sc) return;
+    const { data, error } = await _sc.storage.from('kyb-documents').createSignedUrl(path, 300); // 5-min link
+    if(error || !data){ alert('Could not open document: '+(error?error.message:'unknown error')); return; }
+    window.open(data.signedUrl, '_blank', 'noopener');
+  }catch(e){ alert('Could not open document: '+e); }
 }
 async function approveKYB(id){
   const _sc=await gtpClient(); if(!_sc) return;

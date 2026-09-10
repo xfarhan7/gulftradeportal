@@ -663,57 +663,53 @@ window.__gtpGateFailsafe = setTimeout(function(){
             <div class="fr2">
               <div>
                 <div style="font-size:.7rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--mid);margin-bottom:6px;">Company Registration Extract <span style="color:var(--red);">*</span></div>
-                <div class="upload-box" onclick="alert('File upload — connect to Supabase Storage in production')">
+                <label class="upload-box" for="kyb-file-reg" style="cursor:pointer;display:block;">
                   <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
                   <p>KVK extract, CR, or equivalent<br><strong>Click to upload</strong> or drag &amp; drop<br><span style="font-size:.7rem;">PDF, JPG, PNG · Max 10MB</span></p>
-                </div>
+                  <div id="kyb-file-reg-name" style="font-size:.75rem;color:var(--teal);font-weight:600;margin-top:4px;"></div>
+                </label>
+                <input type="file" id="kyb-file-reg" accept="application/pdf,image/jpeg,image/png" style="display:none;" onchange="gtpShowFileName('kyb-file-reg')">
               </div>
               <div>
                 <div style="font-size:.7rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--mid);margin-bottom:6px;">Director ID / Passport <span style="color:var(--red);">*</span></div>
-                <div class="upload-box" onclick="alert('File upload — connect to Supabase Storage in production')">
+                <label class="upload-box" for="kyb-file-id" style="cursor:pointer;display:block;">
                   <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M7 15s.5-2 5-2 5 2 5 2"/><circle cx="12" cy="10" r="2"/></svg>
                   <p>Passport or national ID<br><strong>Click to upload</strong><br><span style="font-size:.7rem;">PDF, JPG, PNG · Max 10MB</span></p>
-                </div>
+                  <div id="kyb-file-id-name" style="font-size:.75rem;color:var(--teal);font-weight:600;margin-top:4px;"></div>
+                </label>
+                <input type="file" id="kyb-file-id" accept="application/pdf,image/jpeg,image/png" style="display:none;" onchange="gtpShowFileName('kyb-file-id')">
               </div>
               <div>
                 <div style="font-size:.7rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--mid);margin-bottom:6px;">Proof of Address <span style="color:var(--red);">*</span></div>
-                <div class="upload-box" onclick="alert('File upload — connect to Supabase Storage in production')">
+                <label class="upload-box" for="kyb-file-address" style="cursor:pointer;display:block;">
                   <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
                   <p>Bank statement or utility bill<br><strong>Click to upload</strong><br><span style="font-size:.7rem;">Dated within 3 months</span></p>
-                </div>
+                  <div id="kyb-file-address-name" style="font-size:.75rem;color:var(--teal);font-weight:600;margin-top:4px;"></div>
+                </label>
+                <input type="file" id="kyb-file-address" accept="application/pdf,image/jpeg,image/png" style="display:none;" onchange="gtpShowFileName('kyb-file-address')">
               </div>
               <div>
                 <div style="font-size:.7rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--mid);margin-bottom:6px;">Trade License / Import Permit <span style="color:var(--mid);">(optional)</span></div>
-                <div class="upload-box" onclick="alert('File upload — connect to Supabase Storage in production')">
+                <label class="upload-box" for="kyb-file-license" style="cursor:pointer;display:block;">
                   <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
                   <p>GCC trade license if applicable<br><strong>Click to upload</strong><br><span style="font-size:.7rem;">Increases verification speed</span></p>
-                </div>
+                  <div id="kyb-file-license-name" style="font-size:.75rem;color:var(--teal);font-weight:600;margin-top:4px;"></div>
+                </label>
+                <input type="file" id="kyb-file-license" accept="application/pdf,image/jpeg,image/png" style="display:none;" onchange="gtpShowFileName('kyb-file-license')">
               </div>
             </div>
           </div>
           <div class="form-section">
-            <div class="form-section-title">5. Automated Registry Check</div>
-            <p style="font-size:.81rem;color:var(--mid);margin-bottom:14px;">Enter your registration number and we instantly check the national registry to confirm your company is active. For Netherlands companies we check KVK. For EU companies we check the EU Business Register. For GCC companies we check the relevant national register.</p>
+            <div class="form-section-title">5. Registration Number</div>
+            <p style="font-size:.81rem;color:var(--mid);margin-bottom:14px;">Enter your company registration number. Our team verifies it manually against your uploaded documents as part of review — we do not yet have an automated live registry check.</p>
             <div style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;">
               <div class="fg" style="margin-bottom:0;flex:1;min-width:180px;"><label>Registration Number</label><input type="text" id="kyb-reg" placeholder="e.g. 12345678 (KVK) or 1234567 (CR Dubai)"></div>
-              <button class="tb-btn tb-btn-teal" onclick="runAutoCheck()">Run Auto-Check</button>
-            </div>
-            <div id="kyb-check-result" style="margin-top:14px;display:none;">
-              <div class="auto-check" id="kyb-checking">
-                <div class="ac-icon ac-checking"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--eu)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg></div>
-                <div class="ac-text"><strong>Checking registry…</strong><span>Connecting to KVK Handelsregister API</span></div>
-              </div>
-              <div class="auto-check" id="kyb-ok" style="display:none;">
-                <div class="ac-icon ac-ok"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--grn)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-                <div class="ac-text"><strong>Company found — Active registration confirmed</strong><span id="kyb-result-detail">Gulf Trade Portal · Registered 2018 · Active · Dordrecht, Netherlands</span></div>
-              </div>
             </div>
           </div>
           <div style="display:flex;gap:10px;flex-wrap:wrap;">
-            <button class="tb-btn tb-btn-gold" onclick="submitKYB()">Submit for Verification →</button>
-            <button class="tb-btn tb-btn-out">Save Draft</button>
+            <button class="tb-btn tb-btn-gold" onclick="submitKYB(this)">Submit for Verification →</button>
           </div>
-          <div id="kyb-succ" class="succ" style="margin-top:14px;">✓ Submitted. Our team will review your documents within 1–2 business days. You will receive an email when your listing is approved.</div>
+          <div id="kyb-succ" class="succ" style="display:none;margin-top:14px;"></div>
         </div>
       </div>
     </div>
@@ -1008,28 +1004,67 @@ function gtpToggleImgReq(){
 }
 document.addEventListener('click',e=>{if(e.target.classList.contains('mo'))e.target.classList.remove('open');});
 
-function runAutoCheck(){
-  const reg = document.getElementById('kyb-reg').value.trim();
-  if(!reg){alert('Enter a registration number first.');return;}
-  const res = document.getElementById('kyb-check-result');
-  const chk = document.getElementById('kyb-checking');
-  const ok = document.getElementById('kyb-ok');
-  res.style.display='block';
-  chk.style.display='flex';
-  ok.style.display='none';
-  setTimeout(()=>{
-    chk.style.display='none';
-    ok.style.display='flex';
-    document.getElementById('kyb-result-detail').textContent =
-      reg.length === 8
-        ? 'Company found: Active registration · Netherlands Handelsregister · '+reg
-        : 'Company found: Active registration confirmed · Reg. '+reg;
-  }, 2200);
+function gtpShowFileName(inputId){
+  const el = document.getElementById(inputId);
+  const nameEl = document.getElementById(inputId+'-name');
+  if(!el || !nameEl) return;
+  const f = el.files && el.files[0];
+  nameEl.textContent = f ? ('✓ ' + f.name) : '';
 }
+async function submitKYB(btn){
+  const reg = (document.getElementById('kyb-reg').value || '').trim();
+  const fReg = document.getElementById('kyb-file-reg').files[0];
+  const fId = document.getElementById('kyb-file-id').files[0];
+  const fAddr = document.getElementById('kyb-file-address').files[0];
+  const fLicense = document.getElementById('kyb-file-license').files[0]; // optional
 
-function submitKYB(){
-  document.getElementById('kyb-succ').style.display='block';
-  document.querySelector('[onclick="submitKYB()"]').disabled=true;
+  if(!reg){ alert('Please enter your registration number.'); return; }
+  if(!fReg || !fId || !fAddr){ alert('Please upload the 3 required documents: Registration Extract, Director ID, and Proof of Address.'); return; }
+  const okTypes = ['application/pdf','image/jpeg','image/png'];
+  for(const [label,f] of [['Registration Extract',fReg],['Director ID',fId],['Proof of Address',fAddr],['Trade License',fLicense]]){
+    if(f && !okTypes.includes(f.type)){ alert(label+': please upload a PDF, JPG, or PNG.'); return; }
+    if(f && f.size > 10*1024*1024){ alert(label+': file is too large — max 10MB.'); return; }
+  }
+
+  btn.disabled = true; const orig = btn.textContent; btn.textContent = 'Uploading documents…';
+  try{
+    const _sc = await gtpClient(); if(!_sc) throw new Error('Not connected.');
+    const { data: { user } } = await _sc.auth.getUser();
+    if(!user) throw new Error('You need to be signed in.');
+
+    async function upload(file, tag){
+      if(!file) return null;
+      const ext = (file.name.split('.').pop()||'pdf').toLowerCase().replace(/[^a-z0-9]+/g,'') || 'pdf';
+      const path = user.id + '/' + tag + '-' + Date.now() + '.' + ext;
+      const { error } = await _sc.storage.from('kyb-documents').upload(path, file, { cacheControl:'3600', upsert:false, contentType:file.type });
+      if(error) throw new Error(tag+' upload failed: '+error.message);
+      return path;
+    }
+
+    const pathReg = await upload(fReg, 'registration');
+    const pathId = await upload(fId, 'id');
+    const pathAddr = await upload(fAddr, 'address');
+    const pathLicense = fLicense ? await upload(fLicense, 'license') : null;
+
+    btn.textContent = 'Submitting…';
+    const { error: upErr } = await _sc.from('companies').update({
+      registration_number: reg,
+      kyb_doc_registration: pathReg,
+      kyb_doc_id: pathId,
+      kyb_doc_address: pathAddr,
+      kyb_doc_license: pathLicense,
+      kyb_submitted_at: new Date().toISOString(),
+      kyb_status: 'pending'
+    }).eq('user_id', user.id);
+    if(upErr) throw upErr;
+
+    const succ = document.getElementById('kyb-succ');
+    if(succ){ succ.textContent = '✓ Submitted. Our team will review your registration number and documents within 1–2 business days. You will receive an email once verified.'; succ.style.display = 'block'; }
+    btn.textContent = 'Submitted ✓';
+  }catch(e){
+    alert('Could not submit: ' + (e.message||e));
+    btn.disabled = false; btn.textContent = orig;
+  }
 }
 window.gtpEditId = null;
 function gtpFmtDate(ts){
