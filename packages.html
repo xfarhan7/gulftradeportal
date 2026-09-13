@@ -112,22 +112,6 @@
     </div>
   </div>
 </nav>
-<div class="mob-drawer-bg" id="mobBg" onclick="closeMobMenu()"></div>
-<div class="mob-drawer" id="mobDrawer">
-  <button class="mob-drawer-close" onclick="closeMobMenu()">&times;</button>
-  <div class="mob-drawer-logo">Gulf <span>Trade</span> Portal</div>
-  <a class="mob-link" href="index.html">Home</a>
-  <a class="mob-link" href="trade-board.html">Trade Board</a>
-  <a class="mob-link" href="directory.html">Directory</a>
-  <a class="mob-link" href="logistics.html">Logistics</a>
-  <a class="mob-link" href="packages.html">Packages</a>
-  <a class="mob-link" href="features.html">Features</a>
-  <div class="mob-drawer-cta">
-    <a href="portal.html" style="background:transparent;border:1px solid var(--gold);color:var(--gold);">Sign In</a>
-    <a href="register.html" style="background:var(--teal);color:#fff;">Register Free</a>
-  </div>
-</div>
-
 
 <!-- HERO -->
 <div style="background:var(--teal-dk);padding:40px 32px 36px;">
@@ -443,10 +427,10 @@
   <button class="mo-x" onclick="closeMo('mo-contact')">&#215;</button>
   <h3 class="mo-h">Get in Touch</h3>
   <p class="mo-sub">For enterprise packages, ad bookings, and custom arrangements. We reply within 1 business day.</p>
-  <div class="fg"><label>Name &amp; Company</label><input type="text" placeholder="Your name + company name"></div>
-  <div class="fg"><label>Email</label><input type="email" placeholder="email@company.com"></div>
+  <div class="fg"><label>Name &amp; Company</label><input type="text" id="ct-name" placeholder="Your name + company name"></div>
+  <div class="fg"><label>Email</label><input type="email" id="ct-email" placeholder="email@company.com"></div>
   <div class="fg"><label>Interested in</label>
-    <select>
+    <select id="ct-interest">
       <option>Trade Board Ad — €99/mo</option>
       <option>Category Sponsorship — €249/mo</option>
       <option>Homepage Banner — €499/mo</option>
@@ -457,10 +441,38 @@
       <option>Other</option>
     </select>
   </div>
-  <div class="fg"><label>Message</label><textarea style="font-family:Inter,sans-serif;font-size:.85rem;border:1.5px solid var(--mist);border-radius:4px;padding:9px;width:100%;outline:none;resize:vertical;min-height:80px;background:var(--white);color:var(--ink);" placeholder="Tell us what you need..."></textarea></div>
-  <button class="btn-next" style="width:100%;" onclick="document.getElementById('ct-succ').style.display='block';this.disabled=true;this.textContent='Sent!';">Send Enquiry &rarr;</button>
-  <div id="ct-succ" class="succ">&#10003; Thanks! We will reply to you within 1 business day at info@gulftradeportal.com</div>
+  <div class="fg"><label>Message</label><textarea id="ct-message" style="font-family:Inter,sans-serif;font-size:.85rem;border:1.5px solid var(--mist);border-radius:4px;padding:9px;width:100%;outline:none;resize:vertical;min-height:80px;background:var(--white);color:var(--ink);" placeholder="Tell us what you need..."></textarea></div>
+  <button class="btn-next" id="ct-submit" style="width:100%;" onclick="submitEnquiry(this)">Send Enquiry &rarr;</button>
+  <div id="ct-succ" class="succ" style="display:none;">&#10003; Thanks! We will reply to you within 1 business day at info@gulftradeportal.com</div>
+  <div id="ct-err" style="display:none;color:#C0392B;font-size:.8rem;margin-top:8px;"></div>
 </div></div>
+
+<script>
+async function submitEnquiry(btn){
+  const name = (document.getElementById('ct-name').value||'').trim();
+  const email = (document.getElementById('ct-email').value||'').trim();
+  const interest = document.getElementById('ct-interest').value;
+  const message = (document.getElementById('ct-message').value||'').trim();
+  const errEl = document.getElementById('ct-err');
+  if(errEl) errEl.style.display = 'none';
+  if(!name || !email){
+    if(errEl){ errEl.textContent = 'Please add your name and email so we can reply.'; errEl.style.display = 'block'; }
+    return;
+  }
+  btn.disabled = true; const orig = btn.textContent; btn.textContent = 'Sending…';
+  try{
+    const _sc = await gtpClient();
+    if(!_sc) throw new Error('Could not connect — please check your internet connection.');
+    const { error } = await _sc.from('enquiries').insert({ name, email, interest, message });
+    if(error) throw error;
+    document.getElementById('ct-succ').style.display = 'block';
+    btn.textContent = 'Sent ✓';
+  }catch(e){
+    if(errEl){ errEl.textContent = 'Could not send: ' + (e.message||e) + '. Please email info@gulftradeportal.com directly.'; errEl.style.display = 'block'; }
+    btn.disabled = false; btn.textContent = orig;
+  }
+}
+</script>
 
 <script>
 // ── TABS ─────────────────────────────────────────────────
@@ -547,8 +559,8 @@ if(window.location.hash === '#ads') {
 </script>
 
 <script>
-function openMobMenu(){var d=document.getElementById('mobDrawer'),b=document.getElementById('mobBg');if(d)d.classList.add('open');if(b)b.classList.add('open');}
-function closeMobMenu(){var d=document.getElementById('mobDrawer'),b=document.getElementById('mobBg');if(d)d.classList.remove('open');if(b)b.classList.remove('open');}
+function openMobMenu(){document.getElementById('mobDrawer').classList.add('open');document.getElementById('mobBg').classList.add('open');}
+function closeMobMenu(){document.getElementById('mobDrawer').classList.remove('open');document.getElementById('mobBg').classList.remove('open');}
 </script>
 </body>
 </html>
