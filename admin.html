@@ -391,6 +391,26 @@ body{font-family:'Inter',sans-serif;background:#ECEAE6;color:var(--ink);font-siz
       <div class="sc"><div class="sc-lbl">Ad Revenue</div><div class="sc-val" id="ov-adrev" style="font-size:1.4rem;">€0</div><div class="sc-sub">Live ads</div></div>
     </div>
 
+    <!-- Launch goal tracker — private, admin-only. Not shown anywhere on the public site. -->
+    <div class="card" style="margin-top:16px;">
+      <div class="card-body">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;flex-wrap:wrap;gap:6px;">
+          <div>
+            <span style="font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mid);">Launch goal</span>
+            <div style="font-size:.92rem;font-weight:700;color:var(--ink);margin-top:2px;">Stay free until <span id="ov-goal-target">120</span> members, then switch on billing</div>
+          </div>
+          <div style="font-size:1.3rem;font-weight:800;color:var(--teal);" id="ov-goal-pct">—%</div>
+        </div>
+        <div style="background:var(--mist);border-radius:100px;height:10px;overflow:hidden;">
+          <div id="ov-goal-bar" style="background:linear-gradient(135deg,var(--teal),var(--teal-dk));height:100%;width:0%;transition:width .4s;"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-top:6px;font-size:.75rem;color:var(--mid);">
+          <span><strong id="ov-goal-current">0</strong> members now</span>
+          <span id="ov-goal-remaining">—</span>
+        </div>
+      </div>
+    </div>
+
     <div class="two-col">
       <div class="card">
         <div class="card-hd"><span class="card-title">Monthly Revenue</span><span style="font-size:.71rem;color:var(--mid);">Subscriptions + Ads</span></div>
@@ -1083,6 +1103,24 @@ async function loadOverview(){
   setTxt('sb-members-badge',total);
   setTxt('sb-kyb-badge',kyb);
   const hkb=document.getElementById('hdr-kyb-btn'); if(hkb) hkb.textContent=kyb+' KYB pending';
+
+  // Launch-goal tracker (private to you — never shown outside /admin.html).
+  // Target is stored locally so you can adjust it yourself: in the browser
+  // console, run  localStorage.setItem('gtp_launch_goal','150')  to change it.
+  const goalTarget = parseInt(localStorage.getItem('gtp_launch_goal'),10) || 120;
+  const pct = Math.min(100, Math.round((total/goalTarget)*100));
+  setTxt('ov-goal-target', goalTarget);
+  setTxt('ov-goal-current', total);
+  setTxt('ov-goal-pct', pct+'%');
+  const goalBar = document.getElementById('ov-goal-bar'); if(goalBar) goalBar.style.width = pct+'%';
+  const remaining = document.getElementById('ov-goal-remaining');
+  if(remaining){
+    remaining.textContent = total>=goalTarget
+      ? '🎉 Goal reached — ready to switch on billing'
+      : (goalTarget-total)+' more to go';
+    remaining.style.color = total>=goalTarget ? '#1E7B3C' : 'var(--mid)';
+    remaining.style.fontWeight = total>=goalTarget ? '700' : '400';
+  }
 
   const { data:lst } = await _sc.from('listings').select('status');
   setTxt('ov-requests',(lst||[]).filter(l=>(l.status||'active')==='active').length);
