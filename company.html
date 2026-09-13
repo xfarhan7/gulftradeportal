@@ -312,9 +312,14 @@ async function loadCompanyDispatch(){
   if(isUuid && typeof gtpClient === 'function'){
     try{
       const sc = await gtpClient();
-      const { data, error } = await sc.from('directory_companies').select('*').eq('id', id).maybeSingle();
+      const { data: rows, error } = await sc.rpc('get_public_company_profile', { p_id: id });
+      const data = rows && rows.length ? rows[0] : null;
+      if(error){ console.error('Company profile lookup failed:', error.message, '— falling back to demo view.'); }
+      else if(!data){ console.warn('No company found for id:', id, '— falling back to demo view.'); }
       if(!error && data){ renderRealCompany(data); return; }
-    }catch(e){ /* fall through to demo */ }
+    }catch(e){ console.error('Company profile lookup threw:', e, '— falling back to demo view.'); }
+  } else if(id) {
+    console.warn('Company id in URL is not a valid UUID:', id, '— falling back to demo view.');
   }
   loadCompany();
 }
