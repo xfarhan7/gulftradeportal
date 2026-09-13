@@ -492,7 +492,7 @@ body{font-family:'Inter',sans-serif;background:#ECEAE6;color:var(--ink);font-siz
           </div>
           <div class="fg"><label>Reason / Note</label><textarea id="grant-reason" placeholder="e.g. Strategic partner — Dubai Chamber of Commerce. Early adopter discount. Test account."></textarea></div>
           <button class="btn btn-g" onclick="grantMembership()">Grant Membership</button>
-          <div id="grant-succ" class="succ">✓ Membership granted. The member will receive an email notification.</div>
+          <div id="grant-succ" class="succ" style="display:none;"></div>
         </div>
       </div>
       <div class="card">
@@ -703,7 +703,7 @@ body{font-family:'Inter',sans-serif;background:#ECEAE6;color:var(--ink);font-siz
           <div class="fg"><label>BTW / VAT Number</label><input type="text" value="" placeholder="Optional"></div>
           <div class="fg"><label>Invoice Email</label><input type="email" value="invoice@gulftradeportal.com"></div>
           <div class="fg"><label>Support WhatsApp</label><input type="text" value="+31 6 00 000 000"></div>
-          <button class="btn btn-t">Save Settings</button>
+          <button class="btn btn-t" onclick="alert('Platform settings are not yet saved from this screen — these fields are for reference. Contact your developer to change them in the database directly.')">Save Settings</button>
         </div>
       </div>
       <div class="card">
@@ -711,23 +711,19 @@ body{font-family:'Inter',sans-serif;background:#ECEAE6;color:var(--ink);font-siz
         <div class="card-body" style="display:flex;flex-direction:column;gap:12px;">
           <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--mist);">
             <div><div style="font-size:.82rem;font-weight:600;">Stripe Payments</div><div style="font-size:.71rem;color:var(--mid);">Subscription billing &amp; payment links</div></div>
-            <span class="bdg bdg-gold">Configure</span>
+            <span class="bdg" style="background:#eee;color:#888;">Not connected</span>
           </div>
           <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--mist);">
             <div><div style="font-size:.82rem;font-weight:600;">Supabase</div><div style="font-size:.71rem;color:var(--mid);">Database, auth &amp; file storage</div></div>
-            <span class="bdg bdg-gold">Configure</span>
+            <span class="bdg bdg-grn">Connected</span>
           </div>
           <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--mist);">
-            <div><div style="font-size:.82rem;font-weight:600;">KVK API</div><div style="font-size:.71rem;color:var(--mid);">Dutch company registry auto-check</div></div>
-            <span class="bdg bdg-gold">Configure</span>
+            <div><div style="font-size:.82rem;font-weight:600;">Company registry auto-check</div><div style="font-size:.71rem;color:var(--mid);">Automated registration number verification</div></div>
+            <span class="bdg" style="background:#eee;color:#888;">Not built yet — manual review</span>
           </div>
           <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--mist);">
-            <div><div style="font-size:.82rem;font-weight:600;">EU VIES API</div><div style="font-size:.71rem;color:var(--mid);">European VAT number validation</div></div>
-            <span class="bdg bdg-gold">Configure</span>
-          </div>
-          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;">
-            <div><div style="font-size:.82rem;font-weight:600;">Formspree</div><div style="font-size:.71rem;color:var(--mid);">Form submissions to email</div></div>
-            <span class="bdg bdg-gold">Configure</span>
+            <div><div style="font-size:.82rem;font-weight:600;">Resend (email)</div><div style="font-size:.71rem;color:var(--mid);">Newsletter &amp; notification sending</div></div>
+            <span class="bdg" style="background:#eee;color:#888;">Not connected</span>
           </div>
         </div>
       </div>
@@ -886,7 +882,8 @@ function toggleMemberDetails(id){
 async function setPlan(id, plan){
   const note = document.getElementById('save-'+id);
   if(note){ note.style.color='var(--mid)'; note.textContent='saving…'; }
-  const _sc = await gtpClient(); if(!_sc) return;
+  const _sc = await gtpClient();
+  if(!_sc){ if(note){ note.style.color='#c0392b'; note.textContent='✗ not connected'; } return; }
   const { error } = await _sc.from('companies').update({ plan }).eq('id', id);
   if(error){ if(note){ note.style.color='#c0392b'; note.textContent='✗ '+(error.message||'failed'); } return; }
   const m = ADM_MEMBERS.find(x=>x.id===id); if(m) m.plan = plan;
@@ -907,26 +904,54 @@ function renderGranted(){
   const paid = ADM_MEMBERS.filter(m => (m.plan||'free') !== 'free');
   const cnt = document.getElementById('adm-granted-count'); if(cnt) cnt.textContent = paid.length + ' active';
   if(!paid.length){ box.innerHTML = '<div style="padding:14px;color:var(--mid);font-size:.8rem;">No paid memberships yet.</div>'; return; }
-  box.innerHTML = paid.map(m=>`
+  box.innerHTML = paid.map(m=>{
+    const exp = m.plan_expires_at ? new Date(m.plan_expires_at).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}) : null;
+    return `
     <div class="member-row">
-      <div class="member-info"><div class="member-name">${esc(m.name||'—')}</div><div class="member-detail">${esc(m.email||'')} · ${esc(m.country||'')}</div></div>
+      <div class="member-info"><div class="member-name">${esc(m.name||'—')}</div><div class="member-detail">${esc(m.email||'')} · ${esc(m.country||'')}${exp?' · expires '+esc(exp):' · no expiry'}</div></div>
       <div class="member-plan">${planLabel(m.plan)}</div>
       <button class="btn btn-out btn-sm" onclick="if(confirm('Revoke this membership (set to Free)?'))setPlan('${m.id}','free')">Revoke</button>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 }
 
 async function grantMembership(){
   const q = (document.getElementById('grant-search').value||'').trim().toLowerCase();
   const plan = document.getElementById('grant-plan').value;
+  const durSel = document.getElementById('grant-dur');
+  const dur = durSel ? durSel.value : 'Indefinite';
+  const reason = (document.getElementById('grant-reason')?document.getElementById('grant-reason').value:'').trim();
   if(!q){ alert('Enter a company name or email to find the member.'); return; }
   if(!ADM_MEMBERS.length){ await loadMembers(); }
   const m = ADM_MEMBERS.find(x => (x.email||'').toLowerCase()===q)
         || ADM_MEMBERS.find(x => (x.name||'').toLowerCase().includes(q))
         || ADM_MEMBERS.find(x => (x.email||'').toLowerCase().includes(q));
   if(!m){ alert('No member found matching "'+q+'". Open the Members tab to see exact names/emails.'); return; }
-  await setPlan(m.id, plan);
+
+  // Turn the Duration dropdown into a real expiry date instead of ignoring it.
+  const MONTHS = { '1 month':1, '3 months':3, '6 months':6, '12 months':12 };
+  let expiresAt = null;
+  if(MONTHS[dur]){
+    const d = new Date(); d.setMonth(d.getMonth() + MONTHS[dur]);
+    expiresAt = d.toISOString();
+  } // 'Indefinite' -> null (no expiry), same as before
+
+  const _sc = await gtpClient(); if(!_sc){ alert('Could not connect — please try again.'); return; }
+  const { error } = await _sc.from('companies').update({
+    plan,
+    plan_expires_at: expiresAt,
+    plan_grant_reason: reason || null
+  }).eq('id', m.id);
+  if(error){ alert('Could not grant membership: ' + error.message); return; }
+  const mm = ADM_MEMBERS.find(x=>x.id===m.id); if(mm){ mm.plan = plan; }
+  renderGranted();
+
   const s = document.getElementById('grant-succ');
-  if(s){ s.textContent = '✓ ' + esc(m.name||m.email) + ' is now ' + planLabel(plan) + '.'; s.style.display='block'; setTimeout(()=>{ s.style.display='none'; }, 4000); }
+  if(s){
+    const expiryNote = expiresAt ? (' until ' + new Date(expiresAt).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})) : ' (no expiry)';
+    s.textContent = '✓ ' + esc(m.name||m.email) + ' is now ' + planLabel(plan) + expiryNote + '. Note: this does not send them an email — let them know directly if needed.';
+    s.style.display='block'; setTimeout(()=>{ s.style.display='none'; }, 6000);
+  }
 }
 function openMo(id){document.getElementById(id).classList.add('open');}
 function closeMo(id){document.getElementById(id).classList.remove('open');}
