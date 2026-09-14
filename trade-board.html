@@ -626,6 +626,12 @@ function renderBoard(filter){
     data = data.filter(x => (x.sec||'').toLowerCase() === cat.toLowerCase());
   }
 
+  // Region/country filter (applies on top of type + sector)
+  const reg = window.currentRegion || 'all';
+  if(reg !== 'all'){
+    data = data.filter(x => x.t==='ad' || (x.c||'') === reg);
+  }
+
   let regularCount = 0;
 
   const grid = document.getElementById('boardGrid');
@@ -705,16 +711,12 @@ function setBF(f,btn){
   document.querySelectorAll('#bfbar .fbtn').forEach(b=>b.classList.remove('on'));
   btn.classList.add('on');window.currentFilter=f;renderBoard(f);
 }
+window.currentRegion = "all";
 function setReg(r,el){
   document.querySelectorAll('.rflag').forEach(e=>e.classList.remove('on'));
   el.classList.add('on');
-  const data=r==='all'?BOARD:BOARD.filter(c=>c.c===r||c.t==='ad');
-  document.getElementById('boardGrid').innerHTML=data.map(c=>`
-    <div class="bc ${c.t==='ad'?'ad':''}">
-      <div class="bc-hd"><div class="bc-badges">${c.t==='ad'?'<span class="bdg b-a">⭐ Sponsored</span>':''}${c.t==='import'?'<span class="bdg b-i">Find Buyers</span>':''}${c.t==='export'?'<span class="bdg b-e">Find Suppliers</span>':''}${c.urg?'<span class="bdg b-u">Urgent</span>':''}</div><span class="bc-time">${c.posted}</span></div>
-      <div class="bc-body"><div class="bc-title">${c.title}</div><div class="bc-meta"><span>📍 ${c.c}</span><span>📦 ${c.qty}</span></div><div class="bc-seek"><strong>Seeking</strong>${c.seek}</div><div class="bc-desc">${c.desc}</div></div>
-      <div class="bc-ft"><span class="bc-co"><strong>${c.co}</strong></span><button class="bx bx-t" onclick="gtpRespond()">Respond</button></div>
-    </div>`).join('');
+  window.currentRegion = r || 'all';
+  renderBoard(window.currentFilter || 'all');
 }
 function renderCos(data){
   const g=document.getElementById('coGrid'),nr=document.getElementById('noRes');
